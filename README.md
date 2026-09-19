@@ -35,6 +35,7 @@ Role and ownership checks are planned at API level. A Participant may access onl
 | Requirements and business rules | [Requirements-and-Business-Rules.md](docs/Requirements-and-Business-Rules.md) | Complete |
 | Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | In progress until final submission checks are complete |
 | Part 1 checklist | [Part-1-Requirements-Checklist.md](docs/Part-1-Requirements-Checklist.md) | In progress until final submission |
+| Video walkthrough plan | [Video-Presentation-Plan.md](docs/Video-Presentation-Plan.md) | Complete; recording and upload still required |
 
 ## Data model
 
@@ -124,7 +125,8 @@ RaceDay/
 |   |-- RaceDay-ERD.svg
 |   |-- RaceDay.sql
 |   |-- Requirements-and-Business-Rules.md
-|   `-- Requirements-Traceability.md
+|   |-- Requirements-Traceability.md
+|   `-- Video-Presentation-Plan.md
 |-- RaceDay.sln
 `-- README.md
 ```
@@ -138,6 +140,8 @@ The GitHub Actions workflow validates the Part 1 repository whenever work is pus
 The successful workflow run can also be viewed on the [GitHub Actions run page](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/35463445716).
 
 ## Video presentation
+
+The [video presentation plan](docs/Video-Presentation-Plan.md) contains the suggested recording order, speaking prompts and SSMS demonstration steps.
 
 The unlisted YouTube walkthrough link will be added here after the final recording has been completed and checked.
 

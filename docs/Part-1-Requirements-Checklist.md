@@ -74,6 +74,7 @@
 
 ## Video presentation: 10 marks
 
+- [x] Prepare the video walkthrough plan and SSMS demonstration order.
 - [ ] Upload an unlisted YouTube walkthrough.
 - [ ] Explain the ERD decisions and endpoint-plan choices.
 - [ ] Explain the SQL design and run the script in SSMS.
