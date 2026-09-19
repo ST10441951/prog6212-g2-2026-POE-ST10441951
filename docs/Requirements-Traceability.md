@@ -53,8 +53,8 @@ This table connects each confirmed requirement to the planned database area, API
 |---|---|---|---|
 | SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Complete |
 | SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | In progress: all named resources planned; Part 2 requirements still to review |
-| SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | Not started |
-| SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | Not started |
+| SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | In progress: schema and indexes complete; seed data pending |
+| SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | In progress: schema tested on clean LocalDB; final script test pending |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | In progress |
 | SUB-06 | At least 20 meaningful commits | Git history | In progress |
 | SUB-07 | Successful GitHub Actions validation | Workflow run and README screenshot | Not started |

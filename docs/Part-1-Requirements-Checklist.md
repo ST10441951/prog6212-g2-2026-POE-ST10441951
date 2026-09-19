@@ -21,7 +21,7 @@
 - [x] Include at least six entities covering the full RaceDay data model.
 - [x] Show all attributes, primary keys, foreign keys, relationships, and cardinalities.
 - [x] Correctly resolve any many-to-many relationships.
-- [ ] Match the SQL schema exactly or explain deliberate differences in the README.
+- [x] Match the SQL schema exactly or explain deliberate differences in the README.
 
 ## API endpoint plan: 25 marks
 
@@ -57,8 +57,8 @@
 ## SQL database script: 20 marks
 
 - [ ] Use SQL Server-compatible syntax and run through SSMS.
-- [ ] Create every entity shown in the ERD.
-- [ ] Define primary keys, foreign keys, and suitable `NOT NULL`, `UNIQUE`, `DEFAULT`, and other integrity constraints.
+- [x] Create every entity shown in the ERD.
+- [x] Define primary keys, foreign keys, and suitable `NOT NULL`, `UNIQUE`, `DEFAULT`, and other integrity constraints.
 - [ ] Seed at least two Organisers and two Participants.
 - [ ] Seed at least three Events, categories for every Event, and realistic Enrolments.
 - [ ] Seed every additional entity included in the ERD.
@@ -66,7 +66,7 @@
 
 ## GitHub and CI/CD: 15 marks
 
-- [ ] Store the planning artefacts and SQL script in `/docs`.
+- [x] Store the planning artefacts and SQL script in `/docs`.
 - [ ] Validate the repository structure with a GitHub Actions workflow.
 - [ ] Verify that `/docs` and all required files exist.
 - [ ] Obtain a green workflow run and include a screenshot in the README.

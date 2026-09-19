@@ -29,6 +29,13 @@ GO
 
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
+SET ANSI_NULLS ON;
+SET ANSI_PADDING ON;
+SET ANSI_WARNINGS ON;
+SET ARITHABORT ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET QUOTED_IDENTIFIER ON;
+SET NUMERIC_ROUNDABORT OFF;
 GO
 
 IF EXISTS
@@ -336,6 +343,35 @@ BEGIN TRY
             CHECK (CategoryPosition IS NULL OR CategoryPosition > 0)
     );
 
+    CREATE NONCLUSTERED INDEX IX_Users_RoleId
+        ON dbo.Users (RoleId);
+
+    CREATE NONCLUSTERED INDEX IX_Events_OrganiserUserId
+        ON dbo.Events (OrganiserUserId);
+
+    CREATE NONCLUSTERED INDEX IX_Events_EventDateTime_Status
+        ON dbo.Events (EventDateTime, Status);
+
+    CREATE NONCLUSTERED INDEX IX_EventCategories_EventId
+        ON dbo.EventCategories (EventId);
+
+    CREATE NONCLUSTERED INDEX IX_Enrolments_EventId_Status
+        ON dbo.Enrolments (EventId, Status);
+
+    CREATE NONCLUSTERED INDEX IX_Enrolments_EventCategoryId
+        ON dbo.Enrolments (EventCategoryId);
+
+    -- The filter permits multiple unassigned NULL values (Microsoft, 2026d).
+    CREATE UNIQUE NONCLUSTERED INDEX UX_Enrolments_EventId_BibNumber
+        ON dbo.Enrolments (EventId, BibNumber)
+        WHERE BibNumber IS NOT NULL;
+
+    CREATE NONCLUSTERED INDEX IX_Results_RecordedByUserId
+        ON dbo.Results (RecordedByUserId);
+
+    CREATE NONCLUSTERED INDEX IX_Results_ResultStatus
+        ON dbo.Results (ResultStatus);
+
     COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
@@ -368,6 +404,10 @@ GO
 
     Microsoft (2026c) 'Unique constraints and check constraints', Microsoft Learn.
     Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints?view=sql-server-ver17
+    (Accessed: 19 September 2026).
+
+    Microsoft (2026d) 'Create filtered indexes', Microsoft Learn.
+    Available at: https://learn.microsoft.com/en-us/sql/relational-databases/indexes/create-filtered-indexes?view=sql-server-ver17
     (Accessed: 19 September 2026).
 
     The Independent Institute of Education (2026) PROG6212 Portfolio of Evidence.
