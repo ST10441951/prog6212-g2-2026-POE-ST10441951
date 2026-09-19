@@ -16,14 +16,14 @@
 - [ ] Repository link submitted on ARC.
 - [ ] Brief disclosure of AI assistance.
 
-## ERD — 25 marks
+## ERD: 25 marks
 
 - [ ] Include at least six entities covering the full RaceDay data model.
 - [ ] Show all attributes, primary keys, foreign keys, relationships, and cardinalities.
 - [ ] Correctly resolve any many-to-many relationships.
 - [ ] Match the SQL schema exactly or explain deliberate differences in the README.
 
-## API endpoint plan — 25 marks
+## API endpoint plan: 25 marks
 
 - [ ] Cover authentication: registration and login.
 - [ ] Cover user profiles, events, categories, enrolments, and results.
@@ -50,7 +50,7 @@
 
 - [ ] Plan role-based access for later enforcement at API level.
 
-## SQL database script — 20 marks
+## SQL database script: 20 marks
 
 - [ ] Use SQL Server-compatible syntax and run through SSMS.
 - [ ] Create every entity shown in the ERD.
@@ -60,7 +60,7 @@
 - [ ] Seed every additional entity included in the ERD.
 - [ ] Run without errors on a clean SQL Server instance.
 
-## GitHub and CI/CD — 15 marks
+## GitHub and CI/CD: 15 marks
 
 - [ ] Store the planning artefacts and SQL script in `/docs`.
 - [ ] Validate the repository structure with a GitHub Actions workflow.
@@ -68,14 +68,14 @@
 - [ ] Obtain a green workflow run and include a screenshot in the README.
 - [ ] Maintain at least 20 meaningful commits.
 
-## Video presentation — 10 marks
+## Video presentation: 10 marks
 
 - [ ] Upload an unlisted YouTube walkthrough.
 - [ ] Explain the ERD decisions and endpoint-plan choices.
 - [ ] Explain the SQL design and run the script in SSMS.
 - [ ] Add the video link to the README.
 
-## Correct submission — 5 marks
+## Correct submission: 5 marks
 
 - [ ] Use a clear folder structure and detailed README.
 - [ ] Include all required `/docs` files, CI evidence, and video link.
@@ -91,7 +91,6 @@
 
 ## Still required from the student
 
-- [ ] Lecturer-provided GitHub repository URL, if one has already been issued.
+- [x] Lecturer-provided GitHub repository URL: `https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git`.
 - [ ] Part 2 functional-requirements pages referenced by the Part 1 endpoint-plan instructions.
 - [ ] Any additional PoE cover-sheet requirements.
-
