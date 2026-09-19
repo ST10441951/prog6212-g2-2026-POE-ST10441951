@@ -372,6 +372,326 @@ BEGIN TRY
     CREATE NONCLUSTERED INDEX IX_Results_ResultStatus
         ON dbo.Results (ResultStatus);
 
+    /*
+        Seed reference and core event data
+
+        All names, contact details and events below are fictional and are used
+        only to demonstrate the RaceDay database design.
+
+        The sample password values are stored as hashes that can be verified by
+        the future ASP.NET Core Identity integration (Microsoft, 2026f).
+    */
+
+    INSERT INTO dbo.Roles
+    (
+        RoleId,
+        RoleName
+    )
+    VALUES
+        (1, N'Organiser'),
+        (2, N'Participant');
+
+    -- Multi-row INSERT statements follow the SQL Server syntax (Microsoft, 2026e).
+    INSERT INTO dbo.Users
+    (
+        RoleId,
+        FirstName,
+        LastName,
+        Email,
+        PasswordHash,
+        PhoneNumber,
+        DateOfBirth,
+        IsActive,
+        CreatedAt
+    )
+    VALUES
+        (
+            1,
+            N'Thabo',
+            N'Ndlovu',
+            N'thabo.ndlovu@example.com',
+            N'AQAAAAEAAYagAAAAEL6AKXixWBP1LMyscdFlqINeyabhUHbbSd1Lzp2TY1hT4PpaXgQ4+RRjON2rm74Cvg==',
+            N'0825550101',
+            NULL,
+            1,
+            '2026-09-19T12:00:00'
+        ),
+        (
+            1,
+            N'Ayesha',
+            N'Khan',
+            N'ayesha.khan@example.com',
+            N'AQAAAAEAAYagAAAAEDNUkwYaxL/7dfSs782kAttPNaRs97VRdtNwCClgIovczk9AOiSwmexguzsebpJPkQ==',
+            N'0835550102',
+            NULL,
+            1,
+            '2026-09-19T12:05:00'
+        ),
+        (
+            2,
+            N'Naledi',
+            N'Mokoena',
+            N'naledi.mokoena@example.com',
+            N'AQAAAAEAAYagAAAAEMTqje2zq7mybJNha0xbGTC0TKroRUphQ68l1VHUpyNtrFaZfKZzKP2o6v8wcVtvhQ==',
+            N'0845550103',
+            '1994-06-12',
+            1,
+            '2026-09-19T12:10:00'
+        ),
+        (
+            2,
+            N'Sipho',
+            N'Dlamini',
+            N'sipho.dlamini@example.com',
+            N'AQAAAAEAAYagAAAAEDGxE/WqLLPuRixeLnIWP9VJaRtMMA9xxbHXI7HewFgDm9XIMws07NtkNo2lmTurEw==',
+            N'0715550104',
+            '1989-11-03',
+            1,
+            '2026-09-19T12:15:00'
+        );
+
+    DECLARE @ThaboUserId INT =
+    (
+        SELECT UserId
+        FROM dbo.Users
+        WHERE Email = N'thabo.ndlovu@example.com'
+    );
+
+    DECLARE @AyeshaUserId INT =
+    (
+        SELECT UserId
+        FROM dbo.Users
+        WHERE Email = N'ayesha.khan@example.com'
+    );
+
+    INSERT INTO dbo.Events
+    (
+        OrganiserUserId,
+        EventName,
+        EventType,
+        Description,
+        EventDateTime,
+        EntryClosingDateTime,
+        VenueName,
+        AddressLine1,
+        City,
+        Province,
+        Latitude,
+        Longitude,
+        Status,
+        CreatedAt
+    )
+    VALUES
+        (
+            @ThaboUserId,
+            N'Durban Sunrise 10K',
+            N'Running',
+            N'A coastal road race with five and ten kilometre categories.',
+            '2026-08-16T04:30:00',
+            '2026-08-09T21:59:59',
+            N'Moses Mabhida Stadium',
+            N'44 Isaiah Ntshangase Road',
+            N'Durban',
+            N'KwaZulu-Natal',
+            -29.829000,
+            31.030300,
+            N'Completed',
+            '2026-05-01T08:00:00'
+        ),
+        (
+            @AyeshaUserId,
+            N'Cape Peninsula Cycle Challenge',
+            N'Cycling',
+            N'A supported road cycling event with forty and eighty kilometre routes.',
+            '2027-03-14T04:00:00',
+            '2027-03-01T21:59:59',
+            N'Green Point Urban Park',
+            N'1 Fritz Sonnenberg Road',
+            N'Cape Town',
+            N'Western Cape',
+            -33.905800,
+            18.411900,
+            N'Open',
+            '2026-09-01T09:00:00'
+        ),
+        (
+            @ThaboUserId,
+            N'Soweto Heritage Walk',
+            N'Walking',
+            N'A community walk visiting important heritage locations in Soweto.',
+            '2027-04-24T05:30:00',
+            '2027-04-17T21:59:59',
+            N'Walter Sisulu Square',
+            N'1 Klipspruit Valley Road',
+            N'Soweto',
+            N'Gauteng',
+            -26.278400,
+            27.858500,
+            N'Open',
+            '2026-09-10T10:00:00'
+        );
+
+    DECLARE @DurbanEventId INT =
+    (
+        SELECT EventId
+        FROM dbo.Events
+        WHERE EventName = N'Durban Sunrise 10K'
+    );
+
+    DECLARE @CapeEventId INT =
+    (
+        SELECT EventId
+        FROM dbo.Events
+        WHERE EventName = N'Cape Peninsula Cycle Challenge'
+    );
+
+    DECLARE @SowetoEventId INT =
+    (
+        SELECT EventId
+        FROM dbo.Events
+        WHERE EventName = N'Soweto Heritage Walk'
+    );
+
+    INSERT INTO dbo.EventCategories
+    (
+        EventId,
+        CategoryName,
+        DistanceKm,
+        MinimumAge,
+        EntryFee,
+        Capacity,
+        IsAvailable,
+        CreatedAt
+    )
+    VALUES
+        (@DurbanEventId, N'5 km Run', 5.00, 10, 120.00, 1800, 0, '2026-05-02T08:00:00'),
+        (@DurbanEventId, N'10 km Run', 10.00, 15, 180.00, 2500, 0, '2026-05-02T08:05:00'),
+        (@CapeEventId, N'40 km Cycle', 40.00, 16, 350.00, 1500, 1, '2026-09-02T09:00:00'),
+        (@CapeEventId, N'80 km Cycle', 80.00, 18, 550.00, 1000, 1, '2026-09-02T09:05:00'),
+        (@SowetoEventId, N'5 km Walk', 5.00, NULL, 80.00, 2000, 1, '2026-09-11T10:00:00'),
+        (@SowetoEventId, N'10 km Walk', 10.00, 12, 120.00, 1200, 1, '2026-09-11T10:05:00');
+
+    DECLARE @Durban5CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @DurbanEventId
+          AND CategoryName = N'5 km Run'
+    );
+
+    DECLARE @Durban10CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @DurbanEventId
+          AND CategoryName = N'10 km Run'
+    );
+
+    DECLARE @Cape40CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @CapeEventId
+          AND CategoryName = N'40 km Cycle'
+    );
+
+    DECLARE @Cape80CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @CapeEventId
+          AND CategoryName = N'80 km Cycle'
+    );
+
+    DECLARE @Soweto5CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @SowetoEventId
+          AND CategoryName = N'5 km Walk'
+    );
+
+    DECLARE @Soweto10CategoryId INT =
+    (
+        SELECT EventCategoryId
+        FROM dbo.EventCategories
+        WHERE EventId = @SowetoEventId
+          AND CategoryName = N'10 km Walk'
+    );
+
+    INSERT INTO dbo.EventRoutes
+    (
+        EventCategoryId,
+        RouteName,
+        StartLocation,
+        FinishLocation,
+        RouteDescription,
+        RouteMapUrl,
+        ElevationGainMetres,
+        CreatedAt
+    )
+    VALUES
+        (
+            @Durban5CategoryId,
+            N'Stadium 5 km Loop',
+            N'Moses Mabhida Stadium south entrance',
+            N'Moses Mabhida Stadium south entrance',
+            N'A flat out-and-back route along Masabalala Yengwa Avenue.',
+            NULL,
+            35,
+            '2026-05-03T08:00:00'
+        ),
+        (
+            @Durban10CategoryId,
+            N'Stadium Coastal Loop',
+            N'Moses Mabhida Stadium south entrance',
+            N'Moses Mabhida Stadium south entrance',
+            N'A coastal loop passing the beachfront before returning to the stadium.',
+            NULL,
+            85,
+            '2026-05-03T08:05:00'
+        ),
+        (
+            @Cape40CategoryId,
+            N'Peninsula Short Route',
+            N'Green Point Urban Park',
+            N'Green Point Urban Park',
+            N'A forty kilometre road route through the Atlantic Seaboard.',
+            NULL,
+            420,
+            '2026-09-03T09:00:00'
+        ),
+        (
+            @Cape80CategoryId,
+            N'Peninsula Long Route',
+            N'Green Point Urban Park',
+            N'Green Point Urban Park',
+            N'An eighty kilometre endurance route through the southern peninsula.',
+            NULL,
+            980,
+            '2026-09-03T09:05:00'
+        ),
+        (
+            @Soweto5CategoryId,
+            N'Kliptown Heritage Route',
+            N'Walter Sisulu Square',
+            N'Walter Sisulu Square',
+            N'A five kilometre community route through Kliptown.',
+            NULL,
+            45,
+            '2026-09-12T10:00:00'
+        ),
+        (
+            @Soweto10CategoryId,
+            N'Soweto Heritage Route',
+            N'Walter Sisulu Square',
+            N'Walter Sisulu Square',
+            N'A ten kilometre walking route connecting several heritage locations.',
+            NULL,
+            110,
+            '2026-09-12T10:05:00'
+        );
+
     COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
@@ -408,6 +728,14 @@ GO
 
     Microsoft (2026d) 'Create filtered indexes', Microsoft Learn.
     Available at: https://learn.microsoft.com/en-us/sql/relational-databases/indexes/create-filtered-indexes?view=sql-server-ver17
+    (Accessed: 19 September 2026).
+
+    Microsoft (2026e) 'INSERT (Transact-SQL)', Microsoft Learn.
+    Available at: https://learn.microsoft.com/sql/t-sql/statements/insert-transact-sql?view=sql-server-ver16
+    (Accessed: 19 September 2026).
+
+    Microsoft (2026f) 'PasswordHasher<TUser>.HashPassword(TUser, String) Method', Microsoft Learn.
+    Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordhasher-1.hashpassword?view=aspnetcore-10.0
     (Accessed: 19 September 2026).
 
     The Independent Institute of Education (2026) PROG6212 Portfolio of Evidence.
