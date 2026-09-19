@@ -169,7 +169,154 @@ Planned indexes:
 - Unique index on `EventCategoryId` and `EventId` for composite referential integrity.
 - Nonclustered index on `EventId`.
 
+### 5.5 EventRoutes
+
+The `EventRoutes` table stores route details for an Event Category. Keeping route information at Category level supports Events that offer different distances and routes.
+
+| Column | SQL Server datatype | Null | Key or constraint | Description |
+|---|---|---:|---|---|
+| `RouteId` | `INT IDENTITY(1,1)` | No | Primary key | Unique Route identifier |
+| `EventCategoryId` | `INT` | No | Unique foreign key to `EventCategories.EventCategoryId` | Category that uses the Route |
+| `RouteName` | `NVARCHAR(120)` | No |  | Public Route name |
+| `StartLocation` | `NVARCHAR(200)` | No |  | Description of the starting point |
+| `FinishLocation` | `NVARCHAR(200)` | No |  | Description of the finishing point |
+| `RouteDescription` | `NVARCHAR(1000)` | No |  | Instructions and important Route information |
+| `RouteMapUrl` | `NVARCHAR(500)` | Yes |  | Optional link to a Route map |
+| `ElevationGainMetres` | `INT` | Yes | Check at least zero | Optional total elevation gain |
+| `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Route creation timestamp |
+| `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Route update timestamp |
+
+Table rules:
+
+- `EventCategoryId` must be unique so that a Category has no more than one Route.
+- `RouteName`, `StartLocation`, `FinishLocation` and `RouteDescription` may not be empty strings.
+- `ElevationGainMetres` must be zero or greater when supplied.
+- A Route record cannot exist without its Event Category.
+
+Planned indexes:
+
+- Unique index on `EventCategoryId`.
+
+### 5.6 Enrolments
+
+The `Enrolments` table records a Participant's entry into an Event and the Category selected for that entry.
+
+| Column | SQL Server datatype | Null | Key or constraint | Description |
+|---|---|---:|---|---|
+| `EnrolmentId` | `INT IDENTITY(1,1)` | No | Primary key | Unique Enrolment identifier |
+| `ParticipantUserId` | `INT` | No | Foreign key to `Users.UserId` | Participant who entered the Event |
+| `EventId` | `INT` | No | Foreign key to `Events.EventId` | Event entered by the Participant |
+| `EventCategoryId` | `INT` | No | Part of composite foreign key | Category selected by the Participant |
+| `EnrolmentDate` | `DATETIME2(0)` | No | Default current UTC date and time | Date and time the entry was created |
+| `Status` | `NVARCHAR(20)` | No | Default Confirmed and check constraint | Confirmed or Cancelled |
+| `BibNumber` | `NVARCHAR(20)` | Yes | Unique within an Event when supplied | Race number allocated to the Participant |
+| `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Enrolment update timestamp |
+
+Table rules:
+
+- `ParticipantUserId` must refer to an existing User.
+- The future API must verify that `ParticipantUserId` belongs to a Participant.
+- `EventId` must refer to an existing Event.
+- The combination of `EventCategoryId` and `EventId` must refer to the matching alternate key in `EventCategories`.
+- The combination of `ParticipantUserId` and `EventId` must be unique. A cancelled entry may be reactivated or updated instead of creating another row.
+- `Status` is limited to Confirmed or Cancelled.
+- `BibNumber` must be unique within an Event when supplied.
+- The future API must check Event status, closing date, Category availability and capacity before creating an Enrolment.
+
+Planned indexes:
+
+- Unique index on `ParticipantUserId` and `EventId`.
+- Nonclustered index on `EventId` and `Status` for Organiser enrolment lists.
+- Nonclustered index on `EventCategoryId`.
+- Unique filtered index on `EventId` and `BibNumber` where `BibNumber` is not null. The filtered index allows multiple records without allocated bib numbers while preserving uniqueness for assigned numbers (Microsoft, 2026e).
+
+### 5.7 Results
+
+The `Results` table stores the official outcome for an Enrolment.
+
+| Column | SQL Server datatype | Null | Key or constraint | Description |
+|---|---|---:|---|---|
+| `ResultId` | `INT IDENTITY(1,1)` | No | Primary key | Unique Result identifier |
+| `EnrolmentId` | `INT` | No | Unique foreign key to `Enrolments.EnrolmentId` | Enrolment receiving the Result |
+| `RecordedByUserId` | `INT` | No | Foreign key to `Users.UserId` | Organiser who recorded the Result |
+| `ResultStatus` | `NVARCHAR(20)` | No | Default Completed and check constraint | Completed, DidNotFinish, Disqualified or DidNotStart |
+| `FinishTimeSeconds` | `INT` | Yes | Check greater than zero when completed | Official elapsed time in seconds |
+| `OverallPosition` | `INT` | Yes | Check greater than zero | Overall finishing position |
+| `CategoryPosition` | `INT` | Yes | Check greater than zero | Finishing position within the Category |
+| `Notes` | `NVARCHAR(500)` | Yes |  | Optional Result explanation |
+| `RecordedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Date and time the Result was first recorded |
+| `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Result correction timestamp |
+
+Table rules:
+
+- `EnrolmentId` must be unique so that an Enrolment has no more than one official Result.
+- `RecordedByUserId` must refer to an existing User.
+- The future API must verify that `RecordedByUserId` belongs to the Organiser responsible for the related Event.
+- `ResultStatus` is limited to Completed, DidNotFinish, Disqualified or DidNotStart.
+- A Completed Result must have a positive `FinishTimeSeconds` value.
+- A non-completed Result will not have an official finish time.
+- `OverallPosition` and `CategoryPosition` must be positive when supplied.
+- The future API must reject a Result for a cancelled Enrolment.
+
+Planned indexes:
+
+- Unique index on `EnrolmentId`.
+- Nonclustered index on `RecordedByUserId`.
+- Nonclustered index on `ResultStatus`.
+
+## 6. Cross-table integrity plan
+
+`UNIQUE` and `CHECK` constraints are used where values or combinations must be controlled by the database (Microsoft, 2026d).
+
+| Integrity rule | Planned database implementation |
+|---|---|
+| Every User has one valid Role | Foreign key from `Users.RoleId` to `Roles.RoleId` |
+| Every Event has one valid Organiser account record | Foreign key from `Events.OrganiserUserId` to `Users.UserId` |
+| Category names do not repeat within an Event | Unique constraint on `EventCategories.EventId` and `CategoryName` |
+| An Enrolment's Category belongs to its Event | Composite foreign key from `Enrolments.EventCategoryId, EventId` to `EventCategories.EventCategoryId, EventId` |
+| A Participant has one Enrolment record per Event | Unique constraint on `Enrolments.ParticipantUserId, EventId` |
+| A Category has no more than one Route | Unique constraint on `EventRoutes.EventCategoryId` |
+| An Enrolment has no more than one Result | Unique constraint on `Results.EnrolmentId` |
+| Assigned bib numbers do not repeat within an Event | Unique filtered index on `Enrolments.EventId, BibNumber` |
+| Status and range values remain valid | Named `CHECK` constraints on the relevant tables |
+
+## 7. Delete and update behaviour
+
+Foreign keys protect related data from becoming orphaned. SQL Server supports several referential actions, including `NO ACTION`, `CASCADE`, `SET NULL` and `SET DEFAULT` (Microsoft, 2026c). RaceDay will use the following approach:
+
+| Relationship | Delete behaviour | Reason |
+|---|---|---|
+| Roles to Users | `NO ACTION` | A Role in use must be retained |
+| Users to Events | `NO ACTION` | Event ownership history must be retained |
+| Events to EventCategories | `NO ACTION` | Existing Event structure must not be removed accidentally |
+| EventCategories to EventRoutes | `NO ACTION` | Route removal must be deliberate |
+| Users to Enrolments | `NO ACTION` | Participation history must be retained |
+| Events to Enrolments | `NO ACTION` | Event-entry history must be retained |
+| EventCategories to Enrolments | `NO ACTION` | The selected Category must remain traceable |
+| Enrolments to Results | `NO ACTION` | Official Result history must be retained |
+| Users to Results | `NO ACTION` | The recording Organiser must remain traceable |
+
+Records that already have dependent transactional data should generally be made inactive or cancelled instead of being deleted.
+
+## 8. Application-level validation
+
+Some rules require information from more than one row or table and will be enforced by the future API rather than by simple table constraints:
+
+- Confirm that an Event owner has the Organiser Role.
+- Confirm that an Enrolment user has the Participant Role.
+- Confirm that the Event is Open and entries have not closed.
+- Confirm that an Event Category is available and has capacity.
+- Confirm that a Result is captured by the Organiser responsible for the related Event.
+- Confirm that a cancelled Enrolment cannot receive a Result.
+- Update `UpdatedAt` when a record changes.
+
+## 9. Normalisation summary
+
+The model separates Roles, Users, Events, Categories, Routes, Enrolments and Results so that each table represents one main subject. Repeating groups are avoided, descriptive values are stored once where practical and many-to-many activity between Participants and Events is resolved through Enrolments. The separate Results table prevents result details from being repeated in user or event records.
+
 ## References
+
+The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
 
 Microsoft (2026a) 'Data types (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-ca/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver17 (Accessed: 19 September 2026).
 
@@ -177,3 +324,6 @@ Microsoft (2026b) 'nchar and nvarchar (Transact-SQL)', *Microsoft Learn*. Availa
 
 Microsoft (2026c) 'Primary and foreign key constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
 
+Microsoft (2026d) 'Unique constraints and check constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026e) 'Create filtered indexes', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/indexes/create-filtered-indexes?view=sql-server-ver17 (Accessed: 19 September 2026).
