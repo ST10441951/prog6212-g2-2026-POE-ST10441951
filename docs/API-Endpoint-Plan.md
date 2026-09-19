@@ -243,6 +243,51 @@ The exact wording may change during implementation, but the documented HTTP stat
 - Bib numbers are optional until assigned, but an assigned value must be unique within the event.
 - Cancellation and reactivation are included to support the planned enrolment statuses. They must be checked against the Part 2 functional-requirement pages when those pages are available.
 
+## 11. Result endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| GET | `/api/results/mine` | Returns the signed-in Participant's personal result history. Optional query values may filter the list by result status or event. | Participant | None. Optional query values: `page`, `pageSize`, `resultStatus`, `eventId`. | `200 OK`: Paged personal results and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role. |
+| GET | `/api/enrolments/{enrolmentId}/result` | Returns the official result for one enrolment. Access is limited to the Participant who owns the enrolment or the Organiser who manages its event. | Participant owner or Organiser event owner | None | `200 OK`: Official result with its enrolment, event and category summary.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or the user does not own the enrolment or manage its event.<br>`404 Not Found`: The enrolment or result does not exist. |
+| GET | `/api/events/{eventId}/results` | Returns official results for an event managed by the signed-in Organiser. Optional query values may filter the list by result status or category. | Organiser and event owner | None. Optional query values: `page`, `pageSize`, `resultStatus`, `eventCategoryId`. | `200 OK`: Paged event results and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
+| POST | `/api/enrolments/{enrolmentId}/result` | Records the first official result for a Confirmed enrolment in an event managed by the signed-in Organiser. The recording Organiser is obtained from the access token. | Organiser and event owner | `resultStatus` string, required: Completed, DidNotFinish, Disqualified or DidNotStart<br>`finishTimeSeconds` integer, required only for Completed<br>`overallPosition` integer, optional<br>`categoryPosition` integer, optional<br>`notes` string, optional | `201 Created`: Recorded result and a `Location` header for the enrolment's result resource.<br>`400 Bad Request`: A status, time, position or notes value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the related event.<br>`404 Not Found`: The enrolment does not exist.<br>`409 Conflict`: The enrolment is cancelled or already has an official result. |
+| PUT | `/api/enrolments/{enrolmentId}/result` | Corrects the existing official result for an enrolment in an event managed by the signed-in Organiser. The existing record is updated rather than replaced with a second result. | Organiser and event owner | `resultStatus` string, required: Completed, DidNotFinish, Disqualified or DidNotStart<br>`finishTimeSeconds` integer, required only for Completed<br>`overallPosition` integer, optional<br>`categoryPosition` integer, optional<br>`notes` string, optional | `200 OK`: Corrected result details.<br>`400 Bad Request`: A status, time, position or notes value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the related event.<br>`404 Not Found`: The enrolment or result does not exist.<br>`409 Conflict`: The enrolment is cancelled. |
+
+### 11.1 Result response example
+
+```json
+{
+  "resultId": 21,
+  "enrolmentId": 44,
+  "recordedByUserId": 2,
+  "resultStatus": "Completed",
+  "finishTimeSeconds": 2874,
+  "overallPosition": 42,
+  "categoryPosition": 10,
+  "notes": null,
+  "recordedAt": "2026-11-14T06:15:00Z",
+  "updatedAt": null
+}
+```
+
+### 11.2 Result design decisions
+
+- The recording Organiser is identified from the access token and is not accepted in the request body.
+- The Organiser must manage the event connected to the enrolment.
+- A cancelled enrolment cannot receive a result.
+- Each enrolment may have no more than one official result.
+- A Completed result requires a positive `finishTimeSeconds` value.
+- DidNotFinish, Disqualified and DidNotStart results do not have an official finish time.
+- Overall and category positions must be positive when supplied.
+- Corrections update the existing result and its `updatedAt` value. Official results are not deleted through the API.
+- A Participant can view only results connected to their own enrolments.
+
+## 12. Endpoint-plan coverage
+
+The endpoint plan now covers every resource group named in the supplied Part 1 brief: Authentication, User Profile, Events, Event Categories, Event Routes, Enrolments and Results. Every endpoint records its method, route, description, required role, request body and expected success and failure responses.
+
+The Part 2 functional-requirement pages referenced by the brief must still be reviewed before this plan is marked complete. Any additional endpoint from those pages must be added before Part 2 development begins.
+
 ## References
 
 Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).
