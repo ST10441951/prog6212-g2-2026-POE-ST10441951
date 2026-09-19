@@ -57,8 +57,8 @@ This table connects each confirmed requirement to the planned database area, API
 | SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | In progress: full script tested on clean LocalDB; SSMS walkthrough pending |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
 | SUB-06 | At least 20 meaningful commits | Git history | Complete |
-| SUB-07 | Successful GitHub Actions validation | Workflow run and README screenshot | Not started |
-| SUB-08 | README describes system and roles | `/README.md` | In progress |
+| SUB-07 | Successful GitHub Actions validation | Workflow run and README screenshot | Complete |
+| SUB-08 | README describes system and roles | `/README.md` | In progress: system, roles and CI evidence complete; video link pending |
 | SUB-09 | Unlisted video explains planning and SQL execution | README video link | Not started |
 | SUB-10 | GitHub repository link submitted on ARC | ARC submission | Not started |
 

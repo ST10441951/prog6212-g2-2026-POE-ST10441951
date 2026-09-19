@@ -11,7 +11,7 @@
 - [ ] API endpoint plan exported as Markdown or PDF.
 - [x] SQL Server script saved as a `.sql` file.
 - [ ] README with a system description, both roles, CI evidence, and the unlisted video link.
-- [ ] GitHub Actions workflow in `.github/workflows/`.
+- [x] GitHub Actions workflow in `.github/workflows/`.
 - [x] At least 20 meaningful commits using the student's GitHub account.
 - [ ] Repository link submitted on ARC.
 - [ ] Brief disclosure of AI assistance.
@@ -67,9 +67,9 @@
 ## GitHub and CI/CD: 15 marks
 
 - [x] Store the planning artefacts and SQL script in `/docs`.
-- [ ] Validate the repository structure with a GitHub Actions workflow.
-- [ ] Verify that `/docs` and all required files exist.
-- [ ] Obtain a green workflow run and include a screenshot in the README.
+- [x] Validate the repository structure with a GitHub Actions workflow.
+- [x] Verify that `/docs` and all required files exist.
+- [x] Obtain a green workflow run and include a screenshot in the README.
 - [x] Maintain at least 20 meaningful commits.
 
 ## Video presentation: 10 marks
@@ -82,7 +82,7 @@
 ## Correct submission: 5 marks
 
 - [ ] Use a clear folder structure and detailed README.
-- [ ] Include all required `/docs` files, CI evidence, and video link.
+- [ ] Include all required `/docs` files, CI evidence, and video link. CI evidence is complete; the video link is still required.
 - [ ] Submit the correct repository link through ARC.
 
 ## Academic requirements
