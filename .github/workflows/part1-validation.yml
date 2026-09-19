@@ -1,0 +1,172 @@
+name: Validate Part 1 Submission
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-part1:
+    name: Validate Part 1 files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check required files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "README.md"
+            "docs/RaceDay-ERD.png"
+            "docs/RaceDay-ERD.svg"
+            "docs/RaceDay-ERD-Notes.md"
+            "docs/API-Endpoint-Plan.md"
+            "docs/RaceDay-Data-Dictionary.md"
+            "docs/RaceDay.sql"
+          )
+
+          for required_file in "${required_files[@]}"; do
+            if [[ ! -s "$required_file" ]]; then
+              echo "Required file is missing or empty: $required_file"
+              exit 1
+            fi
+          done
+
+          echo "All required Part 1 files are present and non-empty."
+
+      - name: Validate ERD files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          file docs/RaceDay-ERD.png | grep -q "PNG image data"
+          grep -q "<svg" docs/RaceDay-ERD.svg
+
+          echo "The PNG and SVG ERD files are valid."
+
+      - name: Validate API endpoint plan
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          endpoint_plan="docs/API-Endpoint-Plan.md"
+          expected_header='| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |'
+
+          grep -Fq "$expected_header" "$endpoint_plan"
+
+          required_routes=(
+            "/api/auth/register"
+            "/api/auth/login"
+            "/api/profile"
+            "/api/events"
+            "/categories"
+            "/api/enrolments"
+            "/api/results/mine"
+          )
+
+          for required_route in "${required_routes[@]}"; do
+            if ! grep -Fq "$required_route" "$endpoint_plan"; then
+              echo "Required API area is missing: $required_route"
+              exit 1
+            fi
+          done
+
+          endpoint_count=$(grep -Ec '^\| (GET|POST|PUT|DELETE) \| `/api/' "$endpoint_plan")
+          if [[ "$endpoint_count" -lt 20 ]]; then
+            echo "Expected at least 20 planned endpoints but found $endpoint_count."
+            exit 1
+          fi
+
+          echo "The API plan contains all required columns and $endpoint_count endpoint rows."
+
+      - name: Validate SQL schema and seed sections
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sql_file="docs/RaceDay.sql"
+          required_tables=(
+            "Roles"
+            "Users"
+            "Events"
+            "EventCategories"
+            "EventRoutes"
+            "Enrolments"
+            "Results"
+          )
+
+          for required_table in "${required_tables[@]}"; do
+            if ! grep -Eq "CREATE TABLE dbo\.${required_table}([[:space:]]|$)" "$sql_file"; then
+              echo "CREATE TABLE is missing for: $required_table"
+              exit 1
+            fi
+
+            if ! grep -Eq "INSERT INTO dbo\.${required_table}([[:space:]]|$)" "$sql_file"; then
+              echo "Seed INSERT is missing for: $required_table"
+              exit 1
+            fi
+          done
+
+          grep -Fq "PRIMARY KEY" "$sql_file"
+          grep -Fq "FOREIGN KEY" "$sql_file"
+          grep -Fq "CHECK" "$sql_file"
+          grep -Fq "DEFAULT" "$sql_file"
+          grep -Fq "CREATE UNIQUE NONCLUSTERED INDEX" "$sql_file"
+
+          echo "The SQL file contains all seven tables, seed sections and required constraint types."
+
+      - name: Validate README roles and commit count
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          grep -Fq "Organiser" README.md
+          grep -Fq "Participant" README.md
+
+          commit_count=$(git rev-list --count HEAD)
+          if [[ "$commit_count" -lt 20 ]]; then
+            echo "Expected at least 20 commits but found $commit_count."
+            exit 1
+          fi
+
+          echo "README role descriptions are present."
+          echo "Repository commit count: $commit_count"
+
+      - name: Check writing conventions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if grep -RIn $'\u2014' README.md docs .github; then
+            echo "An em dash was found. Replace it with standard punctuation."
+            exit 1
+          fi
+
+          if grep -RIn $'\u2013' README.md docs .github; then
+            echo "An en dash was found. Replace it with a normal hyphen."
+            exit 1
+          fi
+
+          echo "The checked files follow the required punctuation convention."
+
+# References
+# GitHub (2026) 'Workflow syntax for GitHub Actions', GitHub Docs.
+# Available at: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# (Accessed: 19 September 2026).
+#
+# GitHub (2026) 'actions/checkout', GitHub.
+# Available at: https://github.com/actions/checkout
+# (Accessed: 19 September 2026).
