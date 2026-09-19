@@ -207,6 +207,42 @@ The exact wording may change during implementation, but the documented HTTP stat
 - Each category may have zero or one route. `POST` creates that route and `PUT` updates the existing route.
 - Route elevation gain cannot be negative when it is supplied.
 
+## 10. Enrolment endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| POST | `/api/enrolments` | Enters the signed-in Participant into an Open event using a selected available category. The Participant identity is obtained from the access token. | Participant | `eventId` integer, required<br>`eventCategoryId` integer, required | `201 Created`: Confirmed enrolment and a `Location` header for `/api/enrolments/{enrolmentId}`.<br>`400 Bad Request`: The request is invalid or the Participant does not meet the category's minimum age.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The Participant already has an active enrolment, entries are closed, the event is not Open, or the category is unavailable or full. |
+| GET | `/api/enrolments/mine` | Returns the signed-in Participant's enrolment history. Optional query values may filter the list by status or event. | Participant | None. Optional query values: `page`, `pageSize`, `status`, `eventId`. | `200 OK`: Paged enrolment summaries and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role. |
+| GET | `/api/enrolments/{enrolmentId}` | Returns one enrolment. Access is limited to the Participant who owns it or the Organiser who manages its event. | Participant owner or Organiser event owner | None | `200 OK`: Enrolment, event, category and optional result summary.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or the user does not own the enrolment or manage its event.<br>`404 Not Found`: The enrolment does not exist. |
+| PUT | `/api/enrolments/{enrolmentId}/cancel` | Changes a Confirmed enrolment owned by the signed-in Participant to Cancelled without deleting its history. | Participant owner | None | `200 OK`: Updated enrolment with Cancelled status.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not a Participant or does not own the enrolment.<br>`404 Not Found`: The enrolment does not exist.<br>`409 Conflict`: The enrolment is already cancelled or its event state prevents cancellation. |
+| PUT | `/api/enrolments/{enrolmentId}/reactivate` | Reactivates a Cancelled enrolment owned by the signed-in Participant and confirms the category to be used. The normal event and category checks are repeated. | Participant owner | `eventCategoryId` integer, required | `200 OK`: Reactivated Confirmed enrolment.<br>`400 Bad Request`: The request is invalid or the Participant does not meet the category's minimum age.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not a Participant or does not own the enrolment.<br>`404 Not Found`: The enrolment, event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The enrolment is already Confirmed, entries are closed, the event is not Open, or the category is unavailable or full. |
+| GET | `/api/events/{eventId}/enrolments` | Returns enrolments for an event managed by the signed-in Organiser. Optional query values may filter the list by status or category. | Organiser and event owner | None. Optional query values: `page`, `pageSize`, `status`, `eventCategoryId`. | `200 OK`: Paged enrolment details and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
+| PUT | `/api/enrolments/{enrolmentId}/bib-number` | Assigns or corrects the bib number for an enrolment in an event managed by the signed-in Organiser. | Organiser and event owner | `bibNumber` string, required | `200 OK`: Updated enrolment with its bib number.<br>`400 Bad Request`: The bib number is blank or invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the related event.<br>`404 Not Found`: The enrolment does not exist.<br>`409 Conflict`: The bib number is already assigned within the event. |
+
+### 10.1 Enrolment response example
+
+```json
+{
+  "enrolmentId": 44,
+  "participantUserId": 5,
+  "eventId": 12,
+  "eventCategoryId": 31,
+  "enrolmentDate": "2026-09-19T13:10:00Z",
+  "status": "Confirmed",
+  "bibNumber": "A1042"
+}
+```
+
+### 10.2 Enrolment design decisions
+
+- The Participant user ID is read from the access token and is not accepted in the enrolment request body.
+- The selected category must belong to the selected event.
+- New and reactivated enrolments require an Open event, a future closing date and an available category with remaining capacity.
+- A Participant has one enrolment record per event. A cancelled record is reactivated instead of creating a duplicate row.
+- Cancelling an enrolment changes its status and preserves the original record.
+- Bib numbers are optional until assigned, but an assigned value must be unique within the event.
+- Cancellation and reactivation are included to support the planned enrolment statuses. They must be checked against the Part 2 functional-requirement pages when those pages are available.
+
 ## References
 
 Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).
