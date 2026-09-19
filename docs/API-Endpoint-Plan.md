@@ -83,6 +83,39 @@ The exact wording may change during implementation, but the documented HTTP stat
 }
 ```
 
+## 6. User profile endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| GET | `/api/profile` | Returns the profile of the signed-in user. The user identity is taken from the access token, so a user ID is not accepted in the route. | Any authenticated user | None | `200 OK`: The signed-in user's profile.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The account identified by the token no longer exists. |
+| PUT | `/api/profile` | Updates the permitted profile fields of the signed-in user. The endpoint cannot be used to change a role, account status, email address or password. | Any authenticated user | `firstName` string, required<br>`lastName` string, required<br>`phoneNumber` string, optional<br>`dateOfBirth` date, optional | `200 OK`: The updated profile.<br>`400 Bad Request`: Missing, incorrectly formatted or invalid field values.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The signed-in account no longer exists. |
+| PUT | `/api/profile/password` | Changes the signed-in user's password after checking the current password. The new password is stored as a secure hash and is never returned. | Any authenticated user | `currentPassword` string, required<br>`newPassword` string, required<br>`confirmPassword` string, required | `204 No Content`: The password was changed successfully.<br>`400 Bad Request`: The current password is incorrect, the new passwords do not match or the new password is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The signed-in account no longer exists. |
+
+### 6.1 Profile response example
+
+```json
+{
+  "userId": 5,
+  "firstName": "Naledi",
+  "lastName": "Mokoena",
+  "email": "naledi.mokoena@example.com",
+  "phoneNumber": "0821234567",
+  "dateOfBirth": "1994-06-12",
+  "role": "Participant",
+  "isActive": true,
+  "createdAt": "2026-09-19T12:00:00Z"
+}
+```
+
+### 6.2 Profile access decisions
+
+- Profile routes do not contain a user ID. The future API will obtain the current user's identity from the validated access token.
+- An authenticated user can retrieve and update only their own profile through these routes.
+- A user cannot change their own role or account status.
+- An email address cannot be changed through the general profile update endpoint. A separate verified process would be needed if email changes are added later.
+- A password change requires the current password and matching new-password fields.
+- The API will validate request bodies before accepting changes. ASP.NET Core supports automatic validation responses when API controller conventions are used (Microsoft, 2026a).
+
 ## References
 
 Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).

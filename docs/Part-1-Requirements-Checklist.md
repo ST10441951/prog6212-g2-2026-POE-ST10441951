@@ -25,8 +25,9 @@
 
 ## API endpoint plan: 25 marks
 
-- [ ] Cover authentication: registration and login.
-- [ ] Cover user profiles, events, categories, enrolments, and results.
+- [x] Cover authentication: registration and login.
+- [x] Cover user profiles.
+- [ ] Cover events, categories, enrolments, and results.
 - [ ] Add all endpoints required by the Part 2 functional requirements.
 - [ ] For every endpoint, document the method, `/api/` route, description, role, request body, and expected success and failure responses.
 - [ ] Complete the plan before Part 2 API implementation begins.
