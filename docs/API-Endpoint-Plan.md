@@ -153,6 +153,60 @@ The exact wording may change during implementation, but the documented HTTP stat
 - Ownership is checked using the signed-in Organiser's user ID and the event's `organiserUserId` value.
 - Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
 
+## 8. Event Category endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| GET | `/api/events/{eventId}/categories` | Returns the available categories for a public event. Each category includes its route summary when a route has been added. | None (public) | None | `200 OK`: List of available categories and route summaries.<br>`404 Not Found`: The event does not exist or is not publicly available. |
+| GET | `/api/events/{eventId}/categories/{categoryId}` | Returns one available category and its route details for a public event. | None (public) | None | `200 OK`: Category and route details.<br>`404 Not Found`: The event or category does not exist, the category does not belong to the event or the record is not publicly available. |
+| GET | `/api/organiser/events/{eventId}/categories` | Returns every category for an event managed by the signed-in Organiser, including unavailable categories. | Organiser and event owner | None | `200 OK`: List of all categories and route summaries for the event.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
+| POST | `/api/events/{eventId}/categories` | Creates a category for an event managed by the signed-in Organiser. | Organiser and event owner | `categoryName` string, required<br>`distanceKm` decimal, required<br>`minimumAge` integer, optional<br>`entryFee` decimal, required<br>`capacity` integer, optional<br>`isAvailable` boolean, required | `201 Created`: Created category and a `Location` header for `/api/events/{eventId}/categories/{categoryId}`.<br>`400 Bad Request`: A field value is missing or invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: The event already has a category with the supplied name. |
+| PUT | `/api/events/{eventId}/categories/{categoryId}` | Replaces the editable details of a category belonging to an event managed by the signed-in Organiser. Setting `isAvailable` to false prevents new enrolments while preserving the category. | Organiser and event owner | `categoryName` string, required<br>`distanceKm` decimal, required<br>`minimumAge` integer, optional<br>`entryFee` decimal, required<br>`capacity` integer, optional<br>`isAvailable` boolean, required | `200 OK`: Updated category details.<br>`400 Bad Request`: A field value is missing or invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The updated name duplicates another category for the event or the change conflicts with existing enrolments. |
+| DELETE | `/api/events/{eventId}/categories/{categoryId}` | Permanently deletes a category only when it belongs to an event managed by the signed-in Organiser and has no enrolments. A category with enrolments must be made unavailable instead. | Organiser and event owner | None | `204 No Content`: The category was deleted.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: Enrolments depend on the category, so it must be made unavailable instead. |
+
+### 8.1 Category response example
+
+```json
+{
+  "eventCategoryId": 31,
+  "eventId": 12,
+  "categoryName": "10 km Run",
+  "distanceKm": 10.00,
+  "minimumAge": 15,
+  "entryFee": 180.00,
+  "capacity": 2500,
+  "isAvailable": true,
+  "route": {
+    "routeId": 18,
+    "routeName": "Stadium Coastal Loop",
+    "startLocation": "Moses Mabhida Stadium",
+    "finishLocation": "Moses Mabhida Stadium",
+    "routeMapUrl": "https://example.org/routes/durban-sunrise-10k",
+    "elevationGainMetres": 85
+  }
+}
+```
+
+## 9. Event Route endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| GET | `/api/events/{eventId}/categories/{categoryId}/route` | Returns the route information for an available category in a public event. | None (public) | None | `200 OK`: Route details.<br>`404 Not Found`: The event, category or route does not exist, the category does not belong to the event or the record is not publicly available. |
+| POST | `/api/events/{eventId}/categories/{categoryId}/route` | Creates the route for a category belonging to an event managed by the signed-in Organiser. A category may have no more than one route. | Organiser and event owner | `routeName` string, required<br>`startLocation` string, required<br>`finishLocation` string, required<br>`routeDescription` string, required<br>`routeMapUrl` string, optional<br>`elevationGainMetres` integer, optional | `201 Created`: Created route and a `Location` header for the route resource.<br>`400 Bad Request`: A field value or URL is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The category already has a route. |
+| PUT | `/api/events/{eventId}/categories/{categoryId}/route` | Replaces the route details for a category belonging to an event managed by the signed-in Organiser. | Organiser and event owner | `routeName` string, required<br>`startLocation` string, required<br>`finishLocation` string, required<br>`routeDescription` string, required<br>`routeMapUrl` string, optional<br>`elevationGainMetres` integer, optional | `200 OK`: Updated route details.<br>`400 Bad Request`: A field value or URL is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event, category or route does not exist, or the category does not belong to the event. |
+| DELETE | `/api/events/{eventId}/categories/{categoryId}/route` | Deletes the route for a category belonging to an event managed by the signed-in Organiser. The category remains in the system. | Organiser and event owner | None | `204 No Content`: The route was deleted.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event, category or route does not exist, or the category does not belong to the event. |
+
+### 9.1 Category and route design decisions
+
+- Category routes are nested under an event so that the API can confirm that the category belongs to the stated event.
+- Category names must be unique within the same event.
+- Distance must be greater than zero. Entry fees cannot be negative.
+- Minimum age must be from 1 to 120 when supplied. Capacity must be greater than zero when supplied.
+- An unavailable category remains visible to its Organiser but is excluded from public category lists and new enrolments.
+- A category with enrolments cannot be permanently deleted because its history must be preserved.
+- Each category may have zero or one route. `POST` creates that route and `PUT` updates the existing route.
+- Route elevation gain cannot be negative when it is supplied.
+
 ## References
 
 Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).

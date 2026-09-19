@@ -28,7 +28,8 @@
 - [x] Cover authentication: registration and login.
 - [x] Cover user profiles.
 - [x] Cover events.
-- [ ] Cover categories, enrolments, and results.
+- [x] Cover categories and routes.
+- [ ] Cover enrolments and results.
 - [ ] Add all endpoints required by the Part 2 functional requirements.
 - [ ] For every endpoint, document the method, `/api/` route, description, role, request body, and expected success and failure responses.
 - [ ] Complete the plan before Part 2 API implementation begins.
@@ -38,7 +39,7 @@
 ### Organiser
 
 - [x] Create, edit, and delete events.
-- [ ] Manage event categories.
+- [x] Manage event categories.
 - [ ] Capture participant results.
 - [ ] View all event enrolments.
 
