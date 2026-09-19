@@ -9,10 +9,10 @@
 
 - [x] ERD exported as PNG.
 - [ ] API endpoint plan exported as Markdown or PDF.
-- [ ] SQL Server script saved as a `.sql` file.
+- [x] SQL Server script saved as a `.sql` file.
 - [ ] README with a system description, both roles, CI evidence, and the unlisted video link.
 - [ ] GitHub Actions workflow in `.github/workflows/`.
-- [ ] At least 20 meaningful commits using the student's GitHub account.
+- [x] At least 20 meaningful commits using the student's GitHub account.
 - [ ] Repository link submitted on ARC.
 - [ ] Brief disclosure of AI assistance.
 
@@ -59,10 +59,10 @@
 - [ ] Use SQL Server-compatible syntax and run through SSMS.
 - [x] Create every entity shown in the ERD.
 - [x] Define primary keys, foreign keys, and suitable `NOT NULL`, `UNIQUE`, `DEFAULT`, and other integrity constraints.
-- [ ] Seed at least two Organisers and two Participants.
-- [ ] Seed at least three Events, categories for every Event, and realistic Enrolments.
-- [ ] Seed every additional entity included in the ERD.
-- [ ] Run without errors on a clean SQL Server instance.
+- [x] Seed at least two Organisers and two Participants.
+- [x] Seed at least three Events, categories for every Event, and realistic Enrolments.
+- [x] Seed every additional entity included in the ERD.
+- [x] Run without errors on a clean SQL Server instance.
 
 ## GitHub and CI/CD: 15 marks
 
@@ -70,7 +70,7 @@
 - [ ] Validate the repository structure with a GitHub Actions workflow.
 - [ ] Verify that `/docs` and all required files exist.
 - [ ] Obtain a green workflow run and include a screenshot in the README.
-- [ ] Maintain at least 20 meaningful commits.
+- [x] Maintain at least 20 meaningful commits.
 
 ## Video presentation: 10 marks
 

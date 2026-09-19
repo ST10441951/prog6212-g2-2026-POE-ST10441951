@@ -410,7 +410,7 @@ BEGIN TRY
             N'Thabo',
             N'Ndlovu',
             N'thabo.ndlovu@example.com',
-            N'AQAAAAEAAYagAAAAEL6AKXixWBP1LMyscdFlqINeyabhUHbbSd1Lzp2TY1hT4PpaXgQ4+RRjON2rm74Cvg==',
+            N'AQAAAAIAAYagAAAAEMJEo34Vex/Es3ymj/KGDAsh0XTg/maiNgOcLa2boUyPUM5+RCqT/0h++cgbZz9QKQ==',
             N'0825550101',
             NULL,
             1,
@@ -421,7 +421,7 @@ BEGIN TRY
             N'Ayesha',
             N'Khan',
             N'ayesha.khan@example.com',
-            N'AQAAAAEAAYagAAAAEDNUkwYaxL/7dfSs782kAttPNaRs97VRdtNwCClgIovczk9AOiSwmexguzsebpJPkQ==',
+            N'AQAAAAIAAYagAAAAENQbJEgO1gVHjHJ5qFByozUY2cbU8ylUaFYisC4nx4Hg/xMev27k+Ge6phAOBOsxCA==',
             N'0835550102',
             NULL,
             1,
@@ -432,7 +432,7 @@ BEGIN TRY
             N'Naledi',
             N'Mokoena',
             N'naledi.mokoena@example.com',
-            N'AQAAAAEAAYagAAAAEMTqje2zq7mybJNha0xbGTC0TKroRUphQ68l1VHUpyNtrFaZfKZzKP2o6v8wcVtvhQ==',
+            N'AQAAAAIAAYagAAAAEDGx3Kf8pdpEdcvJgX7WsWvSff/SlnpYHBOzinfgqgYepnz19uEvaNNth2Tp67JSKQ==',
             N'0845550103',
             '1994-06-12',
             1,
@@ -443,7 +443,7 @@ BEGIN TRY
             N'Sipho',
             N'Dlamini',
             N'sipho.dlamini@example.com',
-            N'AQAAAAEAAYagAAAAEDGxE/WqLLPuRixeLnIWP9VJaRtMMA9xxbHXI7HewFgDm9XIMws07NtkNo2lmTurEw==',
+            N'AQAAAAIAAYagAAAAEGKZ3ZVEHVCoL6bra3uVYqs9oPOEklCO8xFdN2QUbsquTGekE1T4L64zlVfYua6tuw==',
             N'0715550104',
             '1989-11-03',
             1,
@@ -692,6 +692,120 @@ BEGIN TRY
             '2026-09-12T10:05:00'
         );
 
+    DECLARE @NalediUserId INT =
+    (
+        SELECT UserId
+        FROM dbo.Users
+        WHERE Email = N'naledi.mokoena@example.com'
+    );
+
+    DECLARE @SiphoUserId INT =
+    (
+        SELECT UserId
+        FROM dbo.Users
+        WHERE Email = N'sipho.dlamini@example.com'
+    );
+
+    INSERT INTO dbo.Enrolments
+    (
+        ParticipantUserId,
+        EventId,
+        EventCategoryId,
+        EnrolmentDate,
+        Status,
+        BibNumber,
+        UpdatedAt
+    )
+    VALUES
+        (
+            @NalediUserId,
+            @DurbanEventId,
+            @Durban10CategoryId,
+            '2026-06-20T09:15:00',
+            N'Confirmed',
+            N'D1001',
+            NULL
+        ),
+        (
+            @SiphoUserId,
+            @DurbanEventId,
+            @Durban5CategoryId,
+            '2026-06-22T14:30:00',
+            N'Confirmed',
+            N'D0501',
+            NULL
+        ),
+        (
+            @NalediUserId,
+            @CapeEventId,
+            @Cape40CategoryId,
+            '2026-09-18T11:20:00',
+            N'Confirmed',
+            N'C4001',
+            NULL
+        ),
+        (
+            @SiphoUserId,
+            @SowetoEventId,
+            @Soweto10CategoryId,
+            '2026-09-16T15:45:00',
+            N'Cancelled',
+            NULL,
+            '2026-09-18T08:10:00'
+        );
+
+    DECLARE @NalediDurbanEnrolmentId INT =
+    (
+        SELECT EnrolmentId
+        FROM dbo.Enrolments
+        WHERE ParticipantUserId = @NalediUserId
+          AND EventId = @DurbanEventId
+    );
+
+    DECLARE @SiphoDurbanEnrolmentId INT =
+    (
+        SELECT EnrolmentId
+        FROM dbo.Enrolments
+        WHERE ParticipantUserId = @SiphoUserId
+          AND EventId = @DurbanEventId
+    );
+
+    INSERT INTO dbo.Results
+    (
+        EnrolmentId,
+        RecordedByUserId,
+        ResultStatus,
+        FinishTimeSeconds,
+        OverallPosition,
+        CategoryPosition,
+        Notes,
+        RecordedAt,
+        UpdatedAt
+    )
+    VALUES
+        (
+            @NalediDurbanEnrolmentId,
+            @ThaboUserId,
+            N'Completed',
+            2874,
+            42,
+            10,
+            NULL,
+            '2026-08-16T06:15:00',
+            NULL
+        ),
+        (
+            @SiphoDurbanEnrolmentId,
+            @ThaboUserId,
+            N'DidNotFinish',
+            NULL,
+            NULL,
+            NULL,
+            N'Participant withdrew at the three kilometre water point.',
+            '2026-08-16T06:20:00',
+            NULL
+        );
+
     COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
@@ -704,7 +818,29 @@ BEGIN CATCH
 END CATCH;
 GO
 
-PRINT N'RaceDay database tables and constraints created successfully.';
+PRINT N'RaceDay database schema and sample data created successfully.';
+GO
+
+SELECT N'Roles' AS EntityName, COUNT(*) AS RecordCount
+FROM dbo.Roles
+UNION ALL
+SELECT N'Users', COUNT(*)
+FROM dbo.Users
+UNION ALL
+SELECT N'Events', COUNT(*)
+FROM dbo.Events
+UNION ALL
+SELECT N'EventCategories', COUNT(*)
+FROM dbo.EventCategories
+UNION ALL
+SELECT N'EventRoutes', COUNT(*)
+FROM dbo.EventRoutes
+UNION ALL
+SELECT N'Enrolments', COUNT(*)
+FROM dbo.Enrolments
+UNION ALL
+SELECT N'Results', COUNT(*)
+FROM dbo.Results;
 GO
 
 /*
