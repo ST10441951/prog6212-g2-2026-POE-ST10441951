@@ -7,7 +7,7 @@
 
 ## Deliverables
 
-- [ ] ERD exported as PNG or PDF.
+- [x] ERD exported as PNG.
 - [ ] API endpoint plan exported as Markdown or PDF.
 - [ ] SQL Server script saved as a `.sql` file.
 - [ ] README with a system description, both roles, CI evidence, and the unlisted video link.
@@ -18,9 +18,9 @@
 
 ## ERD: 25 marks
 
-- [ ] Include at least six entities covering the full RaceDay data model.
-- [ ] Show all attributes, primary keys, foreign keys, relationships, and cardinalities.
-- [ ] Correctly resolve any many-to-many relationships.
+- [x] Include at least six entities covering the full RaceDay data model.
+- [x] Show all attributes, primary keys, foreign keys, relationships, and cardinalities.
+- [x] Correctly resolve any many-to-many relationships.
 - [ ] Match the SQL schema exactly or explain deliberate differences in the README.
 
 ## API endpoint plan: 25 marks

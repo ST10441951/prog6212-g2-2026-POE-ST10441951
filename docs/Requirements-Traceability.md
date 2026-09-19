@@ -51,7 +51,7 @@ This table connects each confirmed requirement to the planned database area, API
 
 | ID | Submission requirement | Planned evidence | Status |
 |---|---|---|---|
-| SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.png` or PDF | Not started |
+| SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Complete |
 | SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Not started |
 | SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | Not started |
 | SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | Not started |
