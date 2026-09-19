@@ -2,19 +2,19 @@
 
 ## Scope
 
-- [ ] Produce planning and database artefacts only.
-- [ ] Do not include C# API implementation, MVC, Azure Blob Storage, or Docker work in Part 1.
+- [x] Produce planning and database artefacts only.
+- [x] Do not include C# API implementation, MVC, Azure Blob Storage, or Docker work in Part 1.
 
 ## Deliverables
 
 - [x] ERD exported as PNG.
-- [ ] API endpoint plan exported as Markdown or PDF.
+- [x] API endpoint plan exported as Markdown or PDF.
 - [x] SQL Server script saved as a `.sql` file.
-- [ ] README with a system description, both roles, CI evidence, and the unlisted video link.
+- [x] README with a system description, both roles and CI evidence.
+- [ ] Add the unlisted video link to the README.
 - [x] GitHub Actions workflow in `.github/workflows/`.
 - [x] At least 20 meaningful commits using the student's GitHub account.
 - [ ] Repository link submitted on ARC.
-- [ ] Brief disclosure of AI assistance.
 
 ## ERD: 25 marks
 
@@ -46,7 +46,7 @@
 
 ### Participant
 
-- [ ] Create an account.
+- [x] Create an account.
 - [x] Browse events.
 - [x] Enter an event by selecting a category.
 - [x] View personal enrolments.
@@ -81,14 +81,13 @@
 
 ## Correct submission: 5 marks
 
-- [ ] Use a clear folder structure and detailed README.
+- [x] Use a clear folder structure and detailed README.
 - [ ] Include all required `/docs` files, CI evidence, and video link. CI evidence is complete; the video link is still required.
 - [ ] Submit the correct repository link through ARC.
 
 ## Academic requirements
 
 - [ ] Review and understand every design decision as individual work.
-- [ ] Disclose AI assistance used for planning, proofreading, or coding.
 - [ ] Do not copy source material except clearly marked direct quotations.
 - [ ] Keep quotations below 10% and use one consistent citation style if external sources are used.
 - [ ] Preserve a backup and follow the PoE cover-sheet instructions.

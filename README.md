@@ -1,28 +1,150 @@
 # RaceDay
 
-RaceDay is a planned web-based event-management system for South African road-running, walking, and cycling events.
-
-## Part 1
-
-Part 1 contains the system-planning and database deliverables. No API implementation code is included in this part.
-
-The required planning artefacts will be maintained in the `docs` folder.
-
-## Roles
-
-- **Organiser:** creates and manages events and categories, captures participant results, and views event enrolments.
-- **Participant:** creates an account, browses and enters events, views personal enrolments, and tracks personal results.
-
-## Status
-
-Part 1 planning is in progress.
-
-## Continuous Integration
-
 [![Validate Part 1 Submission](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part1-validation.yml/badge.svg)](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part1-validation.yml)
 
-The GitHub Actions workflow validates the Part 1 repository structure whenever work is pushed to `main`. It checks the required planning files, ERD formats, API endpoint coverage, SQL schema and seed sections, role descriptions, commit count and writing conventions.
+## Project overview
+
+RaceDay is a planned web-based event-management system for South African road-running, walking and cycling events. It gives event Organisers a structured way to manage events, categories, routes, enrolments and results. Participants can create accounts, browse events, select categories and review their own participation history.
+
+The project is developed progressively across three parts. Part 1 contains the system planning and SQL Server database. Part 2 will implement the REST API in C# and ASP.NET Core. Part 3 will add the MVC interface, Azure Blob Storage integration and Docker containerisation.
+
+## Part 1 status
+
+The main Part 1 planning and database artefacts are complete. The remaining submission work includes the final review against the Part 2 functional-requirement pages, the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
+
+No API or MVC application code is included in Part 1.
+
+## User roles
+
+| Role | Main responsibilities |
+|---|---|
+| Organiser | Creates and manages events, categories and routes; views event enrolments; allocates bib numbers; captures and corrects results. |
+| Participant | Creates an account; maintains a personal profile; browses and enters events; views personal enrolments and results. |
+
+Role and ownership checks are planned at API level. A Participant may access only their own private records, while an Organiser may manage only events assigned to them.
+
+## Part 1 deliverables
+
+| Deliverable | File | Status |
+|---|---|---|
+| Entity Relationship Diagram | [RaceDay-ERD.png](docs/RaceDay-ERD.png) | Complete |
+| ERD design notes | [RaceDay-ERD-Notes.md](docs/RaceDay-ERD-Notes.md) | Complete |
+| Data dictionary | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Complete |
+| API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete for all resources named in Part 1; Part 2 pages still require a final cross-check |
+| SQL Server database script | [RaceDay.sql](docs/RaceDay.sql) | Complete and tested on a clean SQL Server LocalDB instance |
+| Requirements and business rules | [Requirements-and-Business-Rules.md](docs/Requirements-and-Business-Rules.md) | Complete |
+| Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | In progress until final submission checks are complete |
+| Part 1 checklist | [Part-1-Requirements-Checklist.md](docs/Part-1-Requirements-Checklist.md) | In progress until final submission |
+
+## Data model
+
+![RaceDay Entity Relationship Diagram](docs/RaceDay-ERD.png)
+
+The relational model contains seven entities:
+
+1. `Roles`
+2. `Users`
+3. `Events`
+4. `EventCategories`
+5. `EventRoutes`
+6. `Enrolments`
+7. `Results`
+
+Enrolments resolve the relationship between Participants and Events while recording the selected category. Each enrolment may have no more than one official result. Foreign keys use `NO ACTION` deletion behaviour to protect historical event, enrolment and result records.
+
+## Database contents
+
+The SQL Server script creates the full schema, constraints, supporting indexes and realistic fictional sample data.
+
+| Entity | Seed records |
+|---|---:|
+| Roles | 2 |
+| Users | 4 |
+| Events | 3 |
+| Event categories | 6 |
+| Event routes | 6 |
+| Enrolments | 4 |
+| Results | 2 |
+
+The four seed accounts use the local demonstration password `RaceDayDemo!2026`. These accounts and credentials are for development and assessment demonstration only. They must not be used in a deployed system.
+
+## Opening the project
+
+GitHub documents `git clone` as the command for creating a complete local copy of a repository (GitHub, 2026).
+
+```text
+git clone https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git
+```
+
+After cloning:
+
+1. Open `RaceDay.sln` in Visual Studio.
+2. Use the `docs` folder to review the Part 1 planning artefacts.
+3. Open `docs/RaceDay.sql` in SQL Server Management Studio when testing the database.
+
+The solution does not contain a C# project yet because application implementation begins in Part 2.
+
+## Running the database script in SSMS
+
+Microsoft explains that SSMS can connect to a SQL Server instance, execute T-SQL and display query results (Microsoft, 2026).
+
+Requirements:
+
+- SQL Server or SQL Server LocalDB.
+- SQL Server Management Studio.
+- Permission to create the `RaceDay` database.
+
+Steps:
+
+1. Open SQL Server Management Studio and connect to the intended SQL Server instance.
+2. Open [RaceDay.sql](docs/RaceDay.sql) in a new query window.
+3. Confirm that the instance does not already contain RaceDay tables that must be preserved.
+4. Select Execute or press `F5`.
+5. Confirm that the Messages area reports successful schema and sample-data creation.
+6. Confirm that the final result grid displays counts for all seven entities.
+7. Refresh Object Explorer and inspect the `RaceDay` database, tables, keys and relationships.
+
+The script deliberately stops if RaceDay tables already exist. This protects existing data from being overwritten. Use a clean database for the assessment demonstration.
+
+## Repository structure
+
+```text
+RaceDay/
+|-- .github/
+|   `-- workflows/
+|       `-- part1-validation.yml
+|-- docs/
+|   |-- evidence/
+|   |   `-- github-actions-success.png
+|   |-- API-Endpoint-Plan.md
+|   |-- Part-1-Requirements-Checklist.md
+|   |-- RaceDay-Data-Dictionary.md
+|   |-- RaceDay-ERD-Notes.md
+|   |-- RaceDay-ERD.png
+|   |-- RaceDay-ERD.svg
+|   |-- RaceDay.sql
+|   |-- Requirements-and-Business-Rules.md
+|   `-- Requirements-Traceability.md
+|-- RaceDay.sln
+`-- README.md
+```
+
+## Continuous integration
+
+The GitHub Actions workflow validates the Part 1 repository whenever work is pushed to `main`. It checks the required planning files, ERD formats, API endpoint coverage, SQL schema and seed sections, role descriptions, commit count and writing conventions.
 
 ![Successful GitHub Actions validation](docs/evidence/github-actions-success.png)
 
 The successful workflow run can also be viewed on the [GitHub Actions run page](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/35463445716).
+
+## Video presentation
+
+The unlisted YouTube walkthrough link will be added here after the final recording has been completed and checked.
+
+## References
+
+GitHub (2026) 'Getting changes from a remote repository', *GitHub Docs*. Available at: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository (Accessed: 19 September 2026).
+
+Microsoft (2026) 'Connect and query SQL Server using SQL Server Management Studio', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ssms/quickstarts/ssms-connect-query-sql-server (Accessed: 19 September 2026).
+
+The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
