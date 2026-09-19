@@ -116,6 +116,43 @@ The exact wording may change during implementation, but the documented HTTP stat
 - A password change requires the current password and matching new-password fields.
 - The API will validate request bodies before accepting changes. ASP.NET Core supports automatic validation responses when API controller conventions are used (Microsoft, 2026a).
 
+## 7. Event endpoints
+
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|---|---|---|---|---|---|
+| GET | `/api/events` | Returns a paged list of upcoming public events. Optional query values may filter the list by event type, province or date. Draft and cancelled events are not included in the public list. | None (public) | None. Optional query values: `page`, `pageSize`, `eventType`, `province`, `fromDate`, `toDate`. | `200 OK`: Paged event summaries and paging information.<br>`400 Bad Request`: A filter, date range or paging value is invalid. |
+| GET | `/api/events/{eventId}` | Returns the public details of one event, including its available categories and route summaries. | None (public) | None | `200 OK`: Event details, available categories and route summaries.<br>`404 Not Found`: The event does not exist or is not publicly available. |
+| GET | `/api/events/mine` | Returns all events managed by the signed-in Organiser, including Draft, Closed, Cancelled and Completed events. | Organiser | None. Optional query values: `page`, `pageSize`, `status`. | `200 OK`: Paged summaries of the Organiser's events.<br>`400 Bad Request`: A status or paging value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
+| POST | `/api/events` | Creates a Draft event for the signed-in Organiser. The Organiser is identified from the access token and cannot be selected in the request body. | Organiser | `eventName` string, required<br>`eventType` string, required: Running, Walking or Cycling<br>`description` string, required<br>`eventDateTime` date-time, required<br>`entryClosingDateTime` date-time, required<br>`venueName` string, required<br>`addressLine1` string, required<br>`city` string, required<br>`province` string, required<br>`latitude` decimal, optional<br>`longitude` decimal, optional | `201 Created`: Created Draft event and a `Location` header for `/api/events/{eventId}`.<br>`400 Bad Request`: A required field or business-rule value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
+| PUT | `/api/events/{eventId}` | Replaces the editable details of an event managed by the signed-in Organiser. It may also move the event to a valid status when its required data and categories are ready. | Organiser and event owner | `eventName` string, required<br>`eventType` string, required: Running, Walking or Cycling<br>`description` string, required<br>`eventDateTime` date-time, required<br>`entryClosingDateTime` date-time, required<br>`venueName` string, required<br>`addressLine1` string, required<br>`city` string, required<br>`province` string, required<br>`latitude` decimal, optional<br>`longitude` decimal, optional<br>`status` string, required: Draft, Open, Closed, Cancelled or Completed | `200 OK`: Updated event details.<br>`400 Bad Request`: A required field, date, location, coordinate or status value is invalid.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: The requested status change conflicts with the event's current data or state. |
+| DELETE | `/api/events/{eventId}` | Permanently deletes an event managed by the signed-in Organiser only when no categories, enrolments or results depend on it. An event with dependent records must be cancelled through the update endpoint instead. | Organiser and event owner | None | `204 No Content`: The event was deleted.<br>`401 Unauthorized`: The access token is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: Related records prevent deletion and the event must be cancelled instead. |
+
+### 7.1 Event summary response example
+
+```json
+{
+  "eventId": 12,
+  "eventName": "Durban Sunrise 10K",
+  "eventType": "Running",
+  "eventDateTime": "2026-11-14T04:30:00Z",
+  "entryClosingDateTime": "2026-11-07T21:59:59Z",
+  "venueName": "Moses Mabhida Stadium",
+  "city": "Durban",
+  "province": "KwaZulu-Natal",
+  "status": "Open"
+}
+```
+
+### 7.2 Event design decisions
+
+- Public browsing returns only events that visitors are allowed to see.
+- The Organiser's own list includes every status so that Draft and historical events can still be managed.
+- A new event starts in Draft status. It must have at least one category before it can be opened for enrolment.
+- The entry closing date and time must be earlier than the event date and time.
+- Latitude and longitude are optional, but both should be supplied together when coordinates are used.
+- Ownership is checked using the signed-in Organiser's user ID and the event's `organiserUserId` value.
+- Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
+
 ## References
 
 Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).
