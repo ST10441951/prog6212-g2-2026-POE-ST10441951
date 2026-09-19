@@ -67,12 +67,21 @@ This table connects each confirmed requirement to the planned database area, API
 The following items cannot be closed until the remaining referenced material is available:
 
 1. Confirm whether the Part 2 functional-requirement pages introduce additional resources or endpoints.
-2. Confirm whether a separate Route entity is required.
-3. Confirm the exact location fields required for later live weather integration.
-4. Confirm whether enrolment cancellation is required or only recommended as a record-preservation rule.
-5. Confirm whether event deletion must be physical deletion or status-based cancellation.
+2. Confirm whether enrolment cancellation is required or only recommended as a record-preservation rule.
+3. Confirm whether event deletion must be physical deletion or status-based cancellation.
+
+## 6. Closed Session 3 design items
+
+| Design item | Decision | Evidence |
+|---|---|---|
+| Final entity list | Seven entities selected | `RaceDay-Data-Dictionary.md` |
+| User roles | Separate Roles table | `RaceDay-Data-Dictionary.md` |
+| Route storage | Separate EventRoutes table linked to EventCategories | `RaceDay-Data-Dictionary.md` |
+| Weather storage | Live weather is not stored in the Part 1 database | Requirements and business rules |
+| Location fields | Venue, address, city, province, latitude and longitude | Events data dictionary |
+| Primary-key strategy | Fixed Role key and identity keys for main entities | Data dictionary conventions |
+| Delete behaviour | `NO ACTION` for historical and transactional relationships | Data dictionary integrity plan |
 
 ## References
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
-

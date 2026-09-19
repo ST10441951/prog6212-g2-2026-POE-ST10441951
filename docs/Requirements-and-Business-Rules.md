@@ -175,9 +175,9 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 - Participants must not be able to view another Participant's private records.
 - Request data must be validated before it is accepted by the future API.
 
-## 8. Design assumptions requiring confirmation
+## 8. Confirmed Part 1 design decisions
 
-The following assumptions are reasonable for Part 1 but must be checked against any remaining functional-requirement pages:
+The following decisions will guide the ERD and SQL script. They must still be checked against any remaining functional-requirement pages:
 
 1. A user account has one role only.
 2. Participants can register themselves, while Organiser accounts are supplied or created through a controlled process.
@@ -185,22 +185,20 @@ The following assumptions are reasonable for Part 1 but must be checked against 
 4. Payment processing is outside the current system scope.
 5. Event weather is obtained live in Part 3 rather than stored permanently in the Part 1 database.
 6. Event location coordinates will be stored so that live weather can be requested later.
-7. Route information can initially be stored as Event fields unless the complete requirements justify a separate Route entity.
+7. Route information will be stored in a separate EventRoutes entity for each Event Category.
 8. Records referenced by enrolments or results will normally be made inactive instead of being deleted.
 
-## 9. Decisions deferred to Session 3
+## 9. Session 3 data-model decisions
 
-Session 3 will decide:
-
-- The final entity list.
-- Whether Role requires its own table.
-- Whether Route requires its own table.
-- Exact SQL Server datatypes and maximum lengths.
-- The primary-key strategy.
-- The final delete behaviour for each relationship.
-- The exact attributes needed for event locations and route details.
+- The final model contains Roles, Users, Events, EventCategories, EventRoutes, Enrolments and Results.
+- Roles use a separate lookup table so that permitted role values are controlled centrally.
+- Each Event Category may have one EventRoutes record.
+- Role identifiers use fixed `TINYINT` values. Main entity identifiers use `INT IDENTITY(1,1)` values.
+- Historical and transactional foreign keys use `NO ACTION` delete behaviour.
+- Event location fields include a venue, address, city, province, latitude and longitude.
+- Category route fields include the start, finish, route description, map link and optional elevation gain.
+- The exact columns, datatypes and constraints are defined in `RaceDay-Data-Dictionary.md`.
 
 ## References
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
-
