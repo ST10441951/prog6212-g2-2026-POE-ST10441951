@@ -74,7 +74,10 @@ jobs:
             "/api/auth/login"
             "/api/auth/logout"
             "/api/profile"
+            "/api/profile/picture"
             "/api/events"
+            "/api/organiser/dashboard"
+            "/banner"
             "/categories"
             "/api/enrolments"
             "/api/results/mine"
@@ -130,6 +133,8 @@ jobs:
           grep -Fq "CREATE UNIQUE NONCLUSTERED INDEX" "$sql_file"
           grep -Fq "DistanceKm DECIMAL(6,2) NOT NULL" "$sql_file"
           grep -Fq "MaximumAge TINYINT NULL" "$sql_file"
+          grep -Fq "ProfilePictureBlobName NVARCHAR(255) NULL" "$sql_file"
+          grep -Fq "BannerImageBlobName NVARCHAR(255) NULL" "$sql_file"
 
           echo "The SQL file contains all seven tables, seed sections and required constraint types."
 

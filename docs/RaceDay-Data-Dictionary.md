@@ -81,6 +81,7 @@ The `Users` table stores account and profile information for Organisers and Part
 | `PasswordHash` | `NVARCHAR(255)` | No |  | Password hash produced by the future API |
 | `PhoneNumber` | `NVARCHAR(20)` | Yes |  | Optional contact number |
 | `DateOfBirth` | `DATE` | Yes | Check date is earlier than the current date | Participant date of birth when supplied |
+| `ProfilePictureBlobName` | `NVARCHAR(255)` | Yes | Check nonblank when supplied | Azure Blob Storage object name for the Participant's profile picture |
 | `IsActive` | `BIT` | No | Default 1 | Indicates whether the account may be used |
 | `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Account creation timestamp |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest profile update timestamp |
@@ -89,6 +90,7 @@ Table rules:
 
 - `Email` must be unique.
 - `FirstName`, `LastName`, `Email` and `PasswordHash` may not be empty strings.
+- `ProfilePictureBlobName` is optional, but may not be an empty string when supplied.
 - `RoleId` must refer to an existing Role.
 - User records referenced by Events, Enrolments or Results use `NO ACTION` delete behaviour.
 - Organiser ownership and Participant privacy are enforced by the future API because a foreign key alone cannot verify a User's Role.
@@ -109,6 +111,7 @@ The `Events` table stores the event information managed by an Organiser.
 | `EventName` | `NVARCHAR(120)` | No |  | Public Event name |
 | `EventType` | `NVARCHAR(20)` | No | Check constraint | Running, Walking or Cycling |
 | `Description` | `NVARCHAR(1000)` | No |  | Public Event description |
+| `BannerImageBlobName` | `NVARCHAR(255)` | Yes | Check nonblank when supplied | Azure Blob Storage object name for the Event banner image |
 | `DistanceKm` | `DECIMAL(6,2)` | No | Check greater than zero | Advertised Event distance in kilometres |
 | `EventDateTime` | `DATETIME2(0)` | No |  | Scheduled start date and time |
 | `EntryClosingDateTime` | `DATETIME2(0)` | No | Check before `EventDateTime` | Final date and time for entries |
@@ -125,6 +128,7 @@ The `Events` table stores the event information managed by an Organiser.
 Table rules:
 
 - `EventName`, `Description`, `VenueName`, `AddressLine1` and `City` may not be empty strings.
+- `BannerImageBlobName` is optional, but may not be an empty string when supplied.
 - `DistanceKm` must be greater than zero.
 - `EntryClosingDateTime` must be earlier than `EventDateTime`.
 - `EventType` is limited to Running, Walking or Cycling.

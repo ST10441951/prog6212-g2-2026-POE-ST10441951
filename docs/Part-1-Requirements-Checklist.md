@@ -33,6 +33,7 @@
 - [x] Cover enrolments.
 - [x] Cover results.
 - [x] Add all endpoints required by the Part 2 functional requirements.
+- [x] Add the API endpoints needed by the Part 3 MVC, dashboard and image-upload requirements.
 - [x] For every currently planned endpoint, document the method, `/api/` route, description, role, request body, and expected success and failure responses.
 - [x] Complete the plan before Part 2 API implementation begins.
 
@@ -98,4 +99,5 @@
 
 - [x] Lecturer-provided GitHub repository URL: `https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git`.
 - [x] Part 2 functional-requirements pages referenced by the Part 1 endpoint-plan instructions.
+- [x] Part 3 MVC, Azure Blob Storage, Docker, UI and CI requirements pages.
 - [ ] Any additional PoE cover-sheet requirements.

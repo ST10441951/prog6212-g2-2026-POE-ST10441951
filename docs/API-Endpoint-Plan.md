@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document plans the REST API endpoints for RaceDay before application development begins. It will be completed during Part 1 and used as the guide for the API that will be built in Part 2.
+This document plans the REST API endpoints for RaceDay before application development begins. It is completed during Part 1 and will guide the API built in Part 2 and consumed by the MVC application in Part 3.
 
 The Part 2 API will be developed in C# using ASP.NET Core. Part 1 contains the endpoint design only and does not include application code.
 
@@ -91,6 +91,8 @@ The exact wording may change during implementation, but the documented HTTP stat
 | GET | `/api/profile` | Returns the profile of the signed-in user. The user identity is taken from the session, so a user ID is not accepted in the route. | Any authenticated user | None | `200 OK`: The signed-in user's profile.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The account identified by the session no longer exists. |
 | PUT | `/api/profile` | Updates the permitted profile fields of the signed-in user. The endpoint cannot be used to change a role, account status, email address or password. | Any authenticated user | `firstName` string, required<br>`lastName` string, required<br>`phoneNumber` string, optional<br>`dateOfBirth` date, optional | `200 OK`: The updated profile.<br>`400 Bad Request`: Missing, incorrectly formatted or invalid field values.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The signed-in account no longer exists. |
 | PUT | `/api/profile/password` | Changes the signed-in user's password after checking the current password. The new password is stored as a secure hash and is never returned. | Any authenticated user | `currentPassword` string, required<br>`newPassword` string, required<br>`confirmPassword` string, required | `204 No Content`: The password was changed successfully.<br>`400 Bad Request`: The current password is incorrect, the new passwords do not match or the new password is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive.<br>`404 Not Found`: The signed-in account no longer exists. |
+| PUT | `/api/profile/picture` | Uploads or replaces the signed-in Participant's profile picture. The API validates the image, uploads it to Azure Blob Storage and stores only the generated blob name in the User record. | Participant | `imageFile` binary image, required as `multipart/form-data` | `200 OK`: Updated profile picture URL.<br>`400 Bad Request`: The file is missing or invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role.<br>`413 Content Too Large`: The image exceeds the configured size limit.<br>`415 Unsupported Media Type`: The file type is not permitted. |
+| DELETE | `/api/profile/picture` | Removes the signed-in Participant's profile picture from Azure Blob Storage and clears the stored blob name. | Participant | None | `204 No Content`: The picture was removed or no picture was stored.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role. |
 
 ### 6.1 Profile response example
 
@@ -102,6 +104,7 @@ The exact wording may change during implementation, but the documented HTTP stat
   "email": "naledi.mokoena@example.com",
   "phoneNumber": "0821234567",
   "dateOfBirth": "1994-06-12",
+  "profilePictureUrl": "https://storage.example/profile-pictures/user-5.jpg",
   "role": "Participant",
   "isActive": true,
   "createdAt": "2026-09-19T12:00:00Z"
@@ -115,6 +118,8 @@ The exact wording may change during implementation, but the documented HTTP stat
 - A user cannot change their own role or account status.
 - An email address cannot be changed through the general profile update endpoint. A separate verified process would be needed if email changes are added later.
 - A password change requires the current password and matching new-password fields.
+- Profile picture files are sent only to the API. The API stores the image in Azure Blob Storage and saves the generated blob name in `Users.ProfilePictureBlobName`.
+- The API returns a usable profile picture URL in the response. The MVC application does not receive or store Azure Storage credentials.
 - The API will validate request bodies before accepting changes. ASP.NET Core supports automatic validation responses when API controller conventions are used (Microsoft, 2026a).
 
 ## 7. Event endpoints
@@ -123,9 +128,12 @@ The exact wording may change during implementation, but the documented HTTP stat
 |---|---|---|---|---|---|
 | GET | `/api/events` | Returns a paged list of upcoming public events. Optional query values may filter the list by event type, province or date. Draft and cancelled events are not included in the public list. | None (public) | None. Optional query values: `page`, `pageSize`, `eventType`, `province`, `fromDate`, `toDate`. | `200 OK`: Paged event summaries and paging information.<br>`400 Bad Request`: A filter, date range or paging value is invalid. |
 | GET | `/api/events/{eventId}` | Returns the public details of one event, including its available categories and route summaries. | None (public) | None | `200 OK`: Event details, available categories and route summaries.<br>`404 Not Found`: The event does not exist or is not publicly available. |
+| GET | `/api/organiser/dashboard` | Returns the signed-in Organiser's event summary, including each event's total enrolments and upcoming event dates. | Organiser | None | `200 OK`: Dashboard totals and event summaries.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
 | GET | `/api/events/mine` | Returns all events managed by the signed-in Organiser, including Draft, Closed, Cancelled and Completed events. | Organiser | None. Optional query values: `page`, `pageSize`, `status`. | `200 OK`: Paged summaries of the Organiser's events.<br>`400 Bad Request`: A status or paging value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
 | POST | `/api/events` | Creates a Draft event for the signed-in Organiser. The Organiser is identified from the session and cannot be selected in the request body. | Organiser | `eventName` string, required<br>`eventType` string, required: Running, Walking or Cycling<br>`description` string, required<br>`distanceKm` decimal, required<br>`eventDateTime` date-time, required<br>`entryClosingDateTime` date-time, required<br>`venueName` string, required<br>`addressLine1` string, required<br>`city` string, required<br>`province` string, required<br>`latitude` decimal, optional<br>`longitude` decimal, optional | `201 Created`: Created Draft event and a `Location` header for `/api/events/{eventId}`.<br>`400 Bad Request`: A required field or business-rule value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
 | PUT | `/api/events/{eventId}` | Replaces the editable details of an event managed by the signed-in Organiser. It may also move the event to a valid status when its required data and categories are ready. | Organiser and event owner | `eventName` string, required<br>`eventType` string, required: Running, Walking or Cycling<br>`description` string, required<br>`distanceKm` decimal, required<br>`eventDateTime` date-time, required<br>`entryClosingDateTime` date-time, required<br>`venueName` string, required<br>`addressLine1` string, required<br>`city` string, required<br>`province` string, required<br>`latitude` decimal, optional<br>`longitude` decimal, optional<br>`status` string, required: Draft, Open, Closed, Cancelled or Completed | `200 OK`: Updated event details.<br>`400 Bad Request`: A required field, distance, date, location, coordinate or status value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: The requested status change conflicts with the event's current data or state. |
+| PUT | `/api/events/{eventId}/banner` | Uploads or replaces the banner image for an event managed by the signed-in Organiser. The API validates the image, uploads it to Azure Blob Storage and stores only the generated blob name in the Event record. | Organiser and event owner | `imageFile` binary image, required as `multipart/form-data` | `200 OK`: Updated event banner URL.<br>`400 Bad Request`: The file is missing or invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`413 Content Too Large`: The image exceeds the configured size limit.<br>`415 Unsupported Media Type`: The file type is not permitted. |
+| DELETE | `/api/events/{eventId}/banner` | Removes the banner image for an event managed by the signed-in Organiser and clears the stored blob name. | Organiser and event owner | None | `204 No Content`: The banner was removed or no banner was stored.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
 | DELETE | `/api/events/{eventId}` | Permanently deletes an event managed by the signed-in Organiser only when no categories, enrolments or results depend on it. An event with dependent records must be cancelled through the update endpoint instead. | Organiser and event owner | None | `204 No Content`: The event was deleted.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: Related records prevent deletion and the event must be cancelled instead. |
 
 ### 7.1 Event summary response example
@@ -135,6 +143,7 @@ The exact wording may change during implementation, but the documented HTTP stat
   "eventId": 12,
   "eventName": "Durban Sunrise 10K",
   "eventType": "Running",
+  "bannerImageUrl": "https://storage.example/event-banners/event-12.jpg",
   "distanceKm": 10.00,
   "eventDateTime": "2026-11-14T04:30:00Z",
   "entryClosingDateTime": "2026-11-07T21:59:59Z",
@@ -152,6 +161,8 @@ The exact wording may change during implementation, but the documented HTTP stat
 - A new event starts in Draft status. It must have at least one category before it can be opened for enrolment.
 - The entry closing date and time must be earlier than the event date and time.
 - The advertised event distance must be greater than zero.
+- Banner image files are sent only to the API. The API stores them in Azure Blob Storage and saves the generated blob name in `Events.BannerImageBlobName`.
+- Creating or editing an event in the MVC interface may save the event details first and then call the banner endpoint when an image was selected.
 - Latitude and longitude are optional, but both should be supplied together when coordinates are used.
 - Ownership is checked using the signed-in Organiser's user ID and the event's `organiserUserId` value.
 - Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
@@ -246,7 +257,7 @@ The exact wording may change during implementation, but the documented HTTP stat
 - A Participant has one enrolment record per event. A cancelled record is reactivated instead of creating a duplicate row.
 - Cancelling an enrolment changes its status and preserves the original record.
 - Bib numbers are optional until assigned, but an assigned value must be unique within the event.
-- Cancellation and reactivation are included to support the planned enrolment statuses. They must be checked against the Part 2 functional-requirement pages when those pages are available.
+- Cancellation and reactivation are retained as useful additional endpoints after the Part 2 requirements cross-check.
 
 ## 11. Result endpoints
 
@@ -265,9 +276,13 @@ The exact wording may change during implementation, but the documented HTTP stat
   "resultId": 21,
   "enrolmentId": 44,
   "recordedByUserId": 2,
+  "eventName": "Durban Sunrise 10K",
+  "eventDateTime": "2026-11-14T04:30:00Z",
+  "categoryName": "10 km Run",
   "resultStatus": "Completed",
   "finishTimeSeconds": 2874,
   "overallPosition": 42,
+  "totalFinishers": 312,
   "categoryPosition": 10,
   "notes": null,
   "recordedAt": "2026-11-14T06:15:00Z",
@@ -284,6 +299,7 @@ The exact wording may change during implementation, but the documented HTTP stat
 - A Completed result requires a positive `finishTimeSeconds` value.
 - DidNotFinish, Disqualified and DidNotStart results do not have an official finish time.
 - Overall and category positions must be positive when supplied.
+- Personal result responses include the Event name, Event date, selected Category, finish time, finishing position and total number of finishers required by the Part 3 My Results page.
 - Corrections update the existing result and its `updatedAt` value. Official results are not deleted through the API.
 - A Participant can view only results connected to their own enrolments.
 
@@ -297,11 +313,25 @@ The exact wording may change during implementation, but the documented HTTP stat
 - Unit tests must cover successful and failed registration and login, authenticated and unauthenticated requests, Organiser event management, rejection of the wrong role, Participant enrolment and correct persistence of the enrolment relationship.
 - The Part 2 GitHub Actions workflow must build the solution and run all tests on each push. The `dotnet test` command runs the configured test projects and can be used in an automated workflow (Microsoft, 2026g).
 
-## 13. Endpoint-plan coverage
+## 13. Part 3 MVC, storage and container requirements
 
-The endpoint plan covers every resource group named in the supplied Part 1 and Part 2 briefs: Authentication, User Profile, Events, Event Categories, Event Routes, Enrolments and Results. Every endpoint records its method, route, description, required role, request body and expected success and failure responses.
+- The ASP.NET Core MVC application will consume the Part 2 API for every data operation. It will not use the database directly or duplicate API business rules.
+- Registration, login and logout in MVC will call the API. The MVC application will maintain only the safe identity, role and API session information needed for the current user. Passwords will never be stored in MVC session state.
+- Organiser and Participant pages will have distinct role-appropriate navigation. Protected MVC actions will reject unauthenticated users and redirect them to login.
+- The Organiser dashboard will use `/api/organiser/dashboard` for event totals, enrolment totals and upcoming dates.
+- Participant pages will use the public Event endpoints, Participant Enrolment endpoints, `/api/results/mine` and the Profile endpoints.
+- Image files will always pass from MVC to the API. Only the API will communicate with Azure Blob Storage. The Azure Storage client library for .NET supports uploading blob content from streams, files and other data sources (Microsoft, 2026h).
+- Profile and Event responses will contain image URLs generated by the API from their stored blob names.
+- Image validation will restrict accepted content types and file sizes before upload. Storage credentials will be kept in API configuration and will not be committed to GitHub.
+- The MVC project will include a well-structured multi-stage Dockerfile and one documented Docker run command. Microsoft documents separate SDK and ASP.NET runtime images for building and running containerised ASP.NET Core applications (Microsoft, 2026i).
+- The Part 3 GitHub Actions workflow will build the API, tests and MVC project on each push.
+- Part 3 will retain the Part 2 API unit tests and add suitable MVC or integration checks where practical.
 
-The supplied Part 2 functional-requirement pages were cross-checked on 20 September 2026. Registration now supports both required roles, authentication uses sessions, logout is planned, Events include distance, Categories support upper and lower age limits, and the Swagger and unit-testing expectations are recorded. The endpoint plan is complete for Part 1 and is the specification for Part 2 development.
+## 14. Endpoint-plan coverage
+
+The endpoint plan covers every resource group named in the supplied Part 1, Part 2 and Part 3 briefs: Authentication, User Profile, Events, Event Categories, Event Routes, Enrolments, Results, image uploads and the Organiser dashboard. Every endpoint records its method, route, description, required role, request body and expected success and failure responses.
+
+The supplied Part 2 and Part 3 functional-requirement pages were cross-checked on 20 September 2026. Registration supports both required roles, authentication uses sessions, logout is planned, Events include distance and banner images, Categories support upper and lower age limits, Participants can upload a profile picture, and the Swagger, testing, MVC, Blob Storage and Docker expectations are recorded. The endpoint plan is complete for Part 1 and is the specification for later development.
 
 ## References
 
@@ -320,5 +350,9 @@ Microsoft (2026e) 'Migrations overview', *Microsoft Learn*. Available at: https:
 Microsoft (2026f) 'ASP.NET Core web API documentation with Swagger/OpenAPI', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-8.0 (Accessed: 20 September 2026).
 
 Microsoft (2026g) 'Unit testing C# in .NET using dotnet test and xUnit', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit (Accessed: 20 September 2026).
+
+Microsoft (2026h) 'Get started with Azure Blob Storage and .NET', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-dotnet-get-started (Accessed: 20 September 2026).
+
+Microsoft (2026i) 'Run an ASP.NET Core app in Docker containers', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/docker/building-net-docker-images?view=aspnetcore-10.0 (Accessed: 20 September 2026).
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.

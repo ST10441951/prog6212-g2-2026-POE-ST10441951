@@ -36,6 +36,8 @@ An organiser is responsible for managing events. An organiser must be able to:
 - Create an event.
 - Update an event that they manage.
 - Delete or cancel an event that they manage.
+- View a dashboard summarising their events, enrolment totals and upcoming dates.
+- Upload or replace a banner image for an event that they manage.
 - Create, update and remove categories for their events.
 - View all enrolments for an event that they manage.
 - Capture and update participant results for their events.
@@ -47,6 +49,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 - Register an account.
 - Sign in to the system.
 - View and update their own profile.
+- Upload or replace their profile picture.
 - Browse upcoming events.
 - View the details and categories of an event.
 - Enter an event by selecting one of its categories.
@@ -66,6 +69,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 | FR-AUTH-05 | Protected functionality must reject unauthenticated users and users with the wrong role. |
 | FR-PROFILE-01 | An authenticated user must be able to view their own profile. |
 | FR-PROFILE-02 | An authenticated user must be able to update permitted fields on their own profile. |
+| FR-PROFILE-03 | A Participant must be able to upload, replace and remove their own profile picture through the API. |
 
 ### 4.2 Event requirements
 
@@ -77,6 +81,8 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 | FR-EVENT-04 | An Organiser must be able to update an event that they manage. |
 | FR-EVENT-05 | An Organiser must be able to delete or cancel an event that they manage. |
 | FR-EVENT-06 | An event must store its name, description, date and time, location, distance and event type. |
+| FR-EVENT-07 | An Organiser must be able to upload, replace and remove a banner image for an event that they manage. |
+| FR-EVENT-08 | An Organiser must be able to view a dashboard summary of their events, enrolment totals and upcoming dates. |
 
 ### 4.3 Category requirements
 
@@ -119,6 +125,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 6. Passwords must never be stored as plain text. The future API will store a secure password hash.
 7. A Participant may only access their own profile, enrolments and personal results.
 8. An Organiser may only manage events that are assigned to them.
+9. A stored profile picture value identifies an Azure Blob Storage object and is optional.
 
 ### 5.2 Event rules
 
@@ -130,6 +137,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 6. Only events with an Open status may accept new enrolments.
 7. A cancelled event must remain in the database if enrolments or results already refer to it.
 8. Location details should support later weather lookup. Latitude and longitude may therefore be recorded for each event.
+9. A stored event banner value identifies an Azure Blob Storage object and is optional.
 
 ### 5.3 Category rules
 
@@ -182,10 +190,13 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 - Ownership checks must prevent one Organiser from altering another Organiser's events.
 - Participants must not be able to view another Participant's private records.
 - Request data must be validated before it is accepted by the future API.
+- Image files must be validated by the API before being uploaded to Azure Blob Storage.
+- The MVC application must not communicate with the database or Azure Blob Storage directly.
+- Storage credentials and other secrets must not be committed to the repository.
 
 ## 8. Confirmed Part 1 design decisions
 
-The following decisions guide the ERD, SQL script and Part 2 implementation after cross-checking the supplied Part 2 requirements:
+The following decisions guide the ERD, SQL script and later implementation after cross-checking the supplied Part 2 and Part 3 requirements:
 
 1. A user account has one role only.
 2. Registration allows the user to select Organiser or Participant, as required by the Part 2 brief. The API accepts only the two seeded role names and does not accept an unrestricted role identifier.
@@ -197,6 +208,10 @@ The following decisions guide the ERD, SQL script and Part 2 implementation afte
 8. Records referenced by enrolments or results will normally be made inactive instead of being deleted.
 9. Protected API requests use an authenticated server-side session containing the user's identifier and role.
 10. Swagger UI will expose the implemented endpoints, request bodies and documented responses in Part 2.
+11. `Users.ProfilePictureBlobName` and `Events.BannerImageBlobName` store Azure Blob Storage object names rather than image binary data.
+12. The API generates image URLs and is the only component that communicates with Azure Blob Storage.
+13. The MVC application consumes the API for every data operation and has no direct database access.
+14. The Organiser dashboard uses a dedicated summary endpoint so that aggregation remains in the API.
 
 ## 9. Session 3 data-model decisions
 
@@ -206,6 +221,7 @@ The following decisions guide the ERD, SQL script and Part 2 implementation afte
 - Role identifiers use fixed `TINYINT` values. Main entity identifiers use `INT IDENTITY(1,1)` values.
 - Historical and transactional foreign keys use `NO ACTION` delete behaviour.
 - Event location fields include a venue, address, city, province, latitude and longitude.
+- User and Event records include optional blob-name fields required by the Part 3 image-upload features.
 - Category route fields include the start, finish, route description, map link and optional elevation gain.
 - The exact columns, datatypes and constraints are defined in `RaceDay-Data-Dictionary.md`.
 

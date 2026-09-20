@@ -85,6 +85,7 @@ BEGIN TRY
         PasswordHash NVARCHAR(255) NOT NULL,
         PhoneNumber NVARCHAR(20) NULL,
         DateOfBirth DATE NULL,
+        ProfilePictureBlobName NVARCHAR(255) NULL,
         IsActive BIT NOT NULL
             CONSTRAINT DF_Users_IsActive DEFAULT (1),
         CreatedAt DATETIME2(0) NOT NULL
@@ -108,6 +109,12 @@ BEGIN TRY
             CHECK (LEN(LTRIM(RTRIM(Email))) > 0),
         CONSTRAINT CK_Users_PasswordHash_NotBlank
             CHECK (LEN(LTRIM(RTRIM(PasswordHash))) > 0),
+        CONSTRAINT CK_Users_ProfilePictureBlobName_NotBlank
+            CHECK
+            (
+                ProfilePictureBlobName IS NULL
+                OR LEN(LTRIM(RTRIM(ProfilePictureBlobName))) > 0
+            ),
         CONSTRAINT CK_Users_DateOfBirth
             CHECK
             (
@@ -123,6 +130,7 @@ BEGIN TRY
         EventName NVARCHAR(120) NOT NULL,
         EventType NVARCHAR(20) NOT NULL,
         Description NVARCHAR(1000) NOT NULL,
+        BannerImageBlobName NVARCHAR(255) NULL,
         DistanceKm DECIMAL(6,2) NOT NULL,
         EventDateTime DATETIME2(0) NOT NULL,
         EntryClosingDateTime DATETIME2(0) NOT NULL,
@@ -151,6 +159,12 @@ BEGIN TRY
             CHECK (EventType IN (N'Running', N'Walking', N'Cycling')),
         CONSTRAINT CK_Events_Description_NotBlank
             CHECK (LEN(LTRIM(RTRIM(Description))) > 0),
+        CONSTRAINT CK_Events_BannerImageBlobName_NotBlank
+            CHECK
+            (
+                BannerImageBlobName IS NULL
+                OR LEN(LTRIM(RTRIM(BannerImageBlobName))) > 0
+            ),
         CONSTRAINT CK_Events_DistanceKm
             CHECK (DistanceKm > 0),
         CONSTRAINT CK_Events_EntryClosingDateTime

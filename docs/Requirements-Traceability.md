@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1 and Part 2 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
+This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1, Part 2 and Part 3 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
 
 ## 2. Functional requirement traceability
 
@@ -15,12 +15,15 @@ This table connects each confirmed requirement to the planned database area, API
 | FR-AUTH-05 | Reject unauthenticated or incorrect-role access | Protected by role | Users and Roles | All protected resources | Endpoint roles and failure responses |
 | FR-PROFILE-01 | View own profile | Authenticated user | Users | User Profile | Endpoint role and ownership rule |
 | FR-PROFILE-02 | Update permitted own-profile fields | Authenticated user | Users | User Profile | Endpoint body and ownership rule |
+| FR-PROFILE-03 | Upload or remove own profile picture | Participant | Users | Profile picture | Blob-name column and upload endpoints |
 | FR-EVENT-01 | Browse upcoming events | Public | Events | Events | Public GET endpoint |
 | FR-EVENT-02 | View one event and its categories | Public | Events and Event Categories | Events and Categories | Public GET endpoint |
 | FR-EVENT-03 | Create an event | Organiser | Events | Events | Organiser POST endpoint |
 | FR-EVENT-04 | Update an owned event | Organiser | Events | Events | Organiser PUT endpoint and ownership rule |
 | FR-EVENT-05 | Delete or cancel an owned event | Organiser | Events | Events | Organiser DELETE or status-update endpoint |
 | FR-EVENT-06 | Store event name, description, date, location, distance and type | Organiser | Events | Events | ERD attributes, SQL columns and endpoint fields |
+| FR-EVENT-07 | Upload or remove an Event banner | Organiser | Events | Event banner | Blob-name column and upload endpoints |
+| FR-EVENT-08 | View dashboard event and enrolment summaries | Organiser | Events and Enrolments | Organiser dashboard | Summary endpoint |
 | FR-CATEGORY-01 | Add an Event Category | Organiser | Event Categories | Categories | Organiser POST endpoint |
 | FR-CATEGORY-02 | Update an Event Category | Organiser | Event Categories | Categories | Organiser PUT endpoint |
 | FR-CATEGORY-03 | Remove or deactivate an Event Category safely | Organiser | Event Categories and Enrolments | Categories | Delete conflict response and database relationship |
@@ -44,18 +47,21 @@ This table connects each confirmed requirement to the planned database area, API
 | Organiser manages Event Categories | Category record refers to an Event | Organiser-only Category write endpoints | Event ownership must be checked |
 | Organiser views Event Enrolments | Enrolment refers to Event and Participant | Organiser Event-enrolment endpoint | Event ownership must be checked |
 | Organiser captures Results | Result refers to a valid Enrolment | Organiser-only Result write endpoints | Enrolment must belong to an owned Event |
+| Organiser views dashboard summaries | Events and Enrolments support aggregation | Organiser dashboard endpoint | Only records for the signed-in Organiser are counted |
+| Organiser manages Event banners | Event stores an optional banner blob name | Event banner endpoints | Event ownership must be checked |
 | User registers as an Organiser or Participant | User record refers to one seeded Role | Public registration endpoint with required role name | Only Organiser and Participant role names are accepted |
 | Participant browses Events | Event and Category information supports browsing | Public Event read endpoints | No authentication required for public Event information |
 | Participant enters an Event | Enrolment links Participant, Event and Category | Participant-only enrolment endpoint | Participant may enrol only themselves |
 | Participant views personal Enrolments | Enrolment refers to its Participant | Participant enrolment-list endpoint | Query is restricted to the signed-in Participant |
 | Participant tracks personal Results | Result is linked through Enrolment | Participant Result-history endpoint | Query is restricted to the signed-in Participant |
+| Participant manages a profile picture | User stores an optional profile-picture blob name | Profile picture endpoints | The signed-in Participant may change only their own picture |
 
 ## 4. Submission requirement traceability
 
 | ID | Submission requirement | Planned evidence | Status |
 |---|---|---|---|
 | SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.drawio`, `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Complete |
-| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Complete after Part 2 requirements cross-check |
+| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Complete after Part 2 and Part 3 requirements cross-check |
 | SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | Complete |
 | SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | In progress: full script tested on clean LocalDB; SSMS walkthrough pending |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
@@ -80,7 +86,23 @@ The supplied Part 2 requirements were reviewed on 20 September 2026.
 | Swagger UI | Recorded as a mandatory Part 2 implementation and verification requirement |
 | Unit tests and CI | Required success, failure, authentication and role scenarios are recorded in the endpoint plan |
 
-## 6. Closed Session 3 design items
+## 6. Part 3 requirements cross-check
+
+The supplied Part 3 requirements were reviewed on 20 September 2026.
+
+| Part 3 item | Part 1 planning decision |
+|---|---|
+| MVC consumes the API | MVC will have no direct database access and will not duplicate API business rules |
+| MVC sessions and role navigation | MVC retains safe identity, role and API session information, with separate Organiser and Participant navigation |
+| Organiser dashboard | A dedicated Organiser endpoint returns owned Event summaries, enrolment totals and upcoming dates |
+| Event banner upload | Event records store an optional Azure Blob object name and the API provides upload and delete endpoints |
+| Participant profile picture | User records store an optional Azure Blob object name and the API provides upload and delete endpoints |
+| Azure Blob Storage boundary | MVC sends files to the API and never communicates with Azure Storage directly |
+| Docker | Part 3 will include a multi-stage Dockerfile and a single documented run command |
+| UI design | MVC will use a consistent RaceDay theme, responsive layout, role navigation, status colours and friendly validation messages |
+| CI | Part 3 workflow will build the API, test projects and MVC project |
+
+## 7. Closed Session 3 design items
 
 | Design item | Decision | Evidence |
 |---|---|---|

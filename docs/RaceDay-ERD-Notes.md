@@ -67,7 +67,11 @@ This rule prevents an Enrolment from selecting a Category that belongs to a diff
 
 The ERD was checked against the supplied Part 2 functional requirements. `Events.DistanceKm` records the advertised Event distance required by the brief. `EventCategories.MinimumAge` and `EventCategories.MaximumAge` allow an Organiser to define age categories such as Under 20 or Senior, while `EventCategories.DistanceKm` supports distance categories such as 10 km or 21 km.
 
-## 8. ERD validation checklist
+## 8. Part 3 requirements cross-check
+
+The ERD was checked against the supplied Part 3 requirements. `Users.ProfilePictureBlobName` stores the Azure Blob Storage object name for an optional Participant profile picture. `Events.BannerImageBlobName` stores the object name for an optional Event banner. The actual image data remains in Azure Blob Storage and is not stored in SQL Server.
+
+## 9. ERD validation checklist
 
 - [x] At least six entities are present.
 - [x] Seven entities are included.

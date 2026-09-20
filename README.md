@@ -10,7 +10,7 @@ The project is developed progressively across three parts. Part 1 contains the s
 
 ## Part 1 status
 
-The Part 1 planning and database artefacts are complete and have been cross-checked against the Part 2 functional requirements. The remaining submission work includes the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
+The Part 1 planning and database artefacts are complete and have been cross-checked against the Part 2 and Part 3 functional requirements. The remaining submission work includes the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
 
 No API or MVC application code is included in Part 1.
 
@@ -32,7 +32,7 @@ Role and ownership checks are planned at API level. A Participant may access onl
 | Scalable ERD export | [RaceDay-ERD.svg](docs/RaceDay-ERD.svg) | Complete |
 | ERD design notes | [RaceDay-ERD-Notes.md](docs/RaceDay-ERD-Notes.md) | Complete |
 | Data dictionary | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Complete |
-| API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete after cross-checking the Part 2 functional requirements |
+| API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete after cross-checking the Part 2 and Part 3 functional requirements |
 | SQL Server database script | [RaceDay.sql](docs/RaceDay.sql) | Complete and tested on a clean SQL Server LocalDB instance |
 | Requirements and business rules | [Requirements-and-Business-Rules.md](docs/Requirements-and-Business-Rules.md) | Complete |
 | Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | In progress until final submission checks are complete |
@@ -54,6 +54,8 @@ The relational model contains seven entities:
 7. `Results`
 
 Enrolments resolve the relationship between Participants and Events while recording the selected category. Each enrolment may have no more than one official result. Foreign keys use `NO ACTION` deletion behaviour to protect historical event, enrolment and result records.
+
+The User and Event tables contain optional Azure Blob Storage object names for future profile pictures and event banners. Image binary data is not stored in SQL Server. In Part 3, the MVC application will send selected files to the API, and only the API will communicate with Azure Blob Storage (Microsoft, 2026q).
 
 The ERD was prepared as an editable draw.io diagram and exported as PNG and SVG files for submission and review (JGraph Ltd, 2026).
 
@@ -193,5 +195,9 @@ Microsoft (2026n) 'Migrations overview', *Microsoft Learn*. Available at: https:
 Microsoft (2026o) 'ASP.NET Core web API documentation with Swagger/OpenAPI', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-8.0 (Accessed: 20 September 2026).
 
 Microsoft (2026p) 'Unit testing C# in .NET using dotnet test and xUnit', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit (Accessed: 20 September 2026).
+
+Microsoft (2026q) 'Get started with Azure Blob Storage and .NET', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-dotnet-get-started (Accessed: 20 September 2026).
+
+Microsoft (2026r) 'Run an ASP.NET Core app in Docker containers', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/docker/building-net-docker-images?view=aspnetcore-10.0 (Accessed: 20 September 2026).
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
