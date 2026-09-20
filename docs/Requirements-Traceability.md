@@ -2,15 +2,17 @@
 
 ## 1. Purpose
 
-This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. It will be updated when the ERD, endpoint plan and SQL Server script are completed. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
+This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1 and Part 2 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
 
 ## 2. Functional requirement traceability
 
 | Requirement ID | Requirement summary | Role or access | Planned data area | Planned API area | Part 1 evidence |
 |---|---|---|---|---|---|
-| FR-AUTH-01 | Register a Participant account | Public | Users and Roles | Authentication | Endpoint plan and SQL constraints |
+| FR-AUTH-01 | Register an Organiser or Participant account | Public | Users and Roles | Authentication | Endpoint role field and SQL role constraint |
 | FR-AUTH-02 | Sign in to an existing account | Public | Users and Roles | Authentication | Endpoint plan |
 | FR-AUTH-03 | Prevent duplicate email addresses | System | Users | Authentication | Unique SQL constraint |
+| FR-AUTH-04 | Maintain identity and role in a session | Authenticated user | Users and Roles | Authentication | Login, logout and session rules |
+| FR-AUTH-05 | Reject unauthenticated or incorrect-role access | Protected by role | Users and Roles | All protected resources | Endpoint roles and failure responses |
 | FR-PROFILE-01 | View own profile | Authenticated user | Users | User Profile | Endpoint role and ownership rule |
 | FR-PROFILE-02 | Update permitted own-profile fields | Authenticated user | Users | User Profile | Endpoint body and ownership rule |
 | FR-EVENT-01 | Browse upcoming events | Public | Events | Events | Public GET endpoint |
@@ -18,11 +20,12 @@ This table connects each confirmed requirement to the planned database area, API
 | FR-EVENT-03 | Create an event | Organiser | Events | Events | Organiser POST endpoint |
 | FR-EVENT-04 | Update an owned event | Organiser | Events | Events | Organiser PUT endpoint and ownership rule |
 | FR-EVENT-05 | Delete or cancel an owned event | Organiser | Events | Events | Organiser DELETE or status-update endpoint |
-| FR-EVENT-06 | Store event location and route details | Organiser | Events or Route | Events | ERD attributes and endpoint fields |
+| FR-EVENT-06 | Store event name, description, date, location, distance and type | Organiser | Events | Events | ERD attributes, SQL columns and endpoint fields |
 | FR-CATEGORY-01 | Add an Event Category | Organiser | Event Categories | Categories | Organiser POST endpoint |
 | FR-CATEGORY-02 | Update an Event Category | Organiser | Event Categories | Categories | Organiser PUT endpoint |
 | FR-CATEGORY-03 | Remove or deactivate an Event Category safely | Organiser | Event Categories and Enrolments | Categories | Delete conflict response and database relationship |
 | FR-CATEGORY-04 | View categories for an Event | Public | Event Categories | Categories | Public GET endpoint |
+| FR-CATEGORY-05 | Define age or distance Categories | Organiser | Event Categories | Categories | Distance, minimum-age and maximum-age fields |
 | FR-ENROL-01 | Enter an Event through a selected Category | Participant | Enrolments and Event Categories | Enrolments | Participant POST endpoint |
 | FR-ENROL-02 | View own Enrolments | Participant | Enrolments | Enrolments | Participant GET endpoint and ownership rule |
 | FR-ENROL-03 | View Enrolments for an owned Event | Organiser | Events and Enrolments | Enrolments | Organiser GET endpoint and ownership rule |
@@ -41,7 +44,7 @@ This table connects each confirmed requirement to the planned database area, API
 | Organiser manages Event Categories | Category record refers to an Event | Organiser-only Category write endpoints | Event ownership must be checked |
 | Organiser views Event Enrolments | Enrolment refers to Event and Participant | Organiser Event-enrolment endpoint | Event ownership must be checked |
 | Organiser captures Results | Result refers to a valid Enrolment | Organiser-only Result write endpoints | Enrolment must belong to an owned Event |
-| Participant creates an account | User record uses the Participant role | Public registration endpoint | Self-registration creates Participants only |
+| User registers as an Organiser or Participant | User record refers to one seeded Role | Public registration endpoint with required role name | Only Organiser and Participant role names are accepted |
 | Participant browses Events | Event and Category information supports browsing | Public Event read endpoints | No authentication required for public Event information |
 | Participant enters an Event | Enrolment links Participant, Event and Category | Participant-only enrolment endpoint | Participant may enrol only themselves |
 | Participant views personal Enrolments | Enrolment refers to its Participant | Participant enrolment-list endpoint | Query is restricted to the signed-in Participant |
@@ -52,7 +55,7 @@ This table connects each confirmed requirement to the planned database area, API
 | ID | Submission requirement | Planned evidence | Status |
 |---|---|---|---|
 | SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.drawio`, `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Complete |
-| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | In progress: all named resources planned; Part 2 requirements still to review |
+| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Complete after Part 2 requirements cross-check |
 | SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | Complete |
 | SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | In progress: full script tested on clean LocalDB; SSMS walkthrough pending |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
@@ -62,13 +65,20 @@ This table connects each confirmed requirement to the planned database area, API
 | SUB-09 | Unlisted video explains planning and SQL execution | README video link | In progress: walkthrough plan complete; recording and upload pending |
 | SUB-10 | GitHub repository link submitted on ARC | ARC submission | Not started |
 
-## 5. Open traceability items
+## 5. Part 2 requirements cross-check
 
-The following items cannot be closed until the remaining referenced material is available:
+The supplied Part 2 requirements were reviewed on 20 September 2026.
 
-1. Confirm whether the Part 2 functional-requirement pages introduce additional resources or endpoints.
-2. Confirm whether enrolment cancellation is required or only recommended as a record-preservation rule.
-3. Confirm whether event deletion must be physical deletion or status-based cancellation.
+| Part 2 item | Part 1 planning decision |
+|---|---|
+| Role selection during registration | Registration accepts Organiser or Participant and rejects any other role value |
+| Session management | Login establishes a server-side session, logout ends it, and protected endpoints read the user's identifier and role from it |
+| Event distance | `Events.DistanceKm` is required in the ERD, endpoint request, data dictionary and SQL script |
+| Age or distance categories | Categories include distance, minimum age and maximum age fields |
+| Event deletion | Organisers have a DELETE endpoint; events with dependent history return a conflict and are cancelled instead |
+| Enrolment cancellation | Retained as a useful additional endpoint, although Part 2 does not state it as a minimum requirement |
+| Swagger UI | Recorded as a mandatory Part 2 implementation and verification requirement |
+| Unit tests and CI | Required success, failure, authentication and role scenarios are recorded in the endpoint plan |
 
 ## 6. Closed Session 3 design items
 

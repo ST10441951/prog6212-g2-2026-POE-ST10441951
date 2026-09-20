@@ -72,6 +72,7 @@ jobs:
           required_routes=(
             "/api/auth/register"
             "/api/auth/login"
+            "/api/auth/logout"
             "/api/profile"
             "/api/events"
             "/categories"
@@ -127,6 +128,8 @@ jobs:
           grep -Fq "CHECK" "$sql_file"
           grep -Fq "DEFAULT" "$sql_file"
           grep -Fq "CREATE UNIQUE NONCLUSTERED INDEX" "$sql_file"
+          grep -Fq "DistanceKm DECIMAL(6,2) NOT NULL" "$sql_file"
+          grep -Fq "MaximumAge TINYINT NULL" "$sql_file"
 
           echo "The SQL file contains all seven tables, seed sections and required constraint types."
 

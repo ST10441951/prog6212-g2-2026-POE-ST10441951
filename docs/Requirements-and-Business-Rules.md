@@ -31,6 +31,7 @@ Part 1 does not include:
 
 An organiser is responsible for managing events. An organiser must be able to:
 
+- Register an account by selecting the Organiser role.
 - Sign in to the system.
 - Create an event.
 - Update an event that they manage.
@@ -58,9 +59,11 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 
 | ID | Requirement |
 |---|---|
-| FR-AUTH-01 | The system must allow a Participant to register an account. |
+| FR-AUTH-01 | The system must allow a new user to register as either an Organiser or Participant. |
 | FR-AUTH-02 | The system must allow an existing Organiser or Participant to sign in. |
 | FR-AUTH-03 | The system must prevent more than one account from using the same email address. |
+| FR-AUTH-04 | A successful login must establish a session that maintains the user's identity and role for later requests. |
+| FR-AUTH-05 | Protected functionality must reject unauthenticated users and users with the wrong role. |
 | FR-PROFILE-01 | An authenticated user must be able to view their own profile. |
 | FR-PROFILE-02 | An authenticated user must be able to update permitted fields on their own profile. |
 
@@ -73,7 +76,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 | FR-EVENT-03 | An Organiser must be able to create an event. |
 | FR-EVENT-04 | An Organiser must be able to update an event that they manage. |
 | FR-EVENT-05 | An Organiser must be able to delete or cancel an event that they manage. |
-| FR-EVENT-06 | An event must store enough location and route information to support race-day preparation. |
+| FR-EVENT-06 | An event must store its name, description, date and time, location, distance and event type. |
 
 ### 4.3 Category requirements
 
@@ -83,6 +86,7 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 | FR-CATEGORY-02 | An Organiser must be able to update categories for an event that they manage. |
 | FR-CATEGORY-03 | An Organiser must be able to remove a category when doing so does not invalidate existing enrolment records. |
 | FR-CATEGORY-04 | A Participant must be able to view the categories available for an event. |
+| FR-CATEGORY-05 | A category must be able to describe an age grouping, a distance grouping or both. |
 
 ### 4.4 Enrolment requirements
 
@@ -109,18 +113,19 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 
 1. Every user account must have exactly one role.
 2. The permitted roles are Organiser and Participant.
-3. Every email address must be unique and stored in a consistent form.
-4. Required personal information must not be blank.
-5. Passwords must never be stored as plain text. The future API will store a secure password hash.
-6. A Participant may only access their own profile, enrolments and personal results.
-7. An Organiser may only manage events that are assigned to them.
+3. Registration accepts a role name rather than an unrestricted database role identifier.
+4. Every email address must be unique and stored in a consistent form.
+5. Required personal information must not be blank.
+6. Passwords must never be stored as plain text. The future API will store a secure password hash.
+7. A Participant may only access their own profile, enrolments and personal results.
+8. An Organiser may only manage events that are assigned to them.
 
 ### 5.2 Event rules
 
 1. Every event must have one Organiser.
 2. An Organiser may manage many events.
 3. An event date and time must be later than its entry closing date and time.
-4. An event must have a name, date, location and route description.
+4. An event must have a name, description, date and time, location, distance and event type.
 5. An event status will be limited to Draft, Open, Closed, Cancelled or Completed.
 6. Only events with an Open status may accept new enrolments.
 7. A cancelled event must remain in the database if enrolments or results already refer to it.
@@ -132,8 +137,10 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 2. An event must have at least one category before entries can open.
 3. Category names must be unique within the same event.
 4. Category distance must be greater than zero.
-5. An entry fee must be zero or greater.
-6. A category with existing enrolments should be made unavailable instead of being physically deleted.
+5. Minimum and maximum ages are optional, but must be from 1 to 120 when supplied.
+6. Minimum age cannot be greater than maximum age when both are supplied.
+7. An entry fee must be zero or greater.
+8. A category with existing enrolments should be made unavailable instead of being physically deleted.
 
 ### 5.4 Enrolment rules
 
@@ -169,7 +176,8 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 ## 7. Security and access requirements
 
 - Public access must be limited to information intended for event browsing.
-- Authentication will be required for personal profiles, enrolments and results.
+- Authentication will use server-side session management to retain the signed-in user's identifier and role for later requests.
+- Personal profiles, enrolments and results will require an authenticated session.
 - Role checks must distinguish Organiser actions from Participant actions.
 - Ownership checks must prevent one Organiser from altering another Organiser's events.
 - Participants must not be able to view another Participant's private records.
@@ -177,16 +185,18 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 
 ## 8. Confirmed Part 1 design decisions
 
-The following decisions will guide the ERD and SQL script. They must still be checked against any remaining functional-requirement pages:
+The following decisions guide the ERD, SQL script and Part 2 implementation after cross-checking the supplied Part 2 requirements:
 
 1. A user account has one role only.
-2. Participants can register themselves, while Organiser accounts are supplied or created through a controlled process.
+2. Registration allows the user to select Organiser or Participant, as required by the Part 2 brief. The API accepts only the two seeded role names and does not accept an unrestricted role identifier.
 3. A Participant may enter only one category per event.
 4. Payment processing is outside the current system scope.
 5. Event weather is obtained live in Part 3 rather than stored permanently in the Part 1 database.
 6. Event location coordinates will be stored so that live weather can be requested later.
 7. Route information will be stored in a separate EventRoutes entity for each Event Category.
 8. Records referenced by enrolments or results will normally be made inactive instead of being deleted.
+9. Protected API requests use an authenticated server-side session containing the user's identifier and role.
+10. Swagger UI will expose the implemented endpoints, request bodies and documented responses in Part 2.
 
 ## 9. Session 3 data-model decisions
 

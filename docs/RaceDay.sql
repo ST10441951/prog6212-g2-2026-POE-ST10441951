@@ -3,7 +3,7 @@
 
     Purpose:
     Create the RaceDay database and the seven tables defined in the ERD and
-    data dictionary. Seed data will be added in the next database session.
+    data dictionary, then add realistic sample data for every entity.
 
     Execution:
     Open this file in SQL Server Management Studio and run it while connected
@@ -123,6 +123,7 @@ BEGIN TRY
         EventName NVARCHAR(120) NOT NULL,
         EventType NVARCHAR(20) NOT NULL,
         Description NVARCHAR(1000) NOT NULL,
+        DistanceKm DECIMAL(6,2) NOT NULL,
         EventDateTime DATETIME2(0) NOT NULL,
         EntryClosingDateTime DATETIME2(0) NOT NULL,
         VenueName NVARCHAR(120) NOT NULL,
@@ -150,6 +151,8 @@ BEGIN TRY
             CHECK (EventType IN (N'Running', N'Walking', N'Cycling')),
         CONSTRAINT CK_Events_Description_NotBlank
             CHECK (LEN(LTRIM(RTRIM(Description))) > 0),
+        CONSTRAINT CK_Events_DistanceKm
+            CHECK (DistanceKm > 0),
         CONSTRAINT CK_Events_EntryClosingDateTime
             CHECK (EntryClosingDateTime < EventDateTime),
         CONSTRAINT CK_Events_VenueName_NotBlank
@@ -189,6 +192,7 @@ BEGIN TRY
         CategoryName NVARCHAR(80) NOT NULL,
         DistanceKm DECIMAL(6,2) NOT NULL,
         MinimumAge TINYINT NULL,
+        MaximumAge TINYINT NULL,
         EntryFee DECIMAL(10,2) NOT NULL
             CONSTRAINT DF_EventCategories_EntryFee DEFAULT (0),
         Capacity INT NULL,
@@ -213,6 +217,15 @@ BEGIN TRY
             CHECK (DistanceKm > 0),
         CONSTRAINT CK_EventCategories_MinimumAge
             CHECK (MinimumAge IS NULL OR MinimumAge BETWEEN 1 AND 120),
+        CONSTRAINT CK_EventCategories_MaximumAge
+            CHECK (MaximumAge IS NULL OR MaximumAge BETWEEN 1 AND 120),
+        CONSTRAINT CK_EventCategories_AgeRange
+            CHECK
+            (
+                MinimumAge IS NULL
+                OR MaximumAge IS NULL
+                OR MinimumAge <= MaximumAge
+            ),
         CONSTRAINT CK_EventCategories_EntryFee
             CHECK (EntryFee >= 0),
         CONSTRAINT CK_EventCategories_Capacity
@@ -470,6 +483,7 @@ BEGIN TRY
         EventName,
         EventType,
         Description,
+        DistanceKm,
         EventDateTime,
         EntryClosingDateTime,
         VenueName,
@@ -487,6 +501,7 @@ BEGIN TRY
             N'Durban Sunrise 10K',
             N'Running',
             N'A coastal road race with five and ten kilometre categories.',
+            10.00,
             '2026-08-16T04:30:00',
             '2026-08-09T21:59:59',
             N'Moses Mabhida Stadium',
@@ -503,6 +518,7 @@ BEGIN TRY
             N'Cape Peninsula Cycle Challenge',
             N'Cycling',
             N'A supported road cycling event with forty and eighty kilometre routes.',
+            80.00,
             '2027-03-14T04:00:00',
             '2027-03-01T21:59:59',
             N'Green Point Urban Park',
@@ -519,6 +535,7 @@ BEGIN TRY
             N'Soweto Heritage Walk',
             N'Walking',
             N'A community walk visiting important heritage locations in Soweto.',
+            10.00,
             '2027-04-24T05:30:00',
             '2027-04-17T21:59:59',
             N'Walter Sisulu Square',
@@ -558,18 +575,19 @@ BEGIN TRY
         CategoryName,
         DistanceKm,
         MinimumAge,
+        MaximumAge,
         EntryFee,
         Capacity,
         IsAvailable,
         CreatedAt
     )
     VALUES
-        (@DurbanEventId, N'5 km Run', 5.00, 10, 120.00, 1800, 0, '2026-05-02T08:00:00'),
-        (@DurbanEventId, N'10 km Run', 10.00, 15, 180.00, 2500, 0, '2026-05-02T08:05:00'),
-        (@CapeEventId, N'40 km Cycle', 40.00, 16, 350.00, 1500, 1, '2026-09-02T09:00:00'),
-        (@CapeEventId, N'80 km Cycle', 80.00, 18, 550.00, 1000, 1, '2026-09-02T09:05:00'),
-        (@SowetoEventId, N'5 km Walk', 5.00, NULL, 80.00, 2000, 1, '2026-09-11T10:00:00'),
-        (@SowetoEventId, N'10 km Walk', 10.00, 12, 120.00, 1200, 1, '2026-09-11T10:05:00');
+        (@DurbanEventId, N'5 km Run', 5.00, 10, NULL, 120.00, 1800, 0, '2026-05-02T08:00:00'),
+        (@DurbanEventId, N'10 km Run', 10.00, 15, NULL, 180.00, 2500, 0, '2026-05-02T08:05:00'),
+        (@CapeEventId, N'40 km Cycle', 40.00, 16, NULL, 350.00, 1500, 1, '2026-09-02T09:00:00'),
+        (@CapeEventId, N'80 km Cycle', 80.00, 18, NULL, 550.00, 1000, 1, '2026-09-02T09:05:00'),
+        (@SowetoEventId, N'Under 20 5 km Walk', 5.00, NULL, 19, 80.00, 2000, 1, '2026-09-11T10:00:00'),
+        (@SowetoEventId, N'10 km Walk', 10.00, 12, NULL, 120.00, 1200, 1, '2026-09-11T10:05:00');
 
     DECLARE @Durban5CategoryId INT =
     (
@@ -608,7 +626,7 @@ BEGIN TRY
         SELECT EventCategoryId
         FROM dbo.EventCategories
         WHERE EventId = @SowetoEventId
-          AND CategoryName = N'5 km Walk'
+          AND CategoryName = N'Under 20 5 km Walk'
     );
 
     DECLARE @Soweto10CategoryId INT =

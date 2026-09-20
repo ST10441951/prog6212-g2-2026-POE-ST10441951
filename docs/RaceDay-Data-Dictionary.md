@@ -109,6 +109,7 @@ The `Events` table stores the event information managed by an Organiser.
 | `EventName` | `NVARCHAR(120)` | No |  | Public Event name |
 | `EventType` | `NVARCHAR(20)` | No | Check constraint | Running, Walking or Cycling |
 | `Description` | `NVARCHAR(1000)` | No |  | Public Event description |
+| `DistanceKm` | `DECIMAL(6,2)` | No | Check greater than zero | Advertised Event distance in kilometres |
 | `EventDateTime` | `DATETIME2(0)` | No |  | Scheduled start date and time |
 | `EntryClosingDateTime` | `DATETIME2(0)` | No | Check before `EventDateTime` | Final date and time for entries |
 | `VenueName` | `NVARCHAR(120)` | No |  | Starting venue or recognised location |
@@ -124,6 +125,7 @@ The `Events` table stores the event information managed by an Organiser.
 Table rules:
 
 - `EventName`, `Description`, `VenueName`, `AddressLine1` and `City` may not be empty strings.
+- `DistanceKm` must be greater than zero.
 - `EntryClosingDateTime` must be earlier than `EventDateTime`.
 - `EventType` is limited to Running, Walking or Cycling.
 - `Province` is limited to the nine South African provinces.
@@ -147,6 +149,7 @@ The `EventCategories` table stores the entry choices available for an Event.
 | `CategoryName` | `NVARCHAR(80)` | No | Unique within an Event | Public Category name |
 | `DistanceKm` | `DECIMAL(6,2)` | No | Check greater than zero | Category distance in kilometres |
 | `MinimumAge` | `TINYINT` | Yes | Check from 1 to 120 | Minimum permitted age when applicable |
+| `MaximumAge` | `TINYINT` | Yes | Check from 1 to 120 | Maximum permitted age when applicable |
 | `EntryFee` | `DECIMAL(10,2)` | No | Default 0 and check at least zero | Entry fee in South African rand |
 | `Capacity` | `INT` | Yes | Check greater than zero | Optional maximum number of entries |
 | `IsAvailable` | `BIT` | No | Default 1 | Indicates whether new entries may select the Category |
@@ -159,6 +162,8 @@ Table rules:
 - The combination of `EventCategoryId` and `EventId` will be an alternate key used by the Enrolments composite foreign key.
 - `DistanceKm` must be greater than zero.
 - `MinimumAge` must be between 1 and 120 when supplied.
+- `MaximumAge` must be between 1 and 120 when supplied.
+- `MinimumAge` cannot be greater than `MaximumAge` when both are supplied.
 - `EntryFee` must be zero or greater.
 - `Capacity` must be greater than zero when supplied.
 - A Category with Enrolments should be made unavailable instead of deleted.
@@ -306,6 +311,7 @@ Some rules require information from more than one row or table and will be enfor
 - Confirm that an Enrolment user has the Participant Role.
 - Confirm that the Event is Open and entries have not closed.
 - Confirm that an Event Category is available and has capacity.
+- Confirm that a Participant satisfies the Category's minimum and maximum age rules when those values are supplied.
 - Confirm that a Result is captured by the Organiser responsible for the related Event.
 - Confirm that a cancelled Enrolment cannot receive a Result.
 - Update `UpdatedAt` when a record changes.

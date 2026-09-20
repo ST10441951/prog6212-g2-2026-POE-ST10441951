@@ -10,7 +10,7 @@ The project is developed progressively across three parts. Part 1 contains the s
 
 ## Part 1 status
 
-The main Part 1 planning and database artefacts are complete. The remaining submission work includes the final review against the Part 2 functional-requirement pages, the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
+The Part 1 planning and database artefacts are complete and have been cross-checked against the Part 2 functional requirements. The remaining submission work includes the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
 
 No API or MVC application code is included in Part 1.
 
@@ -32,7 +32,7 @@ Role and ownership checks are planned at API level. A Participant may access onl
 | Scalable ERD export | [RaceDay-ERD.svg](docs/RaceDay-ERD.svg) | Complete |
 | ERD design notes | [RaceDay-ERD-Notes.md](docs/RaceDay-ERD-Notes.md) | Complete |
 | Data dictionary | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Complete |
-| API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete for all resources named in Part 1; Part 2 pages still require a final cross-check |
+| API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete after cross-checking the Part 2 functional requirements |
 | SQL Server database script | [RaceDay.sql](docs/RaceDay.sql) | Complete and tested on a clean SQL Server LocalDB instance |
 | Requirements and business rules | [Requirements-and-Business-Rules.md](docs/Requirements-and-Business-Rules.md) | Complete |
 | Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | In progress until final submission checks are complete |
@@ -185,5 +185,13 @@ Microsoft (2026j) 'PasswordHasher<TUser>.HashPassword(TUser, String) Method', *M
 Microsoft (2026k) 'Primary and foreign key constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
 
 Microsoft (2026l) 'Unique constraints and check constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026m) 'Session and state management in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-10.0 (Accessed: 20 September 2026).
+
+Microsoft (2026n) 'Migrations overview', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/ (Accessed: 20 September 2026).
+
+Microsoft (2026o) 'ASP.NET Core web API documentation with Swagger/OpenAPI', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-8.0 (Accessed: 20 September 2026).
+
+Microsoft (2026p) 'Unit testing C# in .NET using dotnet test and xUnit', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-xunit (Accessed: 20 September 2026).
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.

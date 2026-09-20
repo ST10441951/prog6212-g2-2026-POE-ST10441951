@@ -63,7 +63,11 @@ This rule prevents an Enrolment from selecting a Category that belongs to a diff
 | `NULL` | Optional column |
 | `NOT NULL` | Required column |
 
-## 7. ERD validation checklist
+## 7. Part 2 requirements cross-check
+
+The ERD was checked against the supplied Part 2 functional requirements. `Events.DistanceKm` records the advertised Event distance required by the brief. `EventCategories.MinimumAge` and `EventCategories.MaximumAge` allow an Organiser to define age categories such as Under 20 or Senior, while `EventCategories.DistanceKm` supports distance categories such as 10 km or 21 km.
+
+## 8. ERD validation checklist
 
 - [x] At least six entities are present.
 - [x] Seven entities are included.

@@ -69,12 +69,13 @@ Suggested length: 9 to 11 minutes.
 - Explain that the role check is not enough on its own. Organiser operations also check event ownership.
 - Explain why `401 Unauthorized`, `403 Forbidden`, `404 Not Found` and `409 Conflict` have different meanings.
 - Point out that new resources return `201 Created` and successful deletions return `204 No Content`.
-- State that the plan contains all resource groups named in Part 1 and must be checked against the remaining Part 2 requirement pages before implementation.
+- State that the plan was cross-checked against Part 2 and now includes role selection at registration, session authentication, event distance and the required Swagger and testing expectations.
 
 ## 6. SQL design speaking prompts
 
 - The script creates the database before creating the tables in relationship order.
 - The seven SQL tables match the ERD and data dictionary.
+- Events store the required advertised distance, and Categories support both lower and upper age limits.
 - Primary keys identify records and foreign keys prevent orphaned records.
 - `NOT NULL`, `UNIQUE`, `DEFAULT` and `CHECK` constraints protect the database from invalid values.
 - Status checks restrict events, enrolments and results to their permitted values.
