@@ -8,6 +8,7 @@
 ## Deliverables
 
 - [x] ERD exported as PNG.
+- [x] Editable draw.io ERD source saved in the `/docs` folder.
 - [x] API endpoint plan exported as Markdown or PDF.
 - [x] SQL Server script saved as a `.sql` file.
 - [x] README with a system description, both roles and CI evidence.

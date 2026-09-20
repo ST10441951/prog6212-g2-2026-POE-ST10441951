@@ -6,9 +6,12 @@ The RaceDay Entity Relationship Diagram represents the Part 1 relational databas
 
 The diagram files are:
 
+- `RaceDay-ERD.drawio`, which is the editable draw.io source file.
 - `RaceDay-ERD.png`, which is the submission image.
-- `RaceDay-ERD.svg`, which is the scalable source copy.
+- `RaceDay-ERD.svg`, which is the scalable export.
 - `RaceDay-Data-Dictionary.md`, which contains the detailed constraints and column descriptions.
+
+The diagram was created and exported with draw.io (JGraph Ltd, 2026).
 
 ## 2. Entity summary
 
@@ -74,9 +77,11 @@ This rule prevents an Enrolment from selecting a Category that belongs to a diff
 - [x] A Category cannot be linked to the wrong Event through an Enrolment.
 - [x] An Enrolment may have no more than one official Result.
 - [x] The entity and attribute names match the current data dictionary.
+- [x] The editable draw.io source is available in the `/docs` folder.
 - [x] The diagram is available as a PNG in the `/docs` folder.
 
 ## References
 
-The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+JGraph Ltd (2026) *draw.io*. Available at: https://www.drawio.com/ (Accessed: 20 September 2026).
 
+The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.

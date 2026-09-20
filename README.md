@@ -28,6 +28,8 @@ Role and ownership checks are planned at API level. A Participant may access onl
 | Deliverable | File | Status |
 |---|---|---|
 | Entity Relationship Diagram | [RaceDay-ERD.png](docs/RaceDay-ERD.png) | Complete |
+| Editable draw.io ERD | [RaceDay-ERD.drawio](docs/RaceDay-ERD.drawio) | Complete |
+| Scalable ERD export | [RaceDay-ERD.svg](docs/RaceDay-ERD.svg) | Complete |
 | ERD design notes | [RaceDay-ERD-Notes.md](docs/RaceDay-ERD-Notes.md) | Complete |
 | Data dictionary | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Complete |
 | API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete for all resources named in Part 1; Part 2 pages still require a final cross-check |
@@ -53,6 +55,8 @@ The relational model contains seven entities:
 
 Enrolments resolve the relationship between Participants and Events while recording the selected category. Each enrolment may have no more than one official result. Foreign keys use `NO ACTION` deletion behaviour to protect historical event, enrolment and result records.
 
+The ERD was prepared as an editable draw.io diagram and exported as PNG and SVG files for submission and review (JGraph Ltd, 2026).
+
 ## Database contents
 
 The SQL Server script creates the full schema, constraints, supporting indexes and realistic fictional sample data.
@@ -71,7 +75,7 @@ The four seed accounts use the local demonstration password `RaceDayDemo!2026`. 
 
 ## Opening the project
 
-GitHub documents `git clone` as the command for creating a complete local copy of a repository (GitHub, 2026).
+GitHub documents `git clone` as the command for creating a complete local copy of a repository (GitHub, 2026b).
 
 ```text
 git clone https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git
@@ -87,7 +91,7 @@ The solution does not contain a C# project yet because application implementatio
 
 ## Running the database script in SSMS
 
-Microsoft explains that SSMS can connect to a SQL Server instance, execute T-SQL and display query results (Microsoft, 2026).
+Microsoft explains that SSMS can connect to a SQL Server instance, execute T-SQL and display query results (Microsoft, 2026a).
 
 Requirements:
 
@@ -120,6 +124,7 @@ RaceDay/
 |   |-- API-Endpoint-Plan.md
 |   |-- Part-1-Requirements-Checklist.md
 |   |-- RaceDay-Data-Dictionary.md
+|   |-- RaceDay-ERD.drawio
 |   |-- RaceDay-ERD-Notes.md
 |   |-- RaceDay-ERD.png
 |   |-- RaceDay-ERD.svg
@@ -147,8 +152,38 @@ The unlisted YouTube walkthrough link will be added here after the final recordi
 
 ## References
 
-GitHub (2026) 'Getting changes from a remote repository', *GitHub Docs*. Available at: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository (Accessed: 19 September 2026).
+Fielding, R., Nottingham, M. and Reschke, J. (2022) *HTTP Semantics*. RFC 9110. Available at: https://www.rfc-editor.org/rfc/rfc9110.html (Accessed: 19 September 2026).
 
-Microsoft (2026) 'Connect and query SQL Server using SQL Server Management Studio', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ssms/quickstarts/ssms-connect-query-sql-server (Accessed: 19 September 2026).
+GitHub (2026a) 'actions/checkout', *GitHub*. Available at: https://github.com/actions/checkout (Accessed: 19 September 2026).
+
+GitHub (2026b) 'Getting changes from a remote repository', *GitHub Docs*. Available at: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository (Accessed: 19 September 2026).
+
+GitHub (2026c) 'Workflow syntax for GitHub Actions', *GitHub Docs*. Available at: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax (Accessed: 19 September 2026).
+
+JGraph Ltd (2026) *draw.io*. Available at: https://www.drawio.com/ (Accessed: 20 September 2026).
+
+Microsoft (2026a) 'Connect and query SQL Server using SQL Server Management Studio', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ssms/quickstarts/ssms-connect-query-sql-server (Accessed: 19 September 2026).
+
+Microsoft (2026b) 'Controller action return types in ASP.NET Core web API', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types?view=aspnetcore-8.0 (Accessed: 19 September 2026).
+
+Microsoft (2026c) 'Create database (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/sql/t-sql/statements/create-database-transact-sql?view=sql-server-ver16 (Accessed: 19 September 2026).
+
+Microsoft (2026d) 'Create filtered indexes', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/indexes/create-filtered-indexes?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026e) 'Data types (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-ca/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026f) 'INSERT (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/sql/t-sql/statements/insert-transact-sql?view=sql-server-ver16 (Accessed: 19 September 2026).
+
+Microsoft (2026g) 'Introduction to authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-8.0 (Accessed: 19 September 2026).
+
+Microsoft (2026h) 'nchar and nvarchar (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/t-sql/data-types/nchar-and-nvarchar-transact-sql?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026i) 'Overview of ASP.NET Core Authentication', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0 (Accessed: 19 September 2026).
+
+Microsoft (2026j) 'PasswordHasher<TUser>.HashPassword(TUser, String) Method', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordhasher-1.hashpassword?view=aspnetcore-10.0 (Accessed: 19 September 2026).
+
+Microsoft (2026k) 'Primary and foreign key constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
+
+Microsoft (2026l) 'Unique constraints and check constraints', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints?view=sql-server-ver17 (Accessed: 19 September 2026).
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.

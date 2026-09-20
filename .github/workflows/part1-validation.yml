@@ -30,6 +30,7 @@ jobs:
 
           required_files=(
             "README.md"
+            "docs/RaceDay-ERD.drawio"
             "docs/RaceDay-ERD.png"
             "docs/RaceDay-ERD.svg"
             "docs/RaceDay-ERD-Notes.md"
@@ -54,8 +55,9 @@ jobs:
 
           file docs/RaceDay-ERD.png | grep -q "PNG image data"
           grep -q "<svg" docs/RaceDay-ERD.svg
+          grep -q "<mxfile" docs/RaceDay-ERD.drawio
 
-          echo "The PNG and SVG ERD files are valid."
+          echo "The draw.io, PNG and SVG ERD files are valid."
 
       - name: Validate API endpoint plan
         shell: bash
