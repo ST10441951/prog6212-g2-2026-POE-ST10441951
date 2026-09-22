@@ -113,6 +113,12 @@ Steps:
 
 The script deliberately stops if RaceDay tables already exist. This protects existing data from being overwritten. Use a clean database for the assessment demonstration.
 
+### Successful SSMS execution
+
+The following result was produced after running the complete database script in SQL Server Management Studio. It confirms that all seven tables were created and populated with the expected sample records.
+
+![Successful RaceDay database execution in SSMS](docs/evidence/ssms-database-success.png)
+
 ## Repository structure
 
 ```text
