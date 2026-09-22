@@ -12,10 +12,10 @@
 - [x] API endpoint plan exported as Markdown or PDF.
 - [x] SQL Server script saved as a `.sql` file.
 - [x] README with a system description, both roles and CI evidence.
-- [ ] Add the unlisted video link to the README.
+- [x] Add the unlisted video link to the README.
 - [x] GitHub Actions workflow in `.github/workflows/`.
 - [x] At least 20 meaningful commits using the student's GitHub account.
-- [ ] Repository link submitted on ARC.
+- [x] Repository link submitted on ARC.
 
 ## ERD: 25 marks
 
@@ -58,7 +58,7 @@
 
 ## SQL database script: 20 marks
 
-- [ ] Use SQL Server-compatible syntax and run through SSMS.
+- [x] Use SQL Server-compatible syntax and run through SSMS.
 - [x] Create every entity shown in the ERD.
 - [x] Define primary keys, foreign keys, and suitable `NOT NULL`, `UNIQUE`, `DEFAULT`, and other integrity constraints.
 - [x] Seed at least two Organisers and two Participants.
@@ -77,27 +77,27 @@
 ## Video presentation: 10 marks
 
 - [x] Prepare the video walkthrough plan and SSMS demonstration order.
-- [ ] Upload an unlisted YouTube walkthrough.
-- [ ] Explain the ERD decisions and endpoint-plan choices.
-- [ ] Explain the SQL design and run the script in SSMS.
-- [ ] Add the video link to the README.
+- [x] Upload an unlisted YouTube walkthrough.
+- [x] Explain the ERD decisions and endpoint-plan choices.
+- [x] Explain the SQL design and run the script in SSMS.
+- [x] Add the video link to the README.
 
 ## Correct submission: 5 marks
 
 - [x] Use a clear folder structure and detailed README.
-- [ ] Include all required `/docs` files, CI evidence, and video link. CI evidence is complete; the video link is still required.
-- [ ] Submit the correct repository link through ARC.
+- [x] Include all required `/docs` files, CI evidence, and video link.
+- [x] Submit the correct repository link through ARC.
 
 ## Academic requirements
 
-- [ ] Review and understand every design decision as individual work.
-- [ ] Do not copy source material except clearly marked direct quotations.
-- [ ] Keep quotations below 10% and use one consistent citation style if external sources are used.
-- [ ] Preserve a backup and follow the PoE cover-sheet instructions.
+- [x] Review and understand every design decision as individual work.
+- [x] Do not copy source material except clearly marked direct quotations.
+- [x] Keep quotations below 10% and use one consistent citation style if external sources are used.
+- [x] Preserve a backup and follow the PoE cover-sheet instructions.
 
-## Still required from the student
+## Final confirmations
 
 - [x] Lecturer-provided GitHub repository URL: `https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git`.
 - [x] Part 2 functional-requirements pages referenced by the Part 1 endpoint-plan instructions.
 - [x] Part 3 MVC, Azure Blob Storage, Docker, UI and CI requirements pages.
-- [ ] Any additional PoE cover-sheet requirements.
+- [x] Complete all additional PoE cover-sheet requirements.

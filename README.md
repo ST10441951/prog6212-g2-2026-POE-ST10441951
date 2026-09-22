@@ -10,7 +10,7 @@ The project is developed progressively across three parts. Part 1 contains the s
 
 ## Part 1 status
 
-The Part 1 planning and database artefacts are complete and have been cross-checked against the Part 2 and Part 3 functional requirements. The remaining submission work includes the SSMS video demonstration, the unlisted YouTube upload and ARC submission.
+The Part 1 planning, database, CI and video deliverables are complete. They have been cross-checked against the Part 2 and Part 3 functional requirements, and the repository is ready for Part 1 submission.
 
 No API or MVC application code is included in Part 1.
 
@@ -35,9 +35,9 @@ Role and ownership checks are planned at API level. A Participant may access onl
 | API endpoint plan | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Complete after cross-checking the Part 2 and Part 3 functional requirements |
 | SQL Server database script | [RaceDay.sql](docs/RaceDay.sql) | Complete and tested on a clean SQL Server LocalDB instance |
 | Requirements and business rules | [Requirements-and-Business-Rules.md](docs/Requirements-and-Business-Rules.md) | Complete |
-| Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | In progress until final submission checks are complete |
-| Part 1 checklist | [Part-1-Requirements-Checklist.md](docs/Part-1-Requirements-Checklist.md) | In progress until final submission |
-| Video walkthrough plan | [Video-Presentation-Plan.md](docs/Video-Presentation-Plan.md) | Complete; recording and upload still required |
+| Requirements traceability | [Requirements-Traceability.md](docs/Requirements-Traceability.md) | Complete |
+| Part 1 checklist | [Part-1-Requirements-Checklist.md](docs/Part-1-Requirements-Checklist.md) | Complete |
+| Video walkthrough plan | [Video-Presentation-Plan.md](docs/Video-Presentation-Plan.md) | Complete; walkthrough recorded and uploaded |
 
 ## Data model
 
@@ -156,7 +156,7 @@ The successful workflow run can also be viewed on the [GitHub Actions run page](
 
 The [video presentation plan](docs/Video-Presentation-Plan.md) contains the suggested recording order, speaking prompts and SSMS demonstration steps.
 
-The unlisted YouTube walkthrough link will be added here after the final recording has been completed and checked.
+The completed Part 1 walkthrough is available on YouTube: [RaceDay Part 1 video presentation](https://youtu.be/MLi1LZh7Sw4?si=60AQcj5bejqEPE5s).
 
 ## References
 
