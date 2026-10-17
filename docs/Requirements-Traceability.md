@@ -69,10 +69,10 @@ The endpoint mapping was updated on 17 October 2026. The [25-operation table](AP
 | SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.drawio`, `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Corrected 17 October: seven tables, 71 matching column definitions and nine relationships |
 | SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Updated 17 October: 40 endpoints and a mapping of the 25 required operations |
 | SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` and [database correction notes](Part-1-Database-Corrections.md) | Corrected 17 October: finish-time constraint, database guard and success reporting; 21 local checks passed |
-| SUB-04 | SQL script runs cleanly in SSMS | `docs/evidence/ssms-database-success.png` and original walkthrough | Original Part 1 SSMS evidence retained; corrected script passed command-line checks on a separate empty LocalDB database; fresh SSMS evidence still needed |
+| SUB-04 | SQL script runs cleanly in SSMS | Original screenshot plus [fresh counts](evidence/ssms-corrected-database-counts.png) and [success message](evidence/ssms-corrected-database-success.png) | Corrected script ran successfully on a separate empty LocalDB database in SSMS on 17 October; original evidence retained |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
 | SUB-06 | At least 20 meaningful commits | Git history | Complete |
-| SUB-07 | Successful GitHub Actions validation | Workflow run and README screenshot | Complete |
+| SUB-07 | Successful GitHub Actions validation | Original screenshot and [run for ae2c47f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39057551536) | Commit ae2c47f passed; updated workflow commands pass locally; new GitHub run pending |
 | SUB-08 | README describes system and roles | `/README-Part1.md` | Original Part 1 README preserved; root README now covers Part 2 |
 | SUB-09 | Unlisted video explains planning and SQL execution | [Part 1 README](../README-Part1.md#video-presentation) | Original walkthrough link present |
 | SUB-10 | GitHub repository link submitted on ARC | Part 1 requirements checklist | Recorded as submitted in the original checklist |

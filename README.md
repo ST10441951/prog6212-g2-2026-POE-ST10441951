@@ -10,7 +10,9 @@ The API will follow the [Part 1 endpoint plan](docs/API-Endpoint-Plan.md). Login
 
 The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 required operations](docs/API-Endpoint-Plan.md#141-required-operations). Enrolment deletion, status changes and age rules have been clarified.
 
-The ERD and SQL corrections are complete. All 71 column definitions match, and 21 checks passed on a separate SQL Server LocalDB database. The [database correction notes](docs/Part-1-Database-Corrections.md) record the results. Fresh SSMS evidence and updated planning checks in CI are still needed. API development has not started.
+The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
+
+The updated planning workflow passes locally. Its GitHub run is pending. API development has not started.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -41,7 +43,7 @@ Profile pictures and event banners will pass through the API. SQL Server will st
 
 The API has not been built yet. The exact settings, commands and URLs will be added as they are tested.
 
-1. Clone the repository using the command below (GitHub, 2026).
+1. Clone the repository using the command below (GitHub, 2026a).
 2. Open `RaceDay.sln` in Visual Studio with the ASP.NET workload and required .NET SDK.
 3. Set the API's SQL Server connection string for a separate Part 2 database. Keep private credentials out of Git.
 4. Create and seed the database using EF Core migrations. Keep the Part 1 database unchanged.
@@ -55,7 +57,11 @@ git clone https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git
 
 ## CI/CD
 
-The existing workflow checks the Part 1 files. The Part 2 workflow will build the API and run its tests on every push.
+The planning workflow checks the required files, all 40 endpoint rows, the lecturer's 25 required operations and matching SQL, ERD and data-dictionary columns. It runs on every push and on pull requests to main. The updated commands passed locally, including checks that reject missing operations and mismatched fields (GitHub, 2026b).
+
+The [planning build for ae2c47f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39057551536) passed. The latest workflow changes pass locally but have not been pushed yet.
+
+The Part 2 workflow will also build the API and run its tests on every push.
 
 Part 2 green-build screenshot and run link: to be added.
 
@@ -74,7 +80,9 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
 | [RaceDay.sql](docs/RaceDay.sql) | Part 1 database script |
+| [Part-1-Database-Corrections.md](docs/Part-1-Database-Corrections.md) | Corrected database checks and fresh SSMS evidence |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
+| `scripts/validate-planning.py` | Endpoint-plan and schema-document checks |
 | `docs/evidence/` | Screenshots |
 | `.github/workflows/` | GitHub Actions workflows |
 
@@ -86,7 +94,9 @@ The video must be no longer than 20 minutes. It must open with the rubric, show 
 
 ## References
 
-GitHub (2026) 'Getting changes from a remote repository', *GitHub Docs*. Available at: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository (Accessed: 19 September 2026).
+GitHub (2026a) 'Getting changes from a remote repository', *GitHub Docs*. Available at: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository (Accessed: 19 September 2026).
+
+GitHub (2026b) 'Workflow syntax for GitHub Actions', *GitHub Docs*. Available at: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax (Accessed: 17 October 2026).
 
 Microsoft (2026a) 'Session and state management in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-10.0 (Accessed: 17 October 2026).
 

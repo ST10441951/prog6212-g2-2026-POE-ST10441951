@@ -2,8 +2,6 @@ name: Validate Part 1 Submission
 
 on:
   push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -30,6 +28,7 @@ jobs:
 
           required_files=(
             "README.md"
+            "README-Part1.md"
             "docs/RaceDay-ERD.drawio"
             "docs/RaceDay-ERD.png"
             "docs/RaceDay-ERD.svg"
@@ -37,6 +36,9 @@ jobs:
             "docs/API-Endpoint-Plan.md"
             "docs/RaceDay-Data-Dictionary.md"
             "docs/RaceDay.sql"
+            "docs/Part-1-Database-Corrections.md"
+            "docs/Part-2-Requirements-Checklist.md"
+            "scripts/validate-planning.py"
           )
 
           for required_file in "${required_files[@]}"; do
@@ -59,44 +61,11 @@ jobs:
 
           echo "The draw.io, PNG and SVG ERD files are valid."
 
-      - name: Validate API endpoint plan
+      - name: Validate endpoint operations and matching schema documents
         shell: bash
         run: |
           set -euo pipefail
-
-          endpoint_plan="docs/API-Endpoint-Plan.md"
-          expected_header='| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |'
-
-          grep -Fq "$expected_header" "$endpoint_plan"
-
-          required_routes=(
-            "/api/auth/register"
-            "/api/auth/login"
-            "/api/auth/logout"
-            "/api/profile"
-            "/api/profile/picture"
-            "/api/events"
-            "/api/organiser/dashboard"
-            "/banner"
-            "/categories"
-            "/api/enrolments"
-            "/api/results/mine"
-          )
-
-          for required_route in "${required_routes[@]}"; do
-            if ! grep -Fq "$required_route" "$endpoint_plan"; then
-              echo "Required API area is missing: $required_route"
-              exit 1
-            fi
-          done
-
-          endpoint_count=$(grep -Ec '^\| (GET|POST|PUT|DELETE) \| `/api/' "$endpoint_plan")
-          if [[ "$endpoint_count" -lt 20 ]]; then
-            echo "Expected at least 20 planned endpoints but found $endpoint_count."
-            exit 1
-          fi
-
-          echo "The API plan contains all required columns and $endpoint_count endpoint rows."
+          python3 scripts/validate-planning.py
 
       - name: Validate SQL schema and seed sections
         shell: bash

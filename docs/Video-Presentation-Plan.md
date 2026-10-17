@@ -1,5 +1,7 @@
 # RaceDay Part 1 Video Presentation Plan
 
+This plan was used for the completed [Part 1 walkthrough](../README-Part1.md#video-presentation). The endpoint plan, ERD and SQL have since been corrected. Fresh SSMS evidence is in the [database correction notes](Part-1-Database-Corrections.md). Part 2 will have its own API demonstration.
+
 ## 1. Purpose
 
 This plan provides a clear order for the unlisted YouTube walkthrough required for Part 1. It is a set of speaking prompts and demonstration steps rather than a word-for-word script. The presentation should explain the design decisions naturally and show that the presenter understands how the system fits together.
@@ -134,9 +136,8 @@ Do not delete or overwrite an existing database that contains work which must be
 1. Upload the final recording to YouTube.
 2. Set the visibility to Unlisted.
 3. Open the unlisted link in a private browser window to confirm that it works.
-4. Replace the pending video statement in `README.md` with the working YouTube link.
-5. Commit the README update with a meaningful message.
-6. Confirm that the GitHub Actions workflow is still green.
+4. Keep the completed Part 1 video link in `README-Part1.md`.
+5. Confirm that the GitHub Actions workflow is still green.
 
 ## References
 

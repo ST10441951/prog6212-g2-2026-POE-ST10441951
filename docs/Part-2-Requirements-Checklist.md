@@ -18,7 +18,9 @@ Tick each item after it has been completed and checked.
 - [x] Fix the Completed result check so a finish time is required.
 - [x] Fix the SQL guard and prevent success messages after errors.
 - [x] Test the script and invalid values on a separate clean database.
-- [ ] Update SSMS evidence, document statuses and endpoint checks in CI.
+- [x] Update SSMS evidence and document statuses for the corrected script.
+- [x] Add required method-and-route checks and matching schema-document checks to the planning workflow.
+- [ ] Confirm the updated planning workflow is green on GitHub after pushing it.
 
 The [database correction notes](Part-1-Database-Corrections.md) record the local checks. These are SQL checks, not Part 2 API unit tests.
 
@@ -40,9 +42,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 - [x] Use a separate Part 2 branch.
 - [ ] Make at least 20 meaningful Part 2 commits using my own account.
-- [ ] Keep the workflow in `.github/workflows/`.
+- [x] Keep the workflow in `.github/workflows/`.
 - [ ] Build the solution and run all tests on every push.
-- [ ] Keep the Part 1 file and endpoint checks working.
+- [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 
 ## Authentication and role-based access: 20 marks
