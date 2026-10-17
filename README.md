@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The updated planning workflow passes locally. Its GitHub run is pending. API development has not started.
+The updated planning workflow passes locally and on GitHub. API development has not started.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -59,7 +59,7 @@ git clone https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git
 
 The planning workflow checks the required files, all 40 endpoint rows, the lecturer's 25 required operations and matching SQL, ERD and data-dictionary columns. It runs on every push and on pull requests to main. The updated commands passed locally, including checks that reject missing operations and mismatched fields (GitHub, 2026b).
 
-The [planning build for ae2c47f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39057551536) passed. The latest workflow changes pass locally but have not been pushed yet.
+The [updated planning build for 6ac3a1f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39062176239) passed on GitHub.
 
 The Part 2 workflow will also build the API and run its tests on every push.
 

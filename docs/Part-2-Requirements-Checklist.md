@@ -20,7 +20,7 @@ Tick each item after it has been completed and checked.
 - [x] Test the script and invalid values on a separate clean database.
 - [x] Update SSMS evidence and document statuses for the corrected script.
 - [x] Add required method-and-route checks and matching schema-document checks to the planning workflow.
-- [ ] Confirm the updated planning workflow is green on GitHub after pushing it.
+- [x] Confirm the updated planning workflow is green on GitHub after pushing it.
 
 The [database correction notes](Part-1-Database-Corrections.md) record the local checks. These are SQL checks, not Part 2 API unit tests.
 

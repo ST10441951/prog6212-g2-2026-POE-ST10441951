@@ -71,7 +71,7 @@ The GitHub Actions workflow runs these checks on every push and on pull requests
 
 All six workflow command steps passed locally. Nine invalid-document cases were also rejected: missing enrolment DELETE, wrong method, duplicate endpoint, empty description, incorrect mapping, missing additional endpoint, wrong dictionary NULL rule, wrong draw.io datatype and wrong SVG datatype.
 
-The [GitHub run for ae2c47f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39057551536) passed. The updated workflow passes locally but has not been pushed yet. Planning checks do not execute the SQL script or test the API.
+The [GitHub run for 6ac3a1f](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39062176239) passed with the updated workflow. Planning checks do not execute the SQL script or test the API.
 
 ## References
 
