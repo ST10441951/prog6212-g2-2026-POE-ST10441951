@@ -20,7 +20,8 @@ Tick each item after it has been completed and checked.
 - [x] Test the script and invalid values on a separate clean database.
 - [x] Update SSMS evidence and document statuses for the corrected script.
 - [x] Add required method-and-route checks and matching schema-document checks to the planning workflow.
-- [x] Confirm the updated planning workflow is green on GitHub after pushing it.
+- [x] Use C# for the planning and repository checks.
+- [ ] Confirm the C# planning workflow is green on GitHub after pushing it.
 
 The [database correction notes](Part-1-Database-Corrections.md) record the local checks. These are SQL checks, not Part 2 API unit tests.
 
@@ -62,6 +63,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 ## API endpoints and database: 25 marks
 
+- [x] Set C# and SQL as the project code languages.
 - [ ] Build the C# ASP.NET Core Web API and connect it to SQL Server.
 - [ ] Use EF Core Code First, configurations and migrations.
 - [ ] Match all seven tables, relationships, datatypes, constraints and indexes to Part 1.

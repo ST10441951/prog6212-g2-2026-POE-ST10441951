@@ -14,138 +14,30 @@ jobs:
   validate-part1:
     name: Validate Part 1 files
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Check required files
-        shell: bash
-        run: |
-          set -euo pipefail
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
 
-          required_files=(
-            "README.md"
-            "README-Part1.md"
-            "docs/RaceDay-ERD.drawio"
-            "docs/RaceDay-ERD.png"
-            "docs/RaceDay-ERD.svg"
-            "docs/RaceDay-ERD-Notes.md"
-            "docs/API-Endpoint-Plan.md"
-            "docs/RaceDay-Data-Dictionary.md"
-            "docs/RaceDay.sql"
-            "docs/Part-1-Database-Corrections.md"
-            "docs/Part-2-Requirements-Checklist.md"
-            "scripts/validate-planning.py"
-          )
+      - name: Build planning checks
+        run: dotnet build tools/RaceDay.PlanningChecks --configuration Release
 
-          for required_file in "${required_files[@]}"; do
-            if [[ ! -s "$required_file" ]]; then
-              echo "Required file is missing or empty: $required_file"
-              exit 1
-            fi
-          done
-
-          echo "All required Part 1 files are present and non-empty."
-
-      - name: Validate ERD files
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          file docs/RaceDay-ERD.png | grep -q "PNG image data"
-          grep -q "<svg" docs/RaceDay-ERD.svg
-          grep -q "<mxfile" docs/RaceDay-ERD.drawio
-
-          echo "The draw.io, PNG and SVG ERD files are valid."
-
-      - name: Validate endpoint operations and matching schema documents
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 scripts/validate-planning.py
-
-      - name: Validate SQL schema and seed sections
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          sql_file="docs/RaceDay.sql"
-          required_tables=(
-            "Roles"
-            "Users"
-            "Events"
-            "EventCategories"
-            "EventRoutes"
-            "Enrolments"
-            "Results"
-          )
-
-          for required_table in "${required_tables[@]}"; do
-            if ! grep -Eq "CREATE TABLE dbo\.${required_table}([[:space:]]|$)" "$sql_file"; then
-              echo "CREATE TABLE is missing for: $required_table"
-              exit 1
-            fi
-
-            if ! grep -Eq "INSERT INTO dbo\.${required_table}([[:space:]]|$)" "$sql_file"; then
-              echo "Seed INSERT is missing for: $required_table"
-              exit 1
-            fi
-          done
-
-          grep -Fq "PRIMARY KEY" "$sql_file"
-          grep -Fq "FOREIGN KEY" "$sql_file"
-          grep -Fq "CHECK" "$sql_file"
-          grep -Fq "DEFAULT" "$sql_file"
-          grep -Fq "CREATE UNIQUE NONCLUSTERED INDEX" "$sql_file"
-          grep -Fq "DistanceKm DECIMAL(6,2) NOT NULL" "$sql_file"
-          grep -Fq "MaximumAge TINYINT NULL" "$sql_file"
-          grep -Fq "ProfilePictureBlobName NVARCHAR(255) NULL" "$sql_file"
-          grep -Fq "BannerImageBlobName NVARCHAR(255) NULL" "$sql_file"
-
-          echo "The SQL file contains all seven tables, seed sections and required constraint types."
-
-      - name: Validate README roles and commit count
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          grep -Fq "Organiser" README.md
-          grep -Fq "Participant" README.md
-
-          commit_count=$(git rev-list --count HEAD)
-          if [[ "$commit_count" -lt 20 ]]; then
-            echo "Expected at least 20 commits but found $commit_count."
-            exit 1
-          fi
-
-          echo "README role descriptions are present."
-          echo "Repository commit count: $commit_count"
-
-      - name: Check writing conventions
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if grep -RIn $'\u2014' README.md docs .github; then
-            echo "An em dash was found. Replace it with standard punctuation."
-            exit 1
-          fi
-
-          if grep -RIn $'\u2013' README.md docs .github; then
-            echo "An en dash was found. Replace it with a normal hyphen."
-            exit 1
-          fi
-
-          echo "The checked files follow the required punctuation convention."
+      - name: Validate planning documents
+        run: dotnet run --project tools/RaceDay.PlanningChecks --configuration Release --no-build
 
 # References
-# GitHub (2026) 'Workflow syntax for GitHub Actions', GitHub Docs.
-# Available at: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
-# (Accessed: 19 September 2026).
-#
-# GitHub (2026) 'actions/checkout', GitHub.
-# Available at: https://github.com/actions/checkout
-# (Accessed: 19 September 2026).
+# GitHub (2026a) 'Workflow syntax for GitHub Actions', GitHub Docs.
+# https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# GitHub (2026b) 'actions/setup-dotnet', GitHub.
+# https://github.com/actions/setup-dotnet
+# GitHub (2026c) 'actions/checkout', GitHub.
+# https://github.com/actions/checkout
+# Microsoft (2026) 'dotnet run', Microsoft Learn.
+# https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run
+# Accessed: 17 October 2026.
