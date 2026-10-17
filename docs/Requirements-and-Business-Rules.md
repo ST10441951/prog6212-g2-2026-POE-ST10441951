@@ -6,6 +6,8 @@ RaceDay is intended to support the planning and management of South African road
 
 This document records the requirements and business rules that will guide the Part 1 ERD, API endpoint plan and SQL Server database script. It is based on the supplied Portfolio of Evidence brief (The Independent Institute of Education, 2026).
 
+The endpoint rules were updated on 17 October 2026 using the lecturer's Part 1 feedback. The [endpoint plan](API-Endpoint-Plan.md#141-required-operations) maps all 25 required operations (The Independent Institute of Education, 2026b).
+
 ## 2. Part 1 scope
 
 Part 1 includes:
@@ -101,8 +103,12 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 | FR-ENROL-01 | An authenticated Participant must be able to enter an event by selecting an available category. |
 | FR-ENROL-02 | A Participant must be able to view their own enrolments. |
 | FR-ENROL-03 | An Organiser must be able to view enrolments for an event that they manage. |
-| FR-ENROL-04 | The system must reject a duplicate active enrolment for the same Participant and Event. |
+| FR-ENROL-04 | The system must reject a second saved enrolment for the same Participant and Event, including when the existing entry is Cancelled. |
 | FR-ENROL-05 | The selected category must belong to the selected event. |
+| FR-ENROL-06 | A Participant may cancel their own Confirmed entry while the event is Open and entries have not closed, provided no result exists. The row is kept. |
+| FR-ENROL-07 | A Participant may reactivate their own Cancelled entry after the event, category, age and capacity checks pass again. |
+| FR-ENROL-08 | A Participant may delete their own Confirmed entry while the event is Open and entries have not closed, provided no result exists. Cancelled and historical entries are retained. |
+| FR-ENROL-09 | New entries and reactivations must meet both category age limits. A date of birth is required for an age-restricted category. |
 
 ### 4.5 Result requirements
 
@@ -154,11 +160,14 @@ A participant uses RaceDay to find and enter events. A participant must be able 
 
 1. Every enrolment must identify one Participant, one Event and one Event Category.
 2. The selected Event Category must belong to the selected Event.
-3. A Participant may have only one active enrolment per Event.
+3. A Participant may have at most one saved enrolment per Event. A Cancelled entry is reactivated instead of inserting another row.
 4. A Participant cannot enrol after entries have closed.
 5. A Participant cannot enrol in an Event with a Draft, Closed, Cancelled or Completed status.
 6. An enrolment status will be limited to Confirmed or Cancelled unless later requirements justify another value.
 7. Cancelling an enrolment must preserve the original record for history and reporting.
+8. Cancellation and DELETE require an Open event, a future entry-closing time and no result. Cancellation keeps the row; DELETE removes a Confirmed entry and later reads return 404. A Cancelled entry cannot be deleted.
+9. Minimum and maximum ages are inclusive. Check completed years of age on the date part of the stored UTC event date. An out-of-range age or missing date of birth for an age-restricted category returns 400.
+10. A Cancelled entry does not use capacity. Reactivation repeats the entry checks and keeps the same EnrolmentId. If the selected category changes, clear the old bib number.
 
 ### 5.5 Result rules
 
@@ -212,8 +221,9 @@ The following decisions guide the ERD, SQL script and later implementation after
 12. The API generates image URLs and is the only component that communicates with Azure Blob Storage.
 13. The MVC application consumes the API for every data operation and has no direct database access.
 14. The Organiser dashboard uses a dedicated summary endpoint so that aggregation remains in the API.
+15. All 40 endpoints in the corrected plan are in scope for Part 2. This includes the existing image endpoints. MVC pages and Docker remain Part 3 work.
 
-## 9. Session 3 data-model decisions
+## 9. Data-model decisions
 
 - The final model contains Roles, Users, Events, EventCategories, EventRoutes, Enrolments and Results.
 - Roles use a separate lookup table so that permitted role values are controlled centrally.
@@ -228,3 +238,5 @@ The following decisions guide the ERD, SQL script and later implementation after
 ## References
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+
+The Independent Institute of Education (2026b) *POE Part I General Feedback (HE)*. Lecturer-provided ERD and endpoint feedback.

@@ -2,14 +2,14 @@
 
 ## 1. Purpose
 
-This document plans the REST API endpoints for RaceDay before application development begins. It is completed during Part 1 and will guide the API built in Part 2 and consumed by the MVC application in Part 3.
+This document lists the RaceDay endpoints before API development starts. It includes the Part 1 corrections dated 17 October 2026 and will guide the Part 2 API and Part 3 MVC application.
 
 The Part 2 API will be developed in C# using ASP.NET Core. Part 1 contains the endpoint design only and does not include application code.
 
 ## 2. API conventions
 
 - Every route starts with `/api/`.
-- The API sends and receives JSON.
+- Normal request and response bodies use JSON. Image uploads use `multipart/form-data`, and 204 responses have no body.
 - HTTPS must be used when the API is deployed.
 - Protected endpoints require a valid authenticated server-side session.
 - The session stores the signed-in user's identifier and role for later requests. Passwords and password hashes are never stored in the session.
@@ -127,7 +127,7 @@ The exact wording may change during implementation, but the documented HTTP stat
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
 |---|---|---|---|---|---|
 | GET | `/api/events` | Returns a paged list of upcoming public events. Optional query values may filter the list by event type, province or date. Draft and cancelled events are not included in the public list. | None (public) | None. Optional query values: `page`, `pageSize`, `eventType`, `province`, `fromDate`, `toDate`. | `200 OK`: Paged event summaries and paging information.<br>`400 Bad Request`: A filter, date range or paging value is invalid. |
-| GET | `/api/events/{eventId}` | Returns the public details of one event, including its available categories and route summaries. | None (public) | None | `200 OK`: Event details, available categories and route summaries.<br>`404 Not Found`: The event does not exist or is not publicly available. |
+| GET | `/api/events/{eventId}` | Returns one public event. Its owning Organiser may also read a Draft or other non-public event. | Public; owning Organiser for non-public records | None | `200 OK`: Event details, categories and route summaries visible to the caller.<br>`404 Not Found`: Event missing or not visible to the caller. |
 | GET | `/api/organiser/dashboard` | Returns the signed-in Organiser's event summary, including each event's total enrolments and upcoming event dates. | Organiser | None | `200 OK`: Dashboard totals and event summaries.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
 | GET | `/api/events/mine` | Returns all events managed by the signed-in Organiser, including Draft, Closed, Cancelled and Completed events. | Organiser | None. Optional query values: `page`, `pageSize`, `status`. | `200 OK`: Paged summaries of the Organiser's events.<br>`400 Bad Request`: A status or paging value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
 | POST | `/api/events` | Creates a Draft event for the signed-in Organiser. The Organiser is identified from the session and cannot be selected in the request body. | Organiser | `eventName` string, required<br>`eventType` string, required: Running, Walking or Cycling<br>`description` string, required<br>`distanceKm` decimal, required<br>`eventDateTime` date-time, required<br>`entryClosingDateTime` date-time, required<br>`venueName` string, required<br>`addressLine1` string, required<br>`city` string, required<br>`province` string, required<br>`latitude` decimal, optional<br>`longitude` decimal, optional | `201 Created`: Created Draft event and a `Location` header for `/api/events/{eventId}`.<br>`400 Bad Request`: A required field or business-rule value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Organiser role. |
@@ -166,13 +166,14 @@ The exact wording may change during implementation, but the documented HTTP stat
 - Latitude and longitude are optional, but both should be supplied together when coordinates are used.
 - Ownership is checked using the signed-in Organiser's user ID and the event's `organiserUserId` value.
 - Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
+- The owning Organiser can follow a newly created event's `Location` header and read the Draft event. Public callers and other users cannot read that Draft.
 
 ## 8. Event Category endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
 |---|---|---|---|---|---|
 | GET | `/api/events/{eventId}/categories` | Returns the available categories for a public event. Each category includes its route summary when a route has been added. | None (public) | None | `200 OK`: List of available categories and route summaries.<br>`404 Not Found`: The event does not exist or is not publicly available. |
-| GET | `/api/events/{eventId}/categories/{categoryId}` | Returns one available category and its route details for a public event. | None (public) | None | `200 OK`: Category and route details.<br>`404 Not Found`: The event or category does not exist, the category does not belong to the event or the record is not publicly available. |
+| GET | `/api/events/{eventId}/categories/{categoryId}` | Returns one public available category. The owning Organiser may also read unavailable categories and categories in a Draft event. | Public; owning Organiser for non-public records | None | `200 OK`: Category and route details.<br>`404 Not Found`: Event or category missing, category belongs to another event or record is not visible to the caller. |
 | GET | `/api/organiser/events/{eventId}/categories` | Returns every category for an event managed by the signed-in Organiser, including unavailable categories. | Organiser and event owner | None | `200 OK`: List of all categories and route summaries for the event.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
 | POST | `/api/events/{eventId}/categories` | Creates an age category, distance category or combined category for an event managed by the signed-in Organiser. | Organiser and event owner | `categoryName` string, required<br>`distanceKm` decimal, required<br>`minimumAge` integer, optional<br>`maximumAge` integer, optional<br>`entryFee` decimal, required<br>`capacity` integer, optional<br>`isAvailable` boolean, required | `201 Created`: Created category and a `Location` header for `/api/events/{eventId}/categories/{categoryId}`.<br>`400 Bad Request`: A field value or age range is missing or invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist.<br>`409 Conflict`: The event already has a category with the supplied name. |
 | PUT | `/api/events/{eventId}/categories/{categoryId}` | Replaces the editable details of an age category, distance category or combined category belonging to an event managed by the signed-in Organiser. Setting `isAvailable` to false prevents new enrolments while preserving the category. | Organiser and event owner | `categoryName` string, required<br>`distanceKm` decimal, required<br>`minimumAge` integer, optional<br>`maximumAge` integer, optional<br>`entryFee` decimal, required<br>`capacity` integer, optional<br>`isAvailable` boolean, required | `200 OK`: Updated category details.<br>`400 Bad Request`: A field value or age range is missing or invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The updated name duplicates another category for the event or the change conflicts with existing enrolments. |
@@ -206,7 +207,7 @@ The exact wording may change during implementation, but the documented HTTP stat
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
 |---|---|---|---|---|---|
-| GET | `/api/events/{eventId}/categories/{categoryId}/route` | Returns the route information for an available category in a public event. | None (public) | None | `200 OK`: Route details.<br>`404 Not Found`: The event, category or route does not exist, the category does not belong to the event or the record is not publicly available. |
+| GET | `/api/events/{eventId}/categories/{categoryId}/route` | Returns a public category's route. The owning Organiser may also read the route of a Draft event or unavailable category. | Public; owning Organiser for non-public records | None | `200 OK`: Route details.<br>`404 Not Found`: Event, category or route missing, category belongs to another event or record is not visible to the caller. |
 | POST | `/api/events/{eventId}/categories/{categoryId}/route` | Creates the route for a category belonging to an event managed by the signed-in Organiser. A category may have no more than one route. | Organiser and event owner | `routeName` string, required<br>`startLocation` string, required<br>`finishLocation` string, required<br>`routeDescription` string, required<br>`routeMapUrl` string, optional<br>`elevationGainMetres` integer, optional | `201 Created`: Created route and a `Location` header for the route resource.<br>`400 Bad Request`: A field value or URL is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The category already has a route. |
 | PUT | `/api/events/{eventId}/categories/{categoryId}/route` | Replaces the route details for a category belonging to an event managed by the signed-in Organiser. | Organiser and event owner | `routeName` string, required<br>`startLocation` string, required<br>`finishLocation` string, required<br>`routeDescription` string, required<br>`routeMapUrl` string, optional<br>`elevationGainMetres` integer, optional | `200 OK`: Updated route details.<br>`400 Bad Request`: A field value or URL is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event, category or route does not exist, or the category does not belong to the event. |
 | DELETE | `/api/events/{eventId}/categories/{categoryId}/route` | Deletes the route for a category belonging to an event managed by the signed-in Organiser. The category remains in the system. | Organiser and event owner | None | `204 No Content`: The route was deleted.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event, category or route does not exist, or the category does not belong to the event. |
@@ -221,17 +222,19 @@ The exact wording may change during implementation, but the documented HTTP stat
 - An unavailable category remains visible to its Organiser but is excluded from public category lists and new enrolments.
 - A category with enrolments cannot be permanently deleted because its history must be preserved.
 - Each category may have zero or one route. `POST` creates that route and `PUT` updates the existing route.
+- Category and route creation locations remain readable by the owning Organiser when the event is Draft or the category is unavailable. Other callers see only public available records.
 - Route elevation gain cannot be negative when it is supplied.
 
 ## 10. Enrolment endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
 |---|---|---|---|---|---|
-| POST | `/api/enrolments` | Enters the signed-in Participant into an Open event using a selected available category. The Participant identity is obtained from the session. | Participant | `eventId` integer, required<br>`eventCategoryId` integer, required | `201 Created`: Confirmed enrolment and a `Location` header for `/api/enrolments/{enrolmentId}`.<br>`400 Bad Request`: The request is invalid or the Participant does not meet the category's minimum age.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role.<br>`404 Not Found`: The event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The Participant already has an active enrolment, entries are closed, the event is not Open, or the category is unavailable or full. |
+| POST | `/api/enrolments` | Enters the signed-in Participant into an Open event using an available category. The Participant ID comes from the session. | Participant | `eventId` integer, required<br>`eventCategoryId` integer, required | `201 Created`: Confirmed enrolment with its resource `Location`.<br>`400 Bad Request`: Invalid fields, age outside the category limits or missing date of birth for an age-restricted category.<br>`401 Unauthorized`: No valid session.<br>`403 Forbidden`: Inactive account or wrong role.<br>`404 Not Found`: Event or category missing, or category belongs to another event.<br>`409 Conflict`: An enrolment already exists, entries are closed, the event is not Open, or the category is unavailable or full. A cancelled enrolment must be reactivated. |
 | GET | `/api/enrolments/mine` | Returns the signed-in Participant's enrolment history. Optional query values may filter the list by status or event. | Participant | None. Optional query values: `page`, `pageSize`, `status`, `eventId`. | `200 OK`: Paged enrolment summaries and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or does not have the Participant role. |
 | GET | `/api/enrolments/{enrolmentId}` | Returns one enrolment. Access is limited to the Participant who owns it or the Organiser who manages its event. | Participant owner or Organiser event owner | None | `200 OK`: Enrolment, event, category and optional result summary.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive or the user does not own the enrolment or manage its event.<br>`404 Not Found`: The enrolment does not exist. |
-| PUT | `/api/enrolments/{enrolmentId}/cancel` | Changes a Confirmed enrolment owned by the signed-in Participant to Cancelled without deleting its history. | Participant owner | None | `200 OK`: Updated enrolment with Cancelled status.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not a Participant or does not own the enrolment.<br>`404 Not Found`: The enrolment does not exist.<br>`409 Conflict`: The enrolment is already cancelled or its event state prevents cancellation. |
-| PUT | `/api/enrolments/{enrolmentId}/reactivate` | Reactivates a Cancelled enrolment owned by the signed-in Participant and confirms the category to be used. The normal event and category checks are repeated. | Participant owner | `eventCategoryId` integer, required | `200 OK`: Reactivated Confirmed enrolment.<br>`400 Bad Request`: The request is invalid or the Participant does not meet the category's minimum age.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not a Participant or does not own the enrolment.<br>`404 Not Found`: The enrolment, event or category does not exist, or the category does not belong to the event.<br>`409 Conflict`: The enrolment is already Confirmed, entries are closed, the event is not Open, or the category is unavailable or full. |
+| PUT | `/api/enrolments/{enrolmentId}/cancel` | Changes the Participant's own Confirmed enrolment to Cancelled and keeps the row for history. | Participant owner | None. The route sets the status to Cancelled. | `200 OK`: Updated Cancelled enrolment.<br>`401 Unauthorized`: No valid session.<br>`403 Forbidden`: Inactive account, wrong role or another Participant's entry.<br>`404 Not Found`: Enrolment missing.<br>`409 Conflict`: Already Cancelled, result exists, event is not Open or entries have closed. |
+| PUT | `/api/enrolments/{enrolmentId}/reactivate` | Changes the Participant's own Cancelled enrolment to Confirmed after checking the selected category again. | Participant owner | `eventCategoryId` integer, required | `200 OK`: Reactivated Confirmed enrolment.<br>`400 Bad Request`: Invalid fields, age outside the category limits or missing date of birth for an age-restricted category.<br>`401 Unauthorized`: No valid session.<br>`403 Forbidden`: Inactive account, wrong role or another Participant's entry.<br>`404 Not Found`: Enrolment, event or category missing, or category belongs to another event.<br>`409 Conflict`: Already Confirmed, result exists, entries are closed, event is not Open, or category is unavailable or full. |
+| DELETE | `/api/enrolments/{enrolmentId}` | Removes the Participant's own Confirmed entry before entries close, only if the event is Open and no result exists. Cancelled entries are retained as history. | Participant owner | None | `204 No Content`: Entry removed. A later GET returns 404.<br>`401 Unauthorized`: No valid session.<br>`403 Forbidden`: Inactive account, wrong role or another Participant's entry.<br>`404 Not Found`: Enrolment missing.<br>`409 Conflict`: Entry is Cancelled, result exists, event is not Open or entries have closed. |
 | GET | `/api/events/{eventId}/enrolments` | Returns enrolments for an event managed by the signed-in Organiser. Optional query values may filter the list by status or category. | Organiser and event owner | None. Optional query values: `page`, `pageSize`, `status`, `eventCategoryId`. | `200 OK`: Paged enrolment details and paging information.<br>`400 Bad Request`: A filter or paging value is invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the event.<br>`404 Not Found`: The event does not exist. |
 | PUT | `/api/enrolments/{enrolmentId}/bib-number` | Assigns or corrects the bib number for an enrolment in an event managed by the signed-in Organiser. | Organiser and event owner | `bibNumber` string, required | `200 OK`: Updated enrolment with its bib number.<br>`400 Bad Request`: The bib number is blank or invalid.<br>`401 Unauthorized`: The session is missing, invalid or expired.<br>`403 Forbidden`: The account is inactive, is not an Organiser or does not manage the related event.<br>`404 Not Found`: The enrolment does not exist.<br>`409 Conflict`: The bib number is already assigned within the event. |
 
@@ -254,10 +257,16 @@ The exact wording may change during implementation, but the documented HTTP stat
 - The Participant user ID is read from the session and is not accepted in the enrolment request body.
 - The selected category must belong to the selected event.
 - New and reactivated enrolments require an Open event, a future closing date and an available category with remaining capacity.
-- A Participant has one enrolment record per event. A cancelled record is reactivated instead of creating a duplicate row.
-- Cancelling an enrolment changes its status and preserves the original record.
+- A Participant has at most one saved enrolment per event. POST returns 409 for an existing row, including a Cancelled row. Reactivation updates that row.
+- `/cancel` and `/reactivate` are the planned PUT status operations. Each route selects a fixed status, so a free-text status field is not needed.
+- Cancellation requires a Confirmed entry, an Open event, a future entry-closing time and no result. It keeps the row and bib number, changes `Status` and updates `UpdatedAt`.
+- DELETE removes only the Participant's own Confirmed entry under the same event, closing-time and result checks. It returns 204 with no body; later reads return 404.
+- Cancelled entries, closed-event history and entries with results cannot be deleted. Use cancellation when the entry should stay in the Participant's history.
+- Age is measured in completed years on the date part of the stored UTC event date. Minimum and maximum ages are inclusive. New entries and reactivations outside either limit return 400.
+- A date of birth is required when either age limit is set. A missing date of birth returns 400 before saving. Categories without age limits do not require it.
+- A Cancelled entry does not use category capacity. Reactivation checks the new category, age and available capacity before updating the same row.
 - Bib numbers are optional until assigned, but an assigned value must be unique within the event.
-- Cancellation and reactivation are retained as useful additional endpoints after the Part 2 requirements cross-check.
+- If reactivation changes the category, clear the old bib number so the Organiser can assign one for the new category.
 
 ## 11. Result endpoints
 
@@ -329,9 +338,54 @@ The exact wording may change during implementation, but the documented HTTP stat
 
 ## 14. Endpoint-plan coverage
 
-The endpoint plan covers every resource group named in the supplied Part 1, Part 2 and Part 3 briefs: Authentication, User Profile, Events, Event Categories, Event Routes, Enrolments, Results, image uploads and the Organiser dashboard. Every endpoint records its method, route, description, required role, request body and expected success and failure responses.
+The plan has 40 endpoints. The table below maps the 25 operations in the lecturer's Part 1 feedback to the planned routes. The feedback allows different route names; the method and operation must still match (The Independent Institute of Education, 2026b).
 
-The supplied Part 2 and Part 3 functional-requirement pages were cross-checked on 20 September 2026. Registration supports both required roles, authentication uses sessions, logout is planned, Events include distance and banner images, Categories support upper and lower age limits, Participants can upload a profile picture, and the Swagger, testing, MVC, Blob Storage and Docker expectations are recorded. The endpoint plan is complete for Part 1 and is the specification for later development.
+### 14.1 Required operations
+
+| No. | Area | Required operation | Planned endpoint |
+|---|---|---|---|
+| 1 | Authentication | Register | POST `/api/auth/register` |
+| 2 | Authentication | Login | POST `/api/auth/login` |
+| 3 | Authentication | Logout | POST `/api/auth/logout` |
+| 4 | Profile | View own profile | GET `/api/profile` |
+| 5 | Profile | Update own profile | PUT `/api/profile` |
+| 6 | Events | Browse events | GET `/api/events` |
+| 7 | Events | View one event | GET `/api/events/{eventId}` |
+| 8 | Events | List owned events | GET `/api/events/mine` |
+| 9 | Events | Create event | POST `/api/events` |
+| 10 | Events | Update event | PUT `/api/events/{eventId}` |
+| 11 | Events | Delete event | DELETE `/api/events/{eventId}` |
+| 12 | Categories | View event categories | GET `/api/events/{eventId}/categories` |
+| 13 | Categories | Create category | POST `/api/events/{eventId}/categories` |
+| 14 | Categories | Update category | PUT `/api/events/{eventId}/categories/{categoryId}` |
+| 15 | Categories | Delete category | DELETE `/api/events/{eventId}/categories/{categoryId}` |
+| 16 | Enrolments | Enter an event | POST `/api/enrolments` |
+| 17 | Enrolments | View own enrolments | GET `/api/enrolments/mine` |
+| 18 | Enrolments | View one enrolment | GET `/api/enrolments/{enrolmentId}` |
+| 19 | Enrolments | View event enrolments | GET `/api/events/{eventId}/enrolments` |
+| 20 | Enrolments | Update status | PUT `/api/enrolments/{enrolmentId}/cancel` |
+| 21 | Enrolments | Delete entry | DELETE `/api/enrolments/{enrolmentId}` |
+| 22 | Results | Record result | POST `/api/enrolments/{enrolmentId}/result` |
+| 23 | Results | View own results | GET `/api/results/mine` |
+| 24 | Results | View event results | GET `/api/events/{eventId}/results` |
+| 25 | Results | Update result | PUT `/api/enrolments/{enrolmentId}/result` |
+
+The cancellation route covers the required PUT status change. Reactivation provides the reverse change from Cancelled to Confirmed.
+
+### 14.2 Other planned endpoints
+
+The other 15 endpoints remain in Part 2: password changes, profile-picture upload and removal, the Organiser dashboard, event-banner upload and removal, single-category and Organiser-category reads, four route operations, the second enrolment status route, bib numbers and a single-enrolment result read.
+
+The image endpoints are already in this plan, so they will be implemented and tested through the API in Part 2. The MVC interface, its upload pages and Docker setup remain Part 3 work.
+
+### 14.3 Corrections dated 17 October 2026
+
+- Added the missing enrolment DELETE operation.
+- Mapped all 25 required operations to the planned methods and routes.
+- Set out the differences between cancellation, reactivation and deletion.
+- Added both age limits, the event-date age rule and the missing-date-of-birth response.
+- Allowed the owning Organiser to read new Draft events, categories and routes through their creation locations.
+- Kept all 39 original endpoints. No API code has been written yet.
 
 ## References
 
@@ -356,3 +410,5 @@ Microsoft (2026h) 'Get started with Azure Blob Storage and .NET', *Microsoft Lea
 Microsoft (2026i) 'Run an ASP.NET Core app in Docker containers', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/docker/building-net-docker-images?view=aspnetcore-10.0 (Accessed: 20 September 2026).
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+
+The Independent Institute of Education (2026b) *POE Part I General Feedback (HE)*. Lecturer-provided ERD and endpoint feedback.

@@ -4,6 +4,8 @@
 
 This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1, Part 2 and Part 3 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
 
+The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 endpoints; implementation has not started (The Independent Institute of Education, 2026b).
+
 ## 2. Functional requirement traceability
 
 | Requirement ID | Requirement summary | Role or access | Planned data area | Planned API area | Part 1 evidence |
@@ -32,8 +34,12 @@ This table connects each confirmed requirement to the planned database area, API
 | FR-ENROL-01 | Enter an Event through a selected Category | Participant | Enrolments and Event Categories | Enrolments | Participant POST endpoint |
 | FR-ENROL-02 | View own Enrolments | Participant | Enrolments | Enrolments | Participant GET endpoint and ownership rule |
 | FR-ENROL-03 | View Enrolments for an owned Event | Organiser | Events and Enrolments | Enrolments | Organiser GET endpoint and ownership rule |
-| FR-ENROL-04 | Reject duplicate active Event entry | System | Enrolments | Enrolments | Unique rule and conflict response |
+| FR-ENROL-04 | Reject a second saved Event entry | System | Enrolments | Enrolments | Unique rule, 409 response and reactivation of Cancelled rows |
 | FR-ENROL-05 | Ensure the Category belongs to the selected Event | System | Events and Event Categories | Enrolments | Foreign-key design and validation response |
+| FR-ENROL-06 | Cancel own Confirmed entry and keep its history | Participant owner | Enrolments | PUT enrolment cancellation | Open-event, closing-time and result checks |
+| FR-ENROL-07 | Reactivate own Cancelled entry | Participant owner | Enrolments and Event Categories | PUT enrolment reactivation | Same row ID; repeated category, age and capacity checks |
+| FR-ENROL-08 | Delete own eligible Confirmed entry | Participant owner | Enrolments and Results | DELETE enrolment | Open-event, closing-time and result checks; Cancelled history retained |
+| FR-ENROL-09 | Check both age limits and required date of birth | Participant | Users, Events and Event Categories | Enrolment creation and reactivation | Age on the event date; inclusive limits; 400 for invalid or missing age data |
 | FR-RESULT-01 | Capture a Result for a valid Enrolment | Organiser | Results and Enrolments | Results | Organiser POST endpoint |
 | FR-RESULT-02 | Correct an existing Result | Organiser | Results | Results | Organiser PUT endpoint |
 | FR-RESULT-03 | View personal Results | Participant | Results and Enrolments | Results | Participant GET endpoint and ownership rule |
@@ -61,15 +67,15 @@ This table connects each confirmed requirement to the planned database area, API
 | ID | Submission requirement | Planned evidence | Status |
 |---|---|---|---|
 | SUB-01 | ERD with at least six entities, attributes, keys and cardinalities | `/docs/RaceDay-ERD.drawio`, `/docs/RaceDay-ERD.png` and `/docs/RaceDay-ERD-Notes.md` | Complete |
-| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Complete after Part 2 and Part 3 requirements cross-check |
+| SUB-02 | Complete six-column API endpoint plan | `/docs/API-Endpoint-Plan.md` | Updated 17 October: 40 endpoints and a mapping of the 25 required operations |
 | SUB-03 | SQL Server schema and seed script | `/docs/RaceDay.sql` | Complete |
-| SUB-04 | SQL script runs cleanly in SSMS | Demonstration and final test record | In progress: full script tested on clean LocalDB; SSMS walkthrough pending |
+| SUB-04 | SQL script runs cleanly in SSMS | `docs/evidence/ssms-database-success.png` and original walkthrough | Submitted Part 1 evidence present; SQL corrections and a new run are pending |
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
 | SUB-06 | At least 20 meaningful commits | Git history | Complete |
 | SUB-07 | Successful GitHub Actions validation | Workflow run and README screenshot | Complete |
-| SUB-08 | README describes system and roles | `/README.md` | Complete; video link tracked separately under SUB-09 |
-| SUB-09 | Unlisted video explains planning and SQL execution | README video link | In progress: walkthrough plan complete; recording and upload pending |
-| SUB-10 | GitHub repository link submitted on ARC | ARC submission | Not started |
+| SUB-08 | README describes system and roles | `/README-Part1.md` | Original Part 1 README preserved; root README now covers Part 2 |
+| SUB-09 | Unlisted video explains planning and SQL execution | [Part 1 README](../README-Part1.md#video-presentation) | Original walkthrough link present |
+| SUB-10 | GitHub repository link submitted on ARC | Part 1 requirements checklist | Recorded as submitted in the original checklist |
 
 ## 5. Part 2 requirements cross-check
 
@@ -82,7 +88,11 @@ The supplied Part 2 requirements were reviewed on 20 September 2026.
 | Event distance | `Events.DistanceKm` is required in the ERD, endpoint request, data dictionary and SQL script |
 | Age or distance categories | Categories include distance, minimum age and maximum age fields |
 | Event deletion | Organisers have a DELETE endpoint; events with dependent history return a conflict and are cancelled instead |
-| Enrolment cancellation | Retained as a useful additional endpoint, although Part 2 does not state it as a minimum requirement |
+| Required endpoint operations | All 25 feedback operations map to the corrected plan; the plan contains 40 endpoints in total |
+| Enrolment status changes | PUT cancellation and reactivation update the same row and keep its history |
+| Enrolment DELETE | Participant owner only; Confirmed entry, Open event, entries still open and no result |
+| Age eligibility | Both limits are inclusive; use the event date and require a date of birth when a limit is set |
+| Existing additional endpoints | Password, dashboard, route, bib-number and image operations remain in the Part 2 plan |
 | Swagger UI | Recorded as a mandatory Part 2 implementation and verification requirement |
 | Unit tests and CI | Required success, failure, authentication and role scenarios are recorded in the endpoint plan |
 
@@ -102,7 +112,7 @@ The supplied Part 3 requirements were reviewed on 20 September 2026.
 | UI design | MVC will use a consistent RaceDay theme, responsive layout, role navigation, status colours and friendly validation messages |
 | CI | Part 3 workflow will build the API, test projects and MVC project |
 
-## 7. Closed Session 3 design items
+## 7. Data-model decisions
 
 | Design item | Decision | Evidence |
 |---|---|---|
@@ -117,3 +127,5 @@ The supplied Part 3 requirements were reviewed on 20 September 2026.
 ## References
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+
+The Independent Institute of Education (2026b) *POE Part I General Feedback (HE)*. Lecturer-provided ERD and endpoint feedback.

@@ -231,6 +231,9 @@ Table rules:
 - `Status` is limited to Confirmed or Cancelled.
 - `BibNumber` must be unique within an Event when supplied.
 - The future API must check Event status, closing date, Category availability and capacity before creating an Enrolment.
+- New entries and reactivations use both age limits, inclusive, against completed years of age on the date part of the stored UTC event date. A missing date of birth for an age-restricted Category returns 400.
+- Cancellation keeps the row. DELETE may remove only the Participant's own Confirmed entry while the Event is Open, entries have not closed and no Result exists. Cancelled rows and historical entries are retained.
+- Reactivation updates the same row. Cancelled rows do not use capacity, and changing Category during reactivation clears the old bib number.
 
 Planned indexes:
 

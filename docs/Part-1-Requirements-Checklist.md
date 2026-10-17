@@ -1,5 +1,7 @@
 # RaceDay Part 1 Requirements Checklist
 
+This records the original Part 1 submission. Corrections for Part 2 are tracked in the [Part 2 checklist](Part-2-Requirements-Checklist.md).
+
 ## Scope
 
 - [x] Produce planning and database artefacts only.
@@ -36,6 +38,7 @@
 - [x] Add the API endpoints needed by the Part 3 MVC, dashboard and image-upload requirements.
 - [x] For every currently planned endpoint, document the method, `/api/` route, description, role, request body, and expected success and failure responses.
 - [x] Complete the plan before Part 2 API implementation begins.
+- [x] Map the lecturer's 25 feedback operations, including enrolment DELETE, to the corrected 40-endpoint plan.
 
 ## Roles
 
