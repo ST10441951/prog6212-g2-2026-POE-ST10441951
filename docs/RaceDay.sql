@@ -38,6 +38,12 @@ SET QUOTED_IDENTIFIER ON;
 SET NUMERIC_ROUNDABORT OFF;
 GO
 
+-- Keep the guard and schema work in one batch (Microsoft, 2026g; 2026h).
+IF DB_NAME() <> N'RaceDay'
+BEGIN
+    ;THROW 50002, 'RaceDay is not the active database. No tables were created.', 1;
+END;
+
 IF EXISTS
 (
     SELECT 1
@@ -57,8 +63,8 @@ IF EXISTS
 BEGIN
     ;THROW 50001, 'RaceDay tables already exist. Run this script against a clean RaceDay database.', 1;
 END;
-GO
 
+-- Roll back failed schema or seed work and rethrow the error (Microsoft, 2026i).
 BEGIN TRY
     BEGIN TRANSACTION;
 
@@ -357,10 +363,11 @@ BEGIN TRY
                     N'DidNotStart'
                 )
             ),
+        -- CHECK accepts UNKNOWN, so NULL must be rejected explicitly (Microsoft, 2026c).
         CONSTRAINT CK_Results_FinishTime
             CHECK
             (
-                (ResultStatus = N'Completed' AND FinishTimeSeconds > 0)
+                (ResultStatus = N'Completed' AND FinishTimeSeconds IS NOT NULL AND FinishTimeSeconds > 0)
                 OR
                 (ResultStatus <> N'Completed' AND FinishTimeSeconds IS NULL)
             ),
@@ -839,6 +846,29 @@ BEGIN TRY
         );
 
     COMMIT TRANSACTION;
+
+    SELECT N'Roles' AS EntityName, COUNT(*) AS RecordCount
+    FROM dbo.Roles
+    UNION ALL
+    SELECT N'Users', COUNT(*)
+    FROM dbo.Users
+    UNION ALL
+    SELECT N'Events', COUNT(*)
+    FROM dbo.Events
+    UNION ALL
+    SELECT N'EventCategories', COUNT(*)
+    FROM dbo.EventCategories
+    UNION ALL
+    SELECT N'EventRoutes', COUNT(*)
+    FROM dbo.EventRoutes
+    UNION ALL
+    SELECT N'Enrolments', COUNT(*)
+    FROM dbo.Enrolments
+    UNION ALL
+    SELECT N'Results', COUNT(*)
+    FROM dbo.Results;
+
+    PRINT N'RaceDay database schema and sample data created successfully.';
 END TRY
 BEGIN CATCH
     IF @@TRANCOUNT > 0
@@ -848,31 +878,6 @@ BEGIN CATCH
 
     THROW;
 END CATCH;
-GO
-
-PRINT N'RaceDay database schema and sample data created successfully.';
-GO
-
-SELECT N'Roles' AS EntityName, COUNT(*) AS RecordCount
-FROM dbo.Roles
-UNION ALL
-SELECT N'Users', COUNT(*)
-FROM dbo.Users
-UNION ALL
-SELECT N'Events', COUNT(*)
-FROM dbo.Events
-UNION ALL
-SELECT N'EventCategories', COUNT(*)
-FROM dbo.EventCategories
-UNION ALL
-SELECT N'EventRoutes', COUNT(*)
-FROM dbo.EventRoutes
-UNION ALL
-SELECT N'Enrolments', COUNT(*)
-FROM dbo.Enrolments
-UNION ALL
-SELECT N'Results', COUNT(*)
-FROM dbo.Results;
 GO
 
 /*
@@ -905,6 +910,18 @@ GO
     Microsoft (2026f) 'PasswordHasher<TUser>.HashPassword(TUser, String) Method', Microsoft Learn.
     Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordhasher-1.hashpassword?view=aspnetcore-10.0
     (Accessed: 19 September 2026).
+
+    Microsoft (2026g) 'THROW (Transact-SQL)', Microsoft Learn.
+    Available at: https://learn.microsoft.com/en-us/sql/t-sql/language-elements/throw-transact-sql
+    (Accessed: 17 October 2026).
+
+    Microsoft (2026h) 'SQL Server Utilities Statements - GO', Microsoft Learn.
+    Available at: https://learn.microsoft.com/en-us/sql/t-sql/language-elements/sql-server-utilities-statements-go
+    (Accessed: 17 October 2026).
+
+    Microsoft (2026i) 'TRY...CATCH (Transact-SQL)', Microsoft Learn.
+    Available at: https://learn.microsoft.com/en-us/sql/t-sql/language-elements/try-catch-transact-sql
+    (Accessed: 17 October 2026).
 
     The Independent Institute of Education (2026) PROG6212 Portfolio of Evidence.
     Unpublished assessment brief.

@@ -8,7 +8,9 @@ The API will follow the [Part 1 endpoint plan](docs/API-Endpoint-Plan.md). Login
 
 ## Part 2 status
 
-The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 required operations](docs/API-Endpoint-Plan.md#141-required-operations). Enrolment deletion, status changes and age rules have been clarified. ERD and SQL corrections are next; API development has not started.
+The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 required operations](docs/API-Endpoint-Plan.md#141-required-operations). Enrolment deletion, status changes and age rules have been clarified.
+
+The ERD and SQL corrections are complete. All 71 column definitions match, and 21 checks passed on a separate SQL Server LocalDB database. The [database correction notes](docs/Part-1-Database-Corrections.md) record the results. Fresh SSMS evidence and updated planning checks in CI are still needed. API development has not started.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 

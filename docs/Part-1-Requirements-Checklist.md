@@ -2,6 +2,8 @@
 
 This records the original Part 1 submission. Corrections for Part 2 are tracked in the [Part 2 checklist](Part-2-Requirements-Checklist.md).
 
+The ERD and SQL were corrected on 17 October 2026. See the [database correction notes](Part-1-Database-Corrections.md) for the changes and local checks. The original SSMS screenshot has been kept; a fresh screenshot of the corrected script is still needed.
+
 ## Scope
 
 - [x] Produce planning and database artefacts only.

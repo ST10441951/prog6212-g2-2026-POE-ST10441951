@@ -252,7 +252,7 @@ The `Results` table stores the official outcome for an Enrolment.
 | `EnrolmentId` | `INT` | No | Unique foreign key to `Enrolments.EnrolmentId` | Enrolment receiving the Result |
 | `RecordedByUserId` | `INT` | No | Foreign key to `Users.UserId` | Organiser who recorded the Result |
 | `ResultStatus` | `NVARCHAR(20)` | No | Default Completed and check constraint | Completed, DidNotFinish, Disqualified or DidNotStart |
-| `FinishTimeSeconds` | `INT` | Yes | Check greater than zero when completed | Official elapsed time in seconds |
+| `FinishTimeSeconds` | `INT` | Yes | Required and greater than zero for Completed; otherwise NULL | Official elapsed time in seconds |
 | `OverallPosition` | `INT` | Yes | Check greater than zero | Overall finishing position |
 | `CategoryPosition` | `INT` | Yes | Check greater than zero | Finishing position within the Category |
 | `Notes` | `NVARCHAR(500)` | Yes |  | Optional Result explanation |
@@ -265,8 +265,9 @@ Table rules:
 - `RecordedByUserId` must refer to an existing User.
 - The future API must verify that `RecordedByUserId` belongs to the Organiser responsible for the related Event.
 - `ResultStatus` is limited to Completed, DidNotFinish, Disqualified or DidNotStart.
-- A Completed Result must have a positive `FinishTimeSeconds` value.
-- A non-completed Result will not have an official finish time.
+- A Completed Result must have a non-null `FinishTimeSeconds` value greater than zero.
+- DidNotFinish, Disqualified and DidNotStart Results must have `FinishTimeSeconds` set to NULL.
+- The check includes `IS NOT NULL` because SQL Server accepts an UNKNOWN check result when comparing NULL values (Microsoft, 2026d).
 - `OverallPosition` and `CategoryPosition` must be positive when supplied.
 - The future API must reject a Result for a cancelled Enrolment.
 

@@ -12,13 +12,15 @@ Tick each item after it has been completed and checked.
 - [x] Cover minimum age, maximum age and missing dates of birth.
 - [x] Keep all existing planned endpoints, including image uploads.
 - [x] Let the owning Organiser read new Draft events, categories and routes through their creation locations.
-- [ ] Match names across the ERD, data dictionary and SQL.
-- [ ] Add datatypes, nullability and clear composite keys to the ERD.
-- [ ] Update the draw.io, PNG and SVG files.
-- [ ] Fix the Completed result check so a finish time is required.
-- [ ] Fix the SQL guard and prevent success messages after errors.
-- [ ] Test the script and invalid values on a separate clean database.
+- [x] Match names across the ERD, data dictionary and SQL.
+- [x] Add datatypes, nullability and clear composite keys to the ERD.
+- [x] Update the draw.io, PNG and SVG files.
+- [x] Fix the Completed result check so a finish time is required.
+- [x] Fix the SQL guard and prevent success messages after errors.
+- [x] Test the script and invalid values on a separate clean database.
 - [ ] Update SSMS evidence, document statuses and endpoint checks in CI.
+
+The [database correction notes](Part-1-Database-Corrections.md) record the local checks. These are SQL checks, not Part 2 API unit tests.
 
 ## Correct submission: 5 marks
 

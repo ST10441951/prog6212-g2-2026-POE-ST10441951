@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-The RaceDay Entity Relationship Diagram represents the Part 1 relational database design. It contains seven entities, their attributes, SQL Server datatypes, primary keys, foreign keys and relationship cardinalities. The diagram follows the requirements in the supplied Portfolio of Evidence brief (The Independent Institute of Education, 2026).
+The RaceDay ERD shows seven tables, 71 columns and nine relationships. Table names, column names, datatypes and NULL rules match `RaceDay.sql` and the data dictionary. Relationships use the UML multiplicities requested in the lecturer's feedback (The Independent Institute of Education, 2026a; 2026b).
 
 The diagram files are:
 
@@ -11,7 +11,7 @@ The diagram files are:
 - `RaceDay-ERD.svg`, which is the scalable export.
 - `RaceDay-Data-Dictionary.md`, which contains the detailed constraints and column descriptions.
 
-The diagram was created and exported with draw.io (JGraph Ltd, 2026).
+The `.drawio` file is editable in draw.io. The SVG and PNG show the same model (JGraph Ltd, 2026).
 
 ## 2. Entity summary
 
@@ -43,11 +43,11 @@ The diagram was created and exported with draw.io (JGraph Ltd, 2026).
 
 Participants and Events have a logical many-to-many relationship. A Participant may enter many Events, and an Event may receive many Participants. The `Enrolments` entity resolves this relationship and records the Event Category selected for each entry.
 
-The combination of `ParticipantUserId` and `EventId` will be unique. This prevents more than one Enrolment record for the same Participant and Event.
+`(ParticipantUserId, EventId)` is unique. A Participant can have only one saved Enrolment for an Event, including a Cancelled entry. Reactivation updates that entry instead of adding another row.
 
 ## 5. Composite relationship rule
 
-`Enrolments` stores both `EventId` and `EventCategoryId`. These columns form a composite foreign key to the alternate key on `EventCategories.EventCategoryId` and `EventCategories.EventId`.
+`Enrolments(EventCategoryId, EventId)` references the alternate key `EventCategories(EventCategoryId, EventId)`. Both columns are used together, in that order.
 
 This rule prevents an Enrolment from selecting a Category that belongs to a different Event.
 
@@ -57,11 +57,18 @@ This rule prevents an Enrolment from selecting a Category that belongs to a diff
 |---|---|
 | `PK` | Primary key |
 | `FK` | Foreign key |
-| `UQ` | Unique value or unique combination |
+| `UQ` | Single-column unique key |
 | `FK UQ` | Column is both a foreign key and unique |
-| `UQ*` | Uniqueness will be implemented with a filtered unique index |
+| `UQ1`, `UQ2` | Separate composite unique keys listed below the columns |
+| `UQ*`, `UQ2*` | Filtered unique index; the full column combination and filter are listed below the columns |
 | `NULL` | Optional column |
 | `NOT NULL` | Required column |
+
+Category names are unique within an Event through `(EventId, CategoryName)`. They do not have to be unique across all Events.
+
+Assigned bib numbers are unique within an Event through `(EventId, BibNumber) WHERE BibNumber IS NOT NULL`. Multiple entries may have no bib number. A bib number may be reused at a different Event.
+
+`FinishTimeSeconds` is nullable because non-completed Results have no finish time. A Completed Result must have a non-null value greater than zero. All nine foreign keys use `NO ACTION` on delete and update.
 
 ## 7. Part 2 requirements cross-check
 
@@ -88,8 +95,12 @@ The ERD was checked against the supplied Part 3 requirements. `Users.ProfilePict
 - [x] The editable draw.io source is available in the `/docs` folder.
 - [x] The diagram is available as a PNG in the `/docs` folder.
 
+The corrected schema was checked on a separate SQL Server LocalDB database on 17 October 2026. All 71 column definitions matched the ERD and data dictionary. See [Part 1 database corrections](Part-1-Database-Corrections.md) for the checks.
+
 ## References
 
 JGraph Ltd (2026) *draw.io*. Available at: https://www.drawio.com/ (Accessed: 20 September 2026).
 
-The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+The Independent Institute of Education (2026a) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.
+
+The Independent Institute of Education (2026b) *POE Part I General Feedback (HE)*. Lecturer-provided ERD and endpoint feedback.
