@@ -72,7 +72,7 @@ The file, PNG-format, seed-section, writing and repository commit-count checks a
 
 The C# project builds without warnings or errors and passes locally. Thirteen invalid-document cases were rejected: missing enrolment DELETE, wrong method, duplicate endpoint, empty description, incorrect mapping, missing additional endpoint, wrong dictionary NULL rule, wrong draw.io datatype, wrong SVG datatype, wrong relationship, missing seed section, empty required file and invalid punctuation.
 
-The [previous GitHub run for 2c23061](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39062240653) passed before the C# replacement. The C# workflow passes locally and still needs its own GitHub run. Planning checks do not execute the SQL script or test the API.
+The [C# GitHub run for 4560c17](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39063690485) passed. Planning checks do not execute the SQL script or test the API.
 
 ## References
 

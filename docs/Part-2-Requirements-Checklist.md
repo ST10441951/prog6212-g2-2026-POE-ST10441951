@@ -21,7 +21,7 @@ Tick each item after it has been completed and checked.
 - [x] Update SSMS evidence and document statuses for the corrected script.
 - [x] Add required method-and-route checks and matching schema-document checks to the planning workflow.
 - [x] Use C# for the planning and repository checks.
-- [ ] Confirm the C# planning workflow is green on GitHub after pushing it.
+- [x] Confirm the C# planning workflow is green on GitHub after pushing it.
 
 The [database correction notes](Part-1-Database-Corrections.md) record the local checks. These are SQL checks, not Part 2 API unit tests.
 
