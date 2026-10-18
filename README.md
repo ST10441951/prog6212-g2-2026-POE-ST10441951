@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The C# API and xUnit test projects are set up. Swagger shows the working `GET /health` host check, and all seven startup tests pass locally. SQL Server integration and the 40 planned business endpoints have not been implemented yet.
+The C# API and xUnit test projects are set up. Swagger shows the working `GET /health` host check, and all seven startup tests pass locally and on GitHub. SQL Server integration and the 40 planned business endpoints have not been implemented yet.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -85,15 +85,15 @@ The planning checks are written in C# and use the .NET 10 SDK. They check the re
 
 The [C# planning build for 4560c17](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39063690485) passed on GitHub. The local checks also rejected all 13 invalid-document cases.
 
-The new `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main. These commands pass locally. Its first GitHub run is pending (GitHub, 2026d).
+The `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main (GitHub, 2026d). The [API build for ecce46b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39100427831) passed with all seven startup tests.
 
-Part 2 green-build screenshot and run link: to be added.
+Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
 The seven current startup checks use xUnit and an in-memory ASP.NET Core test host. They cover the health response in Development and Production, the Swagger document and UI assets, Swagger being unavailable in Production, and JSON Problem Details for an unknown route (Microsoft, 2026d; xUnit.net, 2026).
 
-All seven pass locally. They are infrastructure checks; registration, login, sessions, roles, ownership, event management and enrolment tests will be added with those features.
+All seven pass locally and in GitHub Actions. They are infrastructure checks; registration, login, sessions, roles, ownership, event management and enrolment tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 

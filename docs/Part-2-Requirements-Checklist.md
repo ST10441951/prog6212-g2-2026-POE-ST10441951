@@ -46,7 +46,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Make at least 20 meaningful Part 2 commits using my own account.
 - [x] Keep the workflow in `.github/workflows/`.
 - [x] Configure the Part 2 workflow to build the solution and run all tests on every push.
-- [ ] Confirm the Part 2 API build and test workflow is green on GitHub.
+- [x] Confirm the Part 2 API build and test workflow is green on GitHub.
 - [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 

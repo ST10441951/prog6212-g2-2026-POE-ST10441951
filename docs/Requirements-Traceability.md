@@ -6,7 +6,7 @@ This table connects each confirmed requirement to the planned database area, API
 
 The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 business endpoints (The Independent Institute of Education, 2026b).
 
-The API host, development Swagger UI and xUnit project are now set up. The separate `GET /health` host check works in Swagger, and all seven startup tests pass locally. SQL Server integration and the planned business endpoints are still to be implemented.
+The API host, development Swagger UI and xUnit project are now set up. The separate `GET /health` host check works in Swagger, and all seven startup tests pass locally and in the [GitHub API build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39100427831). SQL Server integration and the planned business endpoints are still to be implemented.
 
 ## 2. Functional requirement traceability
 
