@@ -15,7 +15,8 @@ public sealed class SessionSecurityFilter : IDocumentFilter
     {
         foreach (var description in context.ApiDescriptions)
         {
-            if (description.ActionDescriptor.EndpointMetadata.OfType<IAllowAnonymous>().Any())
+            bool optionalSession = description.ActionDescriptor.EndpointMetadata.OfType<OptionalSessionAttribute>().Any();
+            if (description.ActionDescriptor.EndpointMetadata.OfType<IAllowAnonymous>().Any() && !optionalSession)
                 continue;
 
             string path = "/" + description.RelativePath?.Split('?')[0];
@@ -28,6 +29,8 @@ public sealed class SessionSecurityFilter : IDocumentFilter
                     [new OpenApiSecuritySchemeReference("SessionCookie", document, null)] = []
                 }
             ];
+            if (optionalSession)
+                operation.Security.Insert(0, new OpenApiSecurityRequirement());
         }
     }
 }

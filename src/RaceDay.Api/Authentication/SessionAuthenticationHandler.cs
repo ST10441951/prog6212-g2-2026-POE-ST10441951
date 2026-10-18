@@ -20,7 +20,9 @@ internal sealed class SessionAuthenticationHandler(
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (Context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>() is not null)
+        var endpoint = Context.GetEndpoint();
+        if (endpoint?.Metadata.GetMetadata<IAllowAnonymous>() is not null &&
+            endpoint.Metadata.GetMetadata<OptionalSessionAttribute>() is null)
             return AuthenticateResult.NoResult();
 
         var session = await sessions.ReadAsync(Context);

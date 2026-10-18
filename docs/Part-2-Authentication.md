@@ -37,7 +37,7 @@ The cookie is HttpOnly and SameSite=Strict. HTTPS uses a Secure cookie; the loca
 
 The authentication handler checks the saved account before accepting a protected request. Disabled accounts return 403 and lose their session. Deleted accounts or changed roles invalidate the session and return 401. Role policies return 403 when a signed-in user has the wrong role (Microsoft, 2026f; 2026g).
 
-Controllers require authentication by default. Public actions must be marked `AllowAnonymous`. Registration, login and the host check are public.
+Controllers require authentication by default. Public actions must be marked `AllowAnonymous`. Registration, login, the host check and event browsing are public. Event details also allow public access, but use `OptionalSession` to validate an existing session before showing owner-only information. Invalid sessions grant only the normal public view. The host check still does not resolve the database, even when a cookie is supplied.
 
 The cache currently runs in the API process. Restarting the API ends its sessions. Multiple API instances would need a shared cache.
 
@@ -61,7 +61,7 @@ The extra account created by the browser registration check was removed after te
 
 ## 5. Test results
 
-At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work adds 57 checks; all 178 now pass locally. The GitHub profile build result is pending.
+At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work added 57 checks, and the [GitHub profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178. The [event-browsing work](Part-2-Event-Browsing.md) brings the local total to 233 passing tests, all included in the API workflow.
 
 Authentication checks cover both roles, invalid fields, duplicate and simultaneous registration, password hashing, rehashing, stored session fields, cookie flags, session replacement, logout replay, expiry, separate browsers and account changes.
 

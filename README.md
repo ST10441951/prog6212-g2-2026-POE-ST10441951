@@ -1,5 +1,7 @@
 # RaceDay - Part 2
 
+[![Build and Test RaceDay API](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml/badge.svg?branch=main)](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml)
+
 ## Project overview
 
 RaceDay manages South African running, walking and cycling events. Part 2 builds the REST API in C# and ASP.NET Core, using SQL Server and Entity Framework Core (The Independent Institute of Education, 2026a).
@@ -12,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login, logout, own-profile reads and updates, and password changes are implemented. Six of the 40 planned business endpoints are complete; 34 remain. All 178 current tests pass locally. The authentication build passed 121 tests; the profile build result is pending.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, password changes, event browsing and event details are implemented. Eight of the 40 planned business endpoints are complete; 32 remain. All 233 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch build result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -77,6 +79,19 @@ Password changes require the correct current password and matching new-password 
 
 The [profile notes](docs/Part-2-Profiles.md) record the validation, persistence and privacy checks (Microsoft, 2026p).
 
+## Event browsing
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| GET | `/api/events` | Returns a filtered page of upcoming Open and Closed events |
+| GET | `/api/events/{eventId}` | Returns one visible event with its categories and routes |
+
+Browsing does not require login. Filters cover event type, province and inclusive UTC dates. Page numbers start at 1; page size defaults to 10 and is limited to 100. Results are ordered by event date and then event ID (Microsoft, 2026q).
+
+Open, Closed and Completed event details are public. Draft and Cancelled details are visible only to the owning Organiser after login. Other callers receive 404. Public details show available categories; the owner also sees unavailable ones. Responses exclude account contact details, enrolments and storage object names.
+
+The [event-browsing notes](docs/Part-2-Event-Browsing.md) explain the filters, visibility rules and checks. Event management and the Organiser dashboard are still to be added.
+
 ## Setup and run
 
 Install the .NET 10 SDK and SQL Server LocalDB on Windows. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
@@ -127,6 +142,8 @@ While signed in, execute `GET /api/profile` to view your own account. Execute th
 
 The registration example uses `new.participant@example.com`. Use another email to create another account. Reusing an existing email returns 409.
 
+To check event browsing without login, execute `GET /api/events`. The original sample data includes the upcoming Cape Peninsula cycling event and Soweto walk. Filter `eventType` to `Cycling`, then execute `GET /api/events/{eventId}` with event ID `2` to see its details, categories and routes. The past Completed event at ID `1` can be viewed directly but is excluded from the upcoming list. The list changes as event dates pass.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -151,13 +168,17 @@ The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and r
 
 The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed all 121 tests with none skipped, no build warnings or errors and no missing migrations.
 
+The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
+
+Event browsing adds 55 checks, bringing the local total to 233 passing tests. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) runs the complete suite and migration check on every push. The build badge links to its results.
+
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 SQL Server database checks, 51 authentication checks and 57 profile and password checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 SQL Server database checks, 51 authentication checks, 57 profile and password checks, and 55 event-browsing checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 178 pass locally with none skipped and no build warnings or errors. The latest pushed build passed the 121 tests available at that revision. The new checks cover own-profile access for both roles, protected fields, optional details, invalid bodies, UTC dates, SQL persistence, password replacement, session removal and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
+All 233 pass locally with none skipped and no build warnings or errors. GitHub Actions runs the same suite on every push. Event-browsing checks cover public statuses, date boundaries, all event types and provinces, paging, invalid filters, hidden events, unavailable categories and valid owner sessions. Event management and other business endpoint tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -174,6 +195,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Database/` | SQL Server migration and constraint tests |
 | `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
 | `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
+| `tests/RaceDay.Api.Tests/Events/` | Event filters, paging, public details and owner visibility |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -182,6 +204,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Database.md](docs/Part-2-Database.md) | EF Core mapping, migration and database checks |
 | [Part-2-Authentication.md](docs/Part-2-Authentication.md) | Account validation, sessions and Swagger checks |
 | [Part-2-Profiles.md](docs/Part-2-Profiles.md) | Personal details, password changes and checks |
+| [Part-2-Event-Browsing.md](docs/Part-2-Event-Browsing.md) | Event filters, visibility and read checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -236,6 +259,8 @@ Microsoft (2026n) 'AuthenticationHandler<TOptions> class', *Microsoft Learn*. Av
 Microsoft (2026o) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 October 2026).
 
 Microsoft (2026p) 'Model validation in ASP.NET Core MVC', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026q) 'Pagination', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/querying/pagination (Accessed: 18 October 2026).
 
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 

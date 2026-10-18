@@ -79,7 +79,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Add own-profile reads, updates and password changes.
 - [x] Use the session identity for both roles' profiles and reject protected account fields.
 - [x] Check the current password, hash its replacement and end the current session after a change.
-- [ ] Add event browsing, details and the Organiser dashboard.
+- [x] Add public event browsing with paging, event type, province and UTC date filters.
+- [x] Add event details with visible categories and routes; restrict Draft and Cancelled events to their owner.
+- [ ] Add the Organiser dashboard.
 - [ ] Add owned-event creation, updates and safe deletion or cancellation.
 - [ ] Store each event's name, description, date, location, distance and type.
 - [ ] Add category CRUD with age, distance, fee, availability and capacity checks.
@@ -106,6 +108,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Keep the login session working across Swagger requests.
 - [x] Use the login cookie automatically for logout and reject another logout after sign-out.
 - [x] Describe profile inputs and responses, add usable examples and check profile reads and updates in Swagger.
+- [x] Describe event-browsing filters and optional owner login; check public reads through Swagger.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -119,7 +122,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Cover logout, sessions and unauthenticated requests.
 - [x] Pass all 51 authentication checks locally.
 - [x] Pass all 57 profile and password checks locally, including privacy and SQL persistence.
-- [ ] Confirm the profile changes and tests pass on GitHub after an approved push.
+- [x] Confirm the profile changes and tests pass on GitHub.
+- [x] Pass all 55 event-browsing checks locally, including hidden events and owner sessions.
+- [x] Include the event-browsing tests in the GitHub build and test workflow.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [ ] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.

@@ -175,6 +175,8 @@ Profile implementation notes, 18 October 2026: GET and PUT `/api/profile` and PU
 - Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
 - The owning Organiser can follow a newly created event's `Location` header and read the Draft event. Public callers and other users cannot read that Draft.
 
+Event-read implementation notes, 18 October 2026: the upcoming list includes only Open and Closed events with a UTC start later than now. Completed events remain readable through the details endpoint. Draft and Cancelled details require a valid session belonging to the owning Organiser. Public details exclude unavailable categories; the owner can see them. Paging defaults to page 1 and 10 items, with a maximum page size of 100. Event type and full South African province filters ignore case and surrounding spaces. Date bounds include the whole UTC day. The [event-browsing notes](Part-2-Event-Browsing.md) record these decisions and checks.
+
 ## 8. Event Category endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
