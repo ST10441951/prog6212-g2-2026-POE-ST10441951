@@ -238,6 +238,8 @@ Category implementation notes, 18 October 2026: all six operations are implement
 - Category and route creation locations remain readable by the owning Organiser when the event is Draft or the category is unavailable. Other callers see only public available records.
 - Route elevation gain cannot be negative when it is supplied.
 
+Route implementation notes, 18 October 2026: all four route operations are implemented. GET uses the same public/owner visibility rules as category details, including owner access to Cancelled events. Writes validate the SQL text limits, optional HTTP/HTTPS map links without credentials and non-negative integer elevation. Blank map links become null; omitted optional values are cleared on PUT. Unexpected JSON fields return 400 and non-JSON writes return 415. The database enforces one route per category, including simultaneous creation requests. Route updates and deletion keep categories, enrolments and results; the owner may create a replacement after deleting a route. A route removed during an update or deletion returns 404. The [route notes](Part-2-Routes.md) record the checks.
+
 ## 10. Enrolment endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |

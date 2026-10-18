@@ -90,7 +90,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Add category CRUD with age, distance, fee, availability and capacity checks.
 - [x] Protect category ownership, saved entries and Open-event readiness.
 - [x] Separate public category reads from the owner's full category list.
-- [ ] Add route CRUD and check the category belongs to the event.
+- [x] Add route CRUD and check the category belongs to the event.
+- [x] Check route ownership, public visibility and readable creation Locations.
+- [x] Validate route text, optional map URLs and elevation; keep related records when deleting a route.
 - [ ] Save enrolments with the correct Participant, Event and Category links.
 - [ ] Check entry dates, event status, age, capacity and duplicate enrolments.
 - [ ] Add enrolment reads, cancellation, reactivation, DELETE and bib numbers.
@@ -116,6 +118,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Describe event-browsing filters and optional owner login; check public reads through Swagger.
 - [x] Describe all five Organiser event operations and provide working event-write examples.
 - [x] Describe all six category operations and test the creation example through Swagger.
+- [x] Describe all four route operations and provide working write examples.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -135,7 +138,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Pass all 121 Organiser event-management checks locally.
 - [x] Confirm the event-management revision passes on GitHub after an approved push.
 - [x] Pass all 93 category checks locally, including duplicate writes and event-opening rules.
-- [ ] Confirm the category revision passes on GitHub after an approved push.
+- [x] Confirm the category revision passes on GitHub after an approved push.
+- [x] Pass all 85 route checks locally, including saved relationships, visibility and duplicate creation.
+- [ ] Confirm the route revision passes on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [x] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.

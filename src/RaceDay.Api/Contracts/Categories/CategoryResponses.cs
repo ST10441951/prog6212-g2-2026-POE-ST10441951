@@ -1,5 +1,6 @@
 using RaceDay.Api.Contracts.Events;
 using RaceDay.Api.Models;
+using RaceDay.Api.Contracts.Routes;
 
 namespace RaceDay.Api.Contracts.Categories;
 
@@ -16,12 +17,6 @@ internal static class CategoryResponses
         CategoryName = category.CategoryName, DistanceKm = category.DistanceKm,
         MinimumAge = category.MinimumAge, MaximumAge = category.MaximumAge,
         EntryFee = category.EntryFee, Capacity = category.Capacity, IsAvailable = category.IsAvailable,
-        Route = category.Route is null ? null : new RouteSummaryResponse
-        {
-            RouteId = category.Route.RouteId, RouteName = category.Route.RouteName,
-            StartLocation = category.Route.StartLocation, FinishLocation = category.Route.FinishLocation,
-            RouteDescription = category.Route.RouteDescription, RouteMapUrl = category.Route.RouteMapUrl,
-            ElevationGainMetres = category.Route.ElevationGainMetres
-        }
+        Route = category.Route is null ? null : RouteResponses.Details(category.Route)
     };
 }

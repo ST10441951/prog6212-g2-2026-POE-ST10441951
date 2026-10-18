@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, event browsing and management, the Organiser dashboard and category management are implemented. Nineteen of the 40 planned business endpoints are complete; 21 remain. All 447 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, event browsing and management, the Organiser dashboard, categories and routes are implemented. Twenty-three of the 40 planned business endpoints are complete; 17 remain. All 532 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -121,7 +121,22 @@ The dashboard counts all saved enrolments, with Confirmed and Cancelled rows sho
 
 Writes require an Organiser session and event ownership. Names are unique within each event. Requests validate distance, age limits, entry fee, availability and capacity. Saved entries protect the category's distance, age limits and fee. Capacity cannot be below Confirmed entries, and an Open event must keep an available category (Microsoft, 2026p; 2026r).
 
-Category responses include the event ID and optional route details. Route CRUD is still to be added. The [category notes](docs/Part-2-Categories.md) record the rules, tests and Swagger checks.
+Category responses include the event ID and optional route details. The [category notes](docs/Part-2-Categories.md) record the rules, tests and Swagger checks.
+
+## Routes
+
+All four operations use `/api/events/{eventId}/categories/{categoryId}/route`.
+
+| Method | Current behaviour |
+|---|---|
+| GET | Returns a public route; the owning Organiser can also read hidden routes |
+| POST | Creates the category's single route and returns 201 with its Location |
+| PUT | Replaces the editable route information |
+| DELETE | Removes the route and keeps the category, enrolments and results |
+
+Writes require an Organiser session and event ownership. Both path IDs must match the saved relationship. Requests validate the route name, start, finish, instructions, optional map URL and non-negative elevation gain. The API stores map links without downloading them (Microsoft, 2026p; 2026r).
+
+The [route notes](docs/Part-2-Routes.md) record validation, access and checks.
 
 ## Setup and run
 
@@ -177,6 +192,8 @@ To check event browsing without login, execute `GET /api/events`. The original s
 
 For event management, log in as `thabo.ndlovu@example.com` using the same demonstration password. Execute the POST event example and follow its Location to view the new Draft. Use its ID with POST `/api/events/{eventId}/categories` and execute the category example. GET `/api/organiser/events/{eventId}/categories` shows its saved categories. For PUT, reuse the editable fields from the creation request and add `"status": "Open"`. The event must have an available category and future start and closing times. The public category list can then show it. GET `/api/events/mine` and `/api/organiser/dashboard` show only that Organiser's records.
 
+To add a route, use the same event ID and saved category ID with POST `/api/events/{eventId}/categories/{categoryId}/route`. Execute the route example, then follow its Location with GET. PUT edits the route; omitted optional map and elevation values clear them. DELETE removes the route while keeping the category.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -203,15 +220,15 @@ The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2
 
 The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
 
-The [event-management build for 6d3a956](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed all 354 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637429) also passed. Category management adds 93 checks and brings the local total to 447. The API workflow runs the complete suite and migration check on every push.
+The [category build for 69dcd78](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed all 447 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. Route management adds 85 checks and brings the local total to 532. The API workflow runs the complete suite and migration check on every push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks and 93 category checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks and 85 route checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 447 pass locally with none skipped and no build warnings or errors. The new checks cover category CRUD, both roles, ownership, invalid fields, capacity, saved history, route removal, public visibility, duplicate requests and Swagger examples. Route, enrolment, result and image-operation tests will be added with those features.
+All 532 pass locally with none skipped and no build warnings or errors. The new checks cover route CRUD, both roles, ownership, hidden records, invalid input, SQL persistence, duplicate requests, saved history and Swagger examples. Enrolment, result and image-operation tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -230,6 +247,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
 | `tests/RaceDay.Api.Tests/Events/` | Event browsing, management, ownership, history and dashboard checks |
 | `tests/RaceDay.Api.Tests/Categories/` | Category validation, ownership, visibility, capacity and history checks |
+| `tests/RaceDay.Api.Tests/Routes/` | Route CRUD, validation, visibility, ownership and saved-record checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -241,6 +259,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Event-Browsing.md](docs/Part-2-Event-Browsing.md) | Event filters, visibility and read checks |
 | [Part-2-Event-Management.md](docs/Part-2-Event-Management.md) | Owned events, status changes and dashboard checks |
 | [Part-2-Categories.md](docs/Part-2-Categories.md) | Category rules, validation and Swagger checks |
+| [Part-2-Routes.md](docs/Part-2-Routes.md) | Route rules, validation and Swagger checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |

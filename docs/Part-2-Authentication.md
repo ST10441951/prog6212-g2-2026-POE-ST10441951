@@ -61,7 +61,7 @@ The extra account created by the browser registration check was removed after te
 
 ## 5. Test results
 
-At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work added 57 checks, and the [GitHub profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178. Event browsing then passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. The [category work](Part-2-Categories.md) brings the local total to 447 and passes locally.
+At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work added 57 checks, and the [GitHub profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178. Event browsing then passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The [route work](Part-2-Routes.md) brings the local total to 532.
 
 Authentication checks cover both roles, invalid fields, duplicate and simultaneous registration, password hashing, rehashing, stored session fields, cookie flags, session replacement, logout replay, expiry, separate browsers and account changes.
 

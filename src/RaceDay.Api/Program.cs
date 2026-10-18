@@ -8,6 +8,7 @@ using RaceDay.Api.Authentication;
 using RaceDay.Api.Models;
 using RaceDay.Api.Contracts.Events;
 using RaceDay.Api.Contracts.Categories;
+using RaceDay.Api.Contracts.Routes;
 
 // Swagger setup: Swashbuckle (2026).
 // https://github.com/domaindrivendev/Swashbuckle.AspNetCore
@@ -65,6 +66,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SchemaFilter<AuthenticationExamples>();
     options.SchemaFilter<EventWriteExamples>();
     options.SchemaFilter<CategoryExamples>();
+    options.SchemaFilter<RouteExamples>();
 });
 
 var app = builder.Build();

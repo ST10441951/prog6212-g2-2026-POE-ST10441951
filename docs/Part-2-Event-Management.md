@@ -66,7 +66,7 @@ Swagger checks on 18 October 2026 use the existing Organiser demonstration login
 | Created Draft and Location | [Swagger event creation](evidence/swagger-event-create.jpg) |
 | Owned event and enrolment totals | [Swagger Organiser dashboard](evidence/swagger-organiser-dashboard.jpg) |
 
-The [event-management build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed all 354 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637429) also passed. The subsequent [category work](Part-2-Categories.md) adds the category writes needed to open a new Draft through the API. All 447 tests pass locally.
+The [event-management build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed all 354 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637429) also passed. The subsequent [category work](Part-2-Categories.md) adds the category writes needed to open a new Draft through the API. The category revision passed 447 tests locally and on GitHub. The subsequent [route work](Part-2-Routes.md) brings the local total to 532.
 
 ## References
 

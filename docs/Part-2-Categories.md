@@ -43,11 +43,11 @@ Capacity cannot be below the number of Confirmed entries. Cancelled entries do n
 
 Any saved enrolment prevents category deletion. Make the category unavailable instead. An unused category can be deleted with its optional route in one transaction; the parent event remains. The database retains its existing NO ACTION foreign keys. PUT and DELETE use serializable transactions to keep the checks and writes together. Conflicts return 409 (Microsoft, 2026d; 2026e).
 
-These history and readiness rules are recorded in the endpoint-plan implementation notes. They do not change the schema. Route CRUD is still to be added.
+These history and readiness rules are recorded in the endpoint-plan implementation notes. They do not change the schema. The [route notes](Part-2-Routes.md) cover the subsequent route CRUD work.
 
 ## 4. Checks
 
-All 447 tests pass locally with none skipped. This includes 93 category checks. The solution builds with no warnings or errors, and there are no pending model changes.
+At the category revision, all 447 tests passed locally and on GitHub with none skipped. This includes 93 category checks. The solution built with no warnings or errors, and there were no pending model changes.
 
 The checks cover creation, readable Locations, validation, optional fields, duplicate names, simultaneous duplicate creation, updates, route preservation and removal, saved entry history, capacity, event readiness, both roles, ownership, expiry, changed accounts, public visibility, event/category mismatches and Swagger descriptions and examples. Tests run through the HTTP pipeline using temporary SQL Server databases (Microsoft, 2026f).
 
@@ -60,7 +60,7 @@ Swagger checks on 18 October 2026 use the demonstration Organiser account and a 
 | Created category and Location | [Swagger category creation](evidence/swagger-category-create.jpg) |
 | Public category list | [Swagger category list](evidence/swagger-category-public-list.jpg) |
 
-The [event-management build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed the 354 tests available at that revision. Its planning workflow also passed. Category changes pass all 447 tests locally.
+The [category build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed all 447 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. The subsequent route work adds 85 checks and brings the local total to 532.
 
 ## References
 
