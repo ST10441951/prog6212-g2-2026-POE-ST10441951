@@ -2,13 +2,13 @@
 
 ## 1. Purpose
 
-This document lists the RaceDay endpoints before API development starts. It includes the Part 1 corrections dated 17 October 2026 and will guide the Part 2 API and Part 3 MVC application.
+This endpoint plan was prepared before API development. It includes the Part 1 corrections dated 17 October 2026 and guides the Part 2 API and Part 3 MVC application.
 
 The Part 2 API will be developed in C# using ASP.NET Core. Part 1 contains the endpoint design only and does not include application code.
 
 ## 2. API conventions
 
-- Every route starts with `/api/`.
+- Every planned business route starts with `/api/`.
 - Normal request and response bodies use JSON. Image uploads use `multipart/form-data`, and 204 responses have no body.
 - HTTPS must be used when the API is deployed.
 - Protected endpoints require a valid authenticated server-side session.
@@ -20,6 +20,8 @@ The Part 2 API will be developed in C# using ASP.NET Core. Part 1 contains the e
 - Passwords and password hashes are never returned in a response.
 - Validation and error responses use one consistent JSON structure.
 - Resource creation responses use `201 Created` and include the created resource or a safe summary of it. ASP.NET Core can also include a `Location` header for the new resource (Microsoft, 2026a).
+
+The API also has `GET /health` as a public host check. It takes no input and returns `200 OK` with `{"status":"Healthy"}`. It does not query the database or storage and is separate from the 40 business endpoints below.
 
 ## 3. Role and access terms
 
@@ -385,7 +387,7 @@ The image endpoints are already in this plan, so they will be implemented and te
 - Set out the differences between cancellation, reactivation and deletion.
 - Added both age limits, the event-date age rule and the missing-date-of-birth response.
 - Allowed the owning Organiser to read new Draft events, categories and routes through their creation locations.
-- Kept all 39 original endpoints. No API code has been written yet.
+- Kept all 39 original endpoints. These planning corrections were completed before the API project was created.
 
 ## References
 

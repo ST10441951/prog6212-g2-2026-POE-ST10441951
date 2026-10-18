@@ -1,0 +1,40 @@
+name: Build and Test RaceDay API
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore packages
+        run: dotnet restore RaceDay.sln
+
+      - name: Build solution
+        run: dotnet build RaceDay.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test RaceDay.sln --configuration Release --no-build
+
+# References
+# GitHub (2026) 'Building and testing .NET', GitHub Docs.
+# https://docs.github.com/en/actions/tutorials/build-and-test-code/building-and-testing-net
+# Microsoft (2026) 'dotnet test', Microsoft Learn.
+# https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test
+# Accessed: 17 October 2026.

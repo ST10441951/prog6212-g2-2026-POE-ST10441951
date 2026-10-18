@@ -4,7 +4,9 @@
 
 This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1, Part 2 and Part 3 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
 
-The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 endpoints; implementation has not started (The Independent Institute of Education, 2026b).
+The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 business endpoints (The Independent Institute of Education, 2026b).
+
+The API host, development Swagger UI and xUnit project are now set up. The separate `GET /health` host check works in Swagger, and all seven startup tests pass locally. SQL Server integration and the planned business endpoints are still to be implemented.
 
 ## 2. Functional requirement traceability
 

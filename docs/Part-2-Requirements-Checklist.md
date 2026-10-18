@@ -29,12 +29,13 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 - [x] Keep the original Part 1 README separately.
 - [x] Add the main Part 2 README and checklist.
-- [ ] Keep the API, tests, documents and evidence clearly organised.
+- [x] Add the .NET 10 API and xUnit test projects to the solution.
+- [x] Keep the API, tests, documents and evidence clearly organised.
 - [ ] Explain the API and both roles in the completed README.
-- [ ] Give the required tools and numbered clone and setup steps.
+- [x] Give the .NET SDK requirement and numbered clone, restore, build and startup steps.
 - [ ] Give a tested connection-string example and database creation commands.
-- [ ] Give the API startup command, URL and Swagger address.
-- [ ] Explain the test command and Test Explorer Run All.
+- [x] Give the API startup command, URL and Swagger address.
+- [x] Explain the test command and Test Explorer Run All.
 - [ ] Add the green CI screenshot and run link.
 - [ ] Add the passing unit-test screenshot and unlisted video link.
 - [ ] Submit the repository link on ARC.
@@ -44,7 +45,8 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Use a separate Part 2 branch.
 - [ ] Make at least 20 meaningful Part 2 commits using my own account.
 - [x] Keep the workflow in `.github/workflows/`.
-- [ ] Build the solution and run all tests on every push.
+- [x] Configure the Part 2 workflow to build the solution and run all tests on every push.
+- [ ] Confirm the Part 2 API build and test workflow is green on GitHub.
 - [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 
@@ -64,7 +66,8 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 ## API endpoints and database: 25 marks
 
 - [x] Set C# and SQL as the project code languages.
-- [ ] Build the C# ASP.NET Core Web API and connect it to SQL Server.
+- [x] Build the initial C# ASP.NET Core API host and public health check.
+- [ ] Connect the API to SQL Server.
 - [ ] Use EF Core Code First, configurations and migrations.
 - [ ] Match all seven tables, relationships, datatypes, constraints and indexes to Part 1.
 - [ ] Create and seed a separate Part 2 database.
@@ -89,6 +92,8 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 ## Swagger integration: 10 marks
 
+- [x] Add development Swagger UI and XML descriptions for the host check.
+- [x] Execute GET /health through Swagger and verify its 200 response.
 - [ ] Show every implemented endpoint in Swagger.
 - [ ] Describe each endpoint's purpose, inputs and responses.
 - [ ] Add useful examples and relevant error responses.
@@ -99,6 +104,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 ## Unit testing: 15 marks
 
+- [x] Add the xUnit project and pass all seven startup integration checks locally.
 - [ ] Organise tests by feature and use separate test data.
 - [ ] Cover successful and failed registration and login for both roles.
 - [ ] Cover logout, sessions and unauthenticated requests.

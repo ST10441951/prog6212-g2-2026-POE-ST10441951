@@ -5,7 +5,12 @@
 *.suo
 *.user
 
-# Build output (for later project parts)
+# Build output
 [Bb]in/
 [Oo]bj/
+
+# Local test output
+TestResults/
+*.trx
+*.coverage
 
