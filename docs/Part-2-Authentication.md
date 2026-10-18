@@ -61,13 +61,13 @@ The extra account created by the browser registration check was removed after te
 
 ## 5. Test results
 
-All 121 tests pass locally: seven startup checks, 63 database checks and 51 authentication checks. The solution builds with no warnings or errors. The database model has no pending migration changes.
+All 121 tests pass locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution builds with no warnings or errors. The database model has no pending migration changes.
 
 Authentication checks cover both roles, invalid fields, duplicate and simultaneous registration, password hashing, rehashing, stored session fields, cookie flags, session replacement, logout replay, expiry, separate browsers and account changes.
 
 Role policies are checked through test-only controllers in the test project. Those routes are not included in the running API or Swagger. Event ownership and role checks on the remaining business endpoints will be tested when those endpoints are added (Microsoft, 2026h).
 
-The current GitHub build covers the earlier 70-test revision. The authentication changes have not been pushed yet.
+The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed all 121 tests with none skipped. The planning workflow also passed.
 
 ## References
 

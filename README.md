@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login and logout are implemented. All 121 current tests pass locally. The other 37 planned business endpoints are still to be implemented.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login and logout are implemented. All 121 current tests pass locally and on GitHub. The other 37 planned business endpoints are still to be implemented.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -133,7 +133,7 @@ The `.github/workflows/part2-build.yml` restores, builds and tests the whole sol
 
 The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and runs the SQL Server tests and a pending-migration check (GitHub, 2026e). The [database build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations.
 
-The authentication changes and 121-test result are checked locally. Their GitHub run is pending.
+The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed all 121 tests with none skipped, no build warnings or errors and no missing migrations.
 
 Part 2 green-build screenshot: to be added.
 
@@ -141,7 +141,7 @@ Part 2 green-build screenshot: to be added.
 
 The tests use xUnit. There are seven startup checks, 63 SQL Server database checks and 51 authentication checks. Authentication requests run through the real API pipeline against a temporary SQL Server database (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 121 pass locally with none skipped and no build warnings or errors. The authentication checks cover both roles, validation, duplicate accounts, password hashes, server-side session data, cookie flags, logout replay, expiry, inactive accounts and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
+All 121 pass locally and in GitHub Actions with none skipped and no build warnings or errors. The authentication checks cover both roles, validation, duplicate accounts, password hashes, server-side session data, cookie flags, logout replay, expiry, inactive accounts and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
