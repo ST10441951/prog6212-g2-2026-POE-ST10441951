@@ -121,8 +121,8 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
     {
         // Keep history/readiness checks and the write in the same SQL transaction.
         await using var transaction = await database.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
-        var item = await database.Events.Include(x => x.Categories).ThenInclude(x => x.Route)
-            .SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+        var item = await EventWriteLock.Query(database, eventId).Include(x => x.Categories).ThenInclude(x => x.Route)
+            .SingleOrDefaultAsync(cancellationToken);
         if (item is null)
             return Problem(statusCode: 404, title: "Event not found");
         if (item.OrganiserUserId != OwnerId())

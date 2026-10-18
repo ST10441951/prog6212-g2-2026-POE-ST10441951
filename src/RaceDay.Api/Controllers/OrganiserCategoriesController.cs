@@ -120,7 +120,7 @@ public sealed class OrganiserCategoriesController(RaceDayDbContext database, Tim
         CancellationToken cancellationToken)
     {
         await using var transaction = await database.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
-        var item = await database.Events.AsNoTracking().SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+        var item = await EventWriteLock.Query(database, eventId).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
         if (item is null) return Problem(statusCode: 404, title: "Event not found");
         if (item.OrganiserUserId != OwnerId()) return Problem(statusCode: 403, title: "You do not manage this event");
         var category = await database.EventCategories.Include(x => x.Route)
@@ -171,7 +171,7 @@ public sealed class OrganiserCategoriesController(RaceDayDbContext database, Tim
     public async Task<IActionResult> Delete(int eventId, int categoryId, CancellationToken cancellationToken)
     {
         await using var transaction = await database.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
-        var item = await database.Events.AsNoTracking().SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+        var item = await EventWriteLock.Query(database, eventId).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
         if (item is null) return Problem(statusCode: 404, title: "Event not found");
         if (item.OrganiserUserId != OwnerId()) return Problem(statusCode: 403, title: "You do not manage this event");
         var category = await database.EventCategories.Include(x => x.Route)

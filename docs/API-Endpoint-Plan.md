@@ -283,6 +283,8 @@ Route implementation notes, 18 October 2026: all four route operations are imple
 - Bib numbers are optional until assigned, but an assigned value must be unique within the event.
 - If reactivation changes the category, clear the old bib number so the Organiser can assign one for the new category.
 
+Enrolment implementation notes, 18 October 2026: all eight operations are implemented. Responses retain the planned fields and add Participant/event/category names, UTC event and update times, category distance and an optional result summary. Lists default to page 1 and 10 items, allow up to 100, and sort by descending entry time then ID. Status filters ignore case and surrounding spaces. A roster's category filter must belong to its event or return 400. Bib numbers are trimmed, uppercased and limited to 20 letters, digits or hyphens, starting with a letter or digit; Cancelled entries keep their number reserved. Historical bib corrections remain allowed. Entry and reactivation ages use the UTC event date; 29 February birthdays advance on 1 March in non-leap years. JSON writes reject unknown fields and return 415 for non-JSON bodies. Entry writes, event updates and category updates/deletion share a transaction-held event update lock to protect capacity and state checks. The [enrolment notes](Part-2-Enrolments.md) record the checks.
+
 ## 11. Result endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |

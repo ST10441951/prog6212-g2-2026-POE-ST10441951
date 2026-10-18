@@ -39,7 +39,7 @@ Direct route reads and routes embedded in event/category responses use the same 
 
 ## 4. Checks
 
-All 532 tests pass locally with none skipped, including 85 route checks. The build has no warnings or errors, and there are no pending model changes.
+At the route revision, all 532 tests passed locally and on GitHub with none skipped, including 85 route checks. The build had no warnings or errors, and there were no pending model changes.
 
 The route checks cover CRUD, readable Draft Locations, SQL persistence, required fields, length boundaries, valid and invalid URLs, elevation limits, optional values, duplicate and simultaneous creation, both roles, ownership, event/category mismatches, missing routes, account changes, expiry and all five event statuses. They also check that updates appear in event and category responses and that deletion keeps related records. Tests use separate temporary SQL Server databases (Microsoft, 2026f).
 
@@ -52,7 +52,7 @@ Swagger checks on 18 October 2026 use the demonstration Organiser login and a se
 
 All four operations have Swagger descriptions, inputs, success and error responses. The creation and update example is also checked by an HTTP test (Swashbuckle, 2026).
 
-The [category build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed the 447 tests available at that revision. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. The API workflow includes the route tests on every push; this route revision has been checked locally.
+The [route build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167081) passed all 532 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167123) also passed. The subsequent [enrolment notes](Part-2-Enrolments.md) record the new entry checks.
 
 ## References
 

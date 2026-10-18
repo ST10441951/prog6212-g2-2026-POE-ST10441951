@@ -93,10 +93,13 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Add route CRUD and check the category belongs to the event.
 - [x] Check route ownership, public visibility and readable creation Locations.
 - [x] Validate route text, optional map URLs and elevation; keep related records when deleting a route.
-- [ ] Save enrolments with the correct Participant, Event and Category links.
-- [ ] Check entry dates, event status, age, capacity and duplicate enrolments.
-- [ ] Add enrolment reads, cancellation, reactivation, DELETE and bib numbers.
-- [ ] Let Organisers view enrolments for their own events.
+- [x] Save enrolments with the correct Participant, Event and Category links.
+- [x] Check entry dates, event status, age, capacity and duplicate enrolments.
+- [x] Add enrolment reads, cancellation, reactivation, DELETE and bib numbers.
+- [x] Let Organisers view enrolments for their own events.
+- [x] Protect private entry reads, Participant actions and Organiser rosters with ownership checks.
+- [x] Keep Cancelled history, preserve reactivated IDs and clear bib numbers when the category changes.
+- [x] Check simultaneous entry, reactivation, bib, capacity and event-closing requests.
 - [ ] Add result capture, updates and personal and event result lists.
 - [ ] Check result times, positions, ownership and one result per enrolment.
 - [ ] Protect cancelled enrolments and historical records.
@@ -119,6 +122,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Describe all five Organiser event operations and provide working event-write examples.
 - [x] Describe all six category operations and test the creation example through Swagger.
 - [x] Describe all four route operations and provide working write examples.
+- [x] Describe all eight enrolment operations, their roles, fields, filters and responses.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -140,10 +144,12 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Pass all 93 category checks locally, including duplicate writes and event-opening rules.
 - [x] Confirm the category revision passes on GitHub after an approved push.
 - [x] Pass all 85 route checks locally, including saved relationships, visibility and duplicate creation.
-- [ ] Confirm the route revision passes on GitHub after an approved push.
+- [x] Confirm the route revision passes on GitHub after an approved push.
+- [x] Pass all 113 enrolment checks locally, including saved links, age boundaries and competing writes.
+- [ ] Confirm the enrolment revision passes on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [x] Cover event CRUD and ownership checks.
-- [ ] Cover enrolment rules and the saved database relationships.
+- [x] Cover enrolment rules and the saved database relationships.
 - [ ] Cover profiles, categories, routes, results and images.
 - [x] Check SQL Server constraints against SQL Server.
 - [x] Keep the tests repeatable and separate from the Part 1 database.

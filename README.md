@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, event browsing and management, the Organiser dashboard, categories and routes are implemented. Twenty-three of the 40 planned business endpoints are complete; 17 remain. All 532 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes and enrolments are implemented. Thirty-one of the 40 planned business endpoints are complete; nine remain. All 645 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -138,6 +138,25 @@ Writes require an Organiser session and event ownership. Both path IDs must matc
 
 The [route notes](docs/Part-2-Routes.md) record validation, access and checks.
 
+## Enrolments
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| POST | `/api/enrolments` | Enters the signed-in Participant into an available category |
+| GET | `/api/enrolments/mine` | Paged personal entry history with status and event filters |
+| GET | `/api/enrolments/{enrolmentId}` | Entry details for its Participant or event Organiser |
+| PUT | `/api/enrolments/{enrolmentId}/cancel` | Cancels a Confirmed entry and keeps its history |
+| PUT | `/api/enrolments/{enrolmentId}/reactivate` | Reactivates a Cancelled entry after repeating entry checks |
+| DELETE | `/api/enrolments/{enrolmentId}` | Deletes an eligible Confirmed entry before entries close |
+| GET | `/api/events/{eventId}/enrolments` | Paged roster for the event's Organiser |
+| PUT | `/api/enrolments/{enrolmentId}/bib-number` | Assigns or corrects an event-unique bib number |
+
+Entries require an Open event, a future closing time, an available category, the correct age and capacity. Age uses completed years on the stored UTC event date. A date of birth is needed for an age-restricted category. Only Confirmed entries use places. A Participant has one saved entry per event; Cancelled entries are reactivated rather than inserted again.
+
+Cancellation keeps the entry time and bib number. Changing category during reactivation clears the old bib. Cancelled entries, closed-event history and entries with results cannot be deleted. Writes use SQL transactions and an event update lock so competing requests cannot take the same last place (Microsoft, 2026s; 2026t).
+
+The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries; the five result endpoints and four image endpoints remain to be added.
+
 ## Setup and run
 
 Install the .NET 10 SDK and SQL Server LocalDB on Windows. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
@@ -194,6 +213,8 @@ For event management, log in as `thabo.ndlovu@example.com` using the same demons
 
 To add a route, use the same event ID and saved category ID with POST `/api/events/{eventId}/categories/{categoryId}/route`. Execute the route example, then follow its Location with GET. PUT edits the route; omitted optional map and elevation values clear them. DELETE removes the route while keeping the category.
 
+For enrolments, log in as a Participant and choose an Open event and available category. POST `/api/enrolments` takes only their IDs. Use the returned entry ID for GET, cancellation and reactivation. The Participant's own list is `/api/enrolments/mine`. To assign a bib or view the event roster, log in as that event's Organiser. The example IDs refer to the original sample data; an existing Cancelled entry must be reactivated, and actual event/category IDs must be selected when using a new event.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -220,15 +241,15 @@ The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2
 
 The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
 
-The [category build for 69dcd78](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed all 447 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. Route management adds 85 checks and brings the local total to 532. The API workflow runs the complete suite and migration check on every push.
+The [route build for 0881b7e](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167081) passed all 532 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167123) also passed. Enrolments add 113 checks and bring the local total to 645. The API workflow runs the complete suite and migration check on every push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks and 85 route checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks and 113 enrolment checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 532 pass locally with none skipped and no build warnings or errors. The new checks cover route CRUD, both roles, ownership, hidden records, invalid input, SQL persistence, duplicate requests, saved history and Swagger examples. Enrolment, result and image-operation tests will be added with those features.
+All 645 pass locally with none skipped and no build warnings or errors. The new checks cover entries, cancellation, reactivation, DELETE, bib numbers, private lists, both roles, ownership, invalid fields, age boundaries, capacity and competing writes. Result and image-operation tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -248,6 +269,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Events/` | Event browsing, management, ownership, history and dashboard checks |
 | `tests/RaceDay.Api.Tests/Categories/` | Category validation, ownership, visibility, capacity and history checks |
 | `tests/RaceDay.Api.Tests/Routes/` | Route CRUD, validation, visibility, ownership and saved-record checks |
+| `tests/RaceDay.Api.Tests/Enrolments/` | Entry rules, history, ownership, paging, bib numbers and competing requests |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -260,6 +282,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Event-Management.md](docs/Part-2-Event-Management.md) | Owned events, status changes and dashboard checks |
 | [Part-2-Categories.md](docs/Part-2-Categories.md) | Category rules, validation and Swagger checks |
 | [Part-2-Routes.md](docs/Part-2-Routes.md) | Route rules, validation and Swagger checks |
+| [Part-2-Enrolments.md](docs/Part-2-Enrolments.md) | Entry rules, access, history and Swagger checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -318,6 +341,10 @@ Microsoft (2026p) 'Model validation in ASP.NET Core MVC', *Microsoft Learn*. Ava
 Microsoft (2026q) 'Pagination', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/querying/pagination (Accessed: 18 October 2026).
 
 Microsoft (2026r) 'Basic SaveChanges', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/saving/basic (Accessed: 18 October 2026).
+
+Microsoft (2026s) 'Using Transactions', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/saving/transactions (Accessed: 18 October 2026).
+
+Microsoft (2026t) 'Table Hints (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table (Accessed: 18 October 2026).
 
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 

@@ -427,7 +427,7 @@ public sealed class AuthenticationTests(SqlServerFixture database) : IClassFixtu
         using var client = factory.Client();
         using var document = JsonDocument.Parse(await client.GetStringAsync("/swagger/v1/swagger.json"));
         var paths = document.RootElement.GetProperty("paths");
-        Assert.Equal(14, paths.EnumerateObject().Count());
+        Assert.Equal(21, paths.EnumerateObject().Count());
         foreach (string endpoint in new[] { "register", "login", "logout" })
         {
             var operation = paths.GetProperty("/api/auth/" + endpoint).GetProperty("post");

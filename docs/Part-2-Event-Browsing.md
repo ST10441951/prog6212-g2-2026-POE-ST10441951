@@ -54,7 +54,7 @@ The results depend on the current date. These checks were completed on 18 Octobe
 
 ## 5. Test results
 
-At the event-browsing revision, all 233 tests passed locally and on GitHub with none skipped: seven startup, 63 database, 51 authentication, 57 profile and password, and 55 event-browsing checks. The build had no warnings or errors, and the model needed no migration changes. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The [route work](Part-2-Routes.md) brings the local total to 532.
+At the event-browsing revision, all 233 tests passed locally and on GitHub with none skipped: seven startup, 63 database, 51 authentication, 57 profile and password, and 55 event-browsing checks. The build had no warnings or errors, and the model needed no migration changes. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The route revision passed 532 tests locally and on GitHub. The [enrolment notes](Part-2-Enrolments.md) record the subsequent entry checks.
 
 The new checks cover event statuses, current-time boundaries, all event types and provinces, combined filters, inclusive dates, extreme dates, paging, invalid input, historical details, category visibility, routes, private events and owner sessions. Requests use the real API pipeline and temporary SQL Server databases (Microsoft, 2026e).
 

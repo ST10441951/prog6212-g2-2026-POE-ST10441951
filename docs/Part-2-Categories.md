@@ -60,7 +60,7 @@ Swagger checks on 18 October 2026 use the demonstration Organiser account and a 
 | Created category and Location | [Swagger category creation](evidence/swagger-category-create.jpg) |
 | Public category list | [Swagger category list](evidence/swagger-category-public-list.jpg) |
 
-The [category build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed all 447 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. The subsequent route work adds 85 checks and brings the local total to 532.
+The [category build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036588) passed all 447 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39126036609) also passed. The route revision then passed 532 tests locally and on GitHub. The [enrolment notes](Part-2-Enrolments.md) record the subsequent entry checks.
 
 ## References
 
