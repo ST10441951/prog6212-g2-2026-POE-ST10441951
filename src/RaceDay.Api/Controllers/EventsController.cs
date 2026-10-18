@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Authentication;
 using RaceDay.Api.Contracts.Events;
 using RaceDay.Api.Data;
+using RaceDay.Api.Storage;
 
 namespace RaceDay.Api.Controllers;
 
@@ -17,7 +18,7 @@ namespace RaceDay.Api.Controllers;
 [ApiController]
 [Route("api/events")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-public sealed class EventsController(RaceDayDbContext database, TimeProvider clock) : ControllerBase
+public sealed class EventsController(RaceDayDbContext database, TimeProvider clock, IImageStorage images) : ControllerBase
 {
     /// <summary>Browse upcoming public events.</summary>
     /// <remarks>
@@ -67,6 +68,7 @@ public sealed class EventsController(RaceDayDbContext database, TimeProvider clo
         var items = await query.OrderBy(x => x.EventDateTime).ThenBy(x => x.EventId)
             .Skip((request.Page - 1) * request.PageSize).Take(request.PageSize)
             .Select(EventResponses.Summary).ToListAsync(cancellationToken);
+        EventResponses.AddBannerUrls(items, images);
 
         return Ok(new EventPageResponse
         {
@@ -81,8 +83,8 @@ public sealed class EventsController(RaceDayDbContext database, TimeProvider clo
     /// Log in as the owning Organiser to read Draft or Cancelled events and unavailable categories.
     /// Missing records and records hidden from the caller both return 404. Invalid or expired cookies
     /// do not grant owner access; public event details remain readable. Responses contain no account
-    /// contact details, enrolments, participant records or storage object names. BannerImageUrl is null
-    /// until image storage is added. Responses are not cached because visible categories depend on identity.
+    /// contact details, enrolments, participant records or raw storage fields. Saved banners have a
+    /// one-hour read URL. Responses are not cached because visible categories depend on identity.
     /// </remarks>
     /// <response code="200">Event details with visible categories and each category's route, if present.</response>
     /// <response code="404">The event does not exist or is not visible to this caller.</response>
@@ -103,6 +105,6 @@ public sealed class EventsController(RaceDayDbContext database, TimeProvider clo
         if (item is null)
             return Problem(statusCode: 404, title: "Event not found");
 
-        return Ok(EventResponses.Details(item));
+        return Ok(EventResponses.Details(item, images));
     }
 }

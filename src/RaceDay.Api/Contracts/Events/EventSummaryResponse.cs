@@ -16,8 +16,11 @@ public class EventSummaryResponse
     /// <summary>Running, Walking or Cycling.</summary>
     public required string EventType { get; init; }
 
-    /// <summary>Null until the banner-storage endpoints are implemented.</summary>
-    public string? BannerImageUrl { get; init; }
+    /// <summary>One-hour read-only banner URL, or null when no supported image is saved.</summary>
+    public string? BannerImageUrl { get; set; }
+
+    // Used only while mapping the selected SQL fields; never serialised or listed in Swagger.
+    internal string? BannerBlobName { get; init; }
 
     /// <summary>Advertised distance in kilometres.</summary>
     public required decimal DistanceKm { get; init; }

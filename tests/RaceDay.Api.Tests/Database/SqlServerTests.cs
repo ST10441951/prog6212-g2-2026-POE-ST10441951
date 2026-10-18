@@ -407,6 +407,10 @@ public sealed class SqlServerTests(SqlServerFixture database) : IClassFixture<Sq
         await context.Database.OpenConnectionAsync();
         await using DbCommand command = context.Database.GetDbConnection().CreateCommand();
         command.CommandText = sql;
+        // Cold LocalDB metadata may exceed the default timeout on a busy machine.
+        // These tests still compare every expected schema value; API timeouts are unchanged.
+        // Microsoft (2026): https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.commandtimeout
+        command.CommandTimeout = 120;
         await using var reader = await command.ExecuteReaderAsync();
         var rows = new List<string>();
         while (await reader.ReadAsync())

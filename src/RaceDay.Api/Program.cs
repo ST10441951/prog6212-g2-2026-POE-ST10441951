@@ -11,6 +11,7 @@ using RaceDay.Api.Contracts.Categories;
 using RaceDay.Api.Contracts.Routes;
 using RaceDay.Api.Contracts.Enrolments;
 using RaceDay.Api.Contracts.Results;
+using RaceDay.Api.Storage;
 
 // Swagger setup: Swashbuckle (2026).
 // https://github.com/domaindrivendev/Swashbuckle.AspNetCore
@@ -27,6 +28,7 @@ builder.Services.AddProblemDetails();
 // https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-10.0
 // Accessed: 18 October 2026.
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<IImageStorage, BlobImageStorage>();
 builder.Services.AddDataProtection();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<SessionStore>();
@@ -53,7 +55,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "RaceDay API",
         Version = "v1",
-        Description = "API for RaceDay event management. Business endpoints are being added."
+        Description = "RaceDay event management, enrolments and results API."
     });
     string comments = Path.Combine(AppContext.BaseDirectory, "RaceDay.Api.xml");
     options.IncludeXmlComments(comments);

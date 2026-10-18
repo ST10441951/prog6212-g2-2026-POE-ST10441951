@@ -396,7 +396,8 @@ public sealed class ProfileTests(SqlServerFixture database) : IClassFixture<SqlS
         await context.Users.Where(x => x.UserId == account.UserId).ExecuteDeleteAsync();
         // Direct action calls reproduce the narrow race after middleware has validated the account.
         var controller = new ProfileController(context, new PasswordHasher<User>(),
-            factory.Services.GetRequiredService<SessionStore>(), factory.Clock)
+            factory.Services.GetRequiredService<SessionStore>(), factory.Clock,
+            factory.Services.GetRequiredService<RaceDay.Api.Storage.IImageStorage>())
         {
             ControllerContext = new ControllerContext
             {

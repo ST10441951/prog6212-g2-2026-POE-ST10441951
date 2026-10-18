@@ -24,7 +24,7 @@ public sealed class ProfileResponse
     /// <summary>Date of birth, if supplied.</summary>
     public DateOnly? DateOfBirth { get; init; }
 
-    /// <summary>No image URL is returned until the image-storage endpoints are implemented.</summary>
+    /// <summary>One-hour read-only image URL, or null when no supported image is saved.</summary>
     public string? ProfilePictureUrl { get; init; }
 
     /// <summary>Read-only Organiser or Participant role.</summary>

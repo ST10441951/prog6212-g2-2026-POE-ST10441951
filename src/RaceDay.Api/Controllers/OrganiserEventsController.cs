@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Contracts.Events;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
+using RaceDay.Api.Storage;
 
 namespace RaceDay.Api.Controllers;
 
@@ -23,7 +24,7 @@ namespace RaceDay.Api.Controllers;
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
 [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden, "application/problem+json")]
-public sealed class OrganiserEventsController(RaceDayDbContext database, TimeProvider clock) : ControllerBase
+public sealed class OrganiserEventsController(RaceDayDbContext database, TimeProvider clock, IImageStorage images) : ControllerBase
 {
     /// <summary>List your own events in every status.</summary>
     /// <remarks>
@@ -52,6 +53,7 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
         var items = await query.OrderBy(x => x.EventDateTime).ThenBy(x => x.EventId)
             .Skip((request.Page - 1) * request.PageSize).Take(request.PageSize)
             .Select(EventResponses.Summary).ToListAsync(cancellationToken);
+        EventResponses.AddBannerUrls(items, images);
         return Ok(new EventPageResponse
         {
             Page = request.Page, PageSize = request.PageSize, TotalCount = count,
@@ -90,7 +92,7 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
         Apply(item, request);
         database.Events.Add(item);
         await database.SaveChangesAsync(cancellationToken);
-        return Created($"/api/events/{item.EventId}", EventResponses.Details(item));
+        return Created($"/api/events/{item.EventId}", EventResponses.Details(item, images));
     }
 
     /// <summary>Update an owned event or change its status.</summary>
@@ -154,7 +156,7 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
         item.UpdatedAt = clock.GetUtcNow().UtcDateTime;
         await database.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-        return Ok(EventResponses.Details(item));
+        return Ok(EventResponses.Details(item, images));
     }
 
     /// <summary>Delete an owned event with no dependent records.</summary>
@@ -174,7 +176,8 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
     public async Task<IActionResult> Delete(int eventId, CancellationToken cancellationToken)
     {
-        var item = await database.Events.SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+        await using var transaction = await database.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
+        var item = await EventWriteLock.Query(database, eventId).SingleOrDefaultAsync(cancellationToken);
         if (item is null)
             return Problem(statusCode: 404, title: "Event not found");
         if (item.OrganiserUserId != OwnerId())
@@ -196,6 +199,7 @@ public sealed class OrganiserEventsController(RaceDayDbContext database, TimePro
         {
             return Problem(statusCode: 404, title: "Event not found");
         }
+        await transaction.CommitAsync(cancellationToken);
         return NoContent();
     }
 

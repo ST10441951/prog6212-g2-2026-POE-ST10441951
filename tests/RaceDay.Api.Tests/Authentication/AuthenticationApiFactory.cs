@@ -16,17 +16,20 @@ internal sealed class AuthenticationApiFactory(string connectionString, string e
     : WebApplicationFactory<Program>
 {
     internal TestClock Clock { get; } = new();
+    internal Dictionary<string, string?> Settings { get; } = [];
+    internal Action<IServiceCollection>? ExtraServices { get; set; }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment(environment);
         builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(
-            new Dictionary<string, string?> { ["ConnectionStrings:RaceDay"] = connectionString }));
+            new Dictionary<string, string?> { ["ConnectionStrings:RaceDay"] = connectionString }).AddInMemoryCollection(Settings));
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(Clock);
             services.AddControllers().AddApplicationPart(typeof(AccessCheckController).Assembly);
+            ExtraServices?.Invoke(services);
         });
     }
 

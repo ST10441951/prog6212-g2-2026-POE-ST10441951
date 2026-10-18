@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using RaceDay.Api.Models;
 using RaceDay.Api.Contracts.Categories;
+using RaceDay.Api.Storage;
 
 namespace RaceDay.Api.Contracts.Events;
 
@@ -16,10 +17,16 @@ internal static class EventResponses
         EventId = x.EventId, EventName = x.EventName, EventType = x.EventType, DistanceKm = x.DistanceKm,
         EventDateTime = DateTime.SpecifyKind(x.EventDateTime, DateTimeKind.Utc),
         EntryClosingDateTime = DateTime.SpecifyKind(x.EntryClosingDateTime, DateTimeKind.Utc),
-        VenueName = x.VenueName, City = x.City, Province = x.Province, Status = x.Status
+        VenueName = x.VenueName, City = x.City, Province = x.Province, Status = x.Status,
+        BannerBlobName = x.BannerImageBlobName
     };
 
-    internal static EventDetailsResponse Details(Event item) => new()
+    internal static void AddBannerUrls(IEnumerable<EventSummaryResponse> items, IImageStorage images)
+    {
+        foreach (var item in items) item.BannerImageUrl = images.ReadUrl(item.BannerBlobName);
+    }
+
+    internal static EventDetailsResponse Details(Event item, IImageStorage images) => new()
     {
         EventId = item.EventId, EventName = item.EventName, EventType = item.EventType,
         Description = item.Description, DistanceKm = item.DistanceKm,
@@ -27,6 +34,7 @@ internal static class EventResponses
         EntryClosingDateTime = DateTime.SpecifyKind(item.EntryClosingDateTime, DateTimeKind.Utc),
         VenueName = item.VenueName, AddressLine1 = item.AddressLine1, City = item.City, Province = item.Province,
         Latitude = item.Latitude, Longitude = item.Longitude, Status = item.Status,
+        BannerImageUrl = images.ReadUrl(item.BannerImageBlobName),
         Categories = item.Categories.OrderBy(x => x.EventCategoryId).Select(CategoryResponses.Details).ToList()
     };
 }

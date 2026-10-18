@@ -59,11 +59,13 @@ These checks were completed on 18 October 2026.
 | Compare the model with its migration snapshot | No pending model changes |
 | Compare every seeded column value with the corrected Part 1 database | All seven tables match |
 | Compare SQL check and default definitions with Part 1 | Match after equivalent numeric-cast formatting |
-| Run all current tests | 70 passed, 0 failed, 0 skipped |
+| Tests at the database revision | 70 passed, 0 failed, 0 skipped |
 
 Seven tests cover the API host and Swagger. The other 63 use real SQL Server LocalDB. They check columns, keys, foreign keys, indexes, defaults, all CHECK constraints, sample relationships, password hashes, persistence, duplicate values, cross-event categories and protected history (Microsoft, 2026f).
 
 Each test run creates a new `RaceDayTests_...` database. It is removed after the tests. The fixture does not use the Part 1 or Part 2 application database. A supplied `RACEDAY_TEST_CONNECTION` changes the server and authentication settings; the database name is always replaced.
+
+Schema-inspection queries allow up to 120 seconds for cold LocalDB metadata on a busy machine. They still compare every expected column, relationship and constraint. Application command timeouts are unchanged (Microsoft, 2026h).
 
 The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. The [build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations. The [authentication build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed 121 tests. The [profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests without a database change. Event browsing passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The route revision passed 532 tests locally and on GitHub. The [enrolment work](Part-2-Enrolments.md) keeps the schema unchanged and passes all 645 tests locally.
 
@@ -82,3 +84,5 @@ Microsoft (2026e) 'Data seeding', *Microsoft Learn*. Available at: https://learn
 Microsoft (2026f) 'Testing against your production database system', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/testing/testing-with-the-database (Accessed: 18 October 2026).
 
 Microsoft (2026g) 'Generated values', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/modeling/relational/default-values (Accessed: 18 October 2026).
+
+Microsoft (2026h) 'DbCommand.CommandTimeout Property', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.commandtimeout?view=net-10.0 (Accessed: 18 October 2026).

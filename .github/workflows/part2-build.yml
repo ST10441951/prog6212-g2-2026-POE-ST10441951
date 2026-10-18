@@ -23,6 +23,16 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Start local blob storage
+        shell: pwsh
+        run: |
+          $emulatorTools = Join-Path $env:RUNNER_TEMP 'raceday-emulator'
+          $emulatorData = Join-Path $env:RUNNER_TEMP 'raceday-blob-data'
+          npm install --prefix $emulatorTools --no-audit --no-fund azurite@3.37.0
+          if ($LASTEXITCODE -ne 0) { throw 'Azurite installation failed.' }
+          $emulatorEntry = Join-Path $emulatorTools 'node_modules/azurite/dist/src/blob/main.js'
+          Start-Process -FilePath (Get-Command node).Source -WindowStyle Hidden -ArgumentList @("`"$emulatorEntry`"", '--silent', '--blobHost', '127.0.0.1', '--location', "`"$emulatorData`"")
+
       - name: Restore packages
         run: dotnet restore RaceDay.sln
 
@@ -49,3 +59,5 @@ jobs:
 # SQL Server LocalDB is included in the Windows 2025 runner:
 # https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
 # Accessed: 18 October 2026.
+# Local blob tests use Azurite: https://github.com/Azure/Azurite#npm
+# Background service: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process

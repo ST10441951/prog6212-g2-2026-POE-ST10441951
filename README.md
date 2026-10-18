@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes, enrolments and results are implemented. Thirty-six of the 40 planned business endpoints are complete; four image endpoints remain. All 734 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes, enrolments and results are implemented. All 40 planned business endpoints are implemented, including image uploads and removal. All 810 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -41,9 +41,9 @@ The [Part 2 database notes](docs/Part-2-Database.md) explain the migration, samp
 
 ## API endpoints
 
-The API will cover authentication, profiles, events, categories, routes, enrolments and results. It will also include the password, dashboard, bib-number and image operations already in the endpoint plan.
+The API covers authentication, profiles, events, categories, routes, enrolments and results, including the planned password, dashboard, bib-number and image operations.
 
-Profile pictures and event banners will pass through the API. SQL Server will store their blob names. The MVC website and Docker setup belong to Part 3.
+Profile pictures and event banners pass through the API. SQL Server stores their generated blob names. The MVC website and Docker setup belong to Part 3.
 
 `GET /health` is a separate public host check. It returns `200 OK` with `{"status":"Healthy"}`. It uses ASP.NET Core controller routing and JSON responses (Microsoft, 2026c). It does not check the database, storage or login, and is not one of the 40 planned business endpoints.
 
@@ -75,7 +75,7 @@ The [authentication notes](docs/Part-2-Authentication.md) include the request ex
 
 Both roles use these endpoints. The user ID comes from the session. Profile updates cannot change email, role, account status, passwords or image fields. Optional phone and birth-date values are cleared when omitted or null. A supplied birth date must be earlier than today's UTC date.
 
-Password changes require the correct current password and matching new-password fields. Sign in again with the new password after the 204 response. Other browsers keep their existing sessions until logout or normal expiry. Profile image URLs remain null until the image endpoints are added.
+Password changes require the correct current password and matching new-password fields. Sign in again with the new password after the 204 response. Other browsers keep their existing sessions until logout or normal expiry. Saved pictures have read-only URLs valid for one hour. GET supplies a fresh URL; an account without a picture returns null.
 
 The [profile notes](docs/Part-2-Profiles.md) record the validation, persistence and privacy checks (Microsoft, 2026p).
 
@@ -155,7 +155,7 @@ Entries require an Open event, a future closing time, an available category, the
 
 Cancellation keeps the entry time and bib number. Changing category during reactivation clears the old bib. Cancelled entries, closed-event history and entries with results cannot be deleted. Writes use SQL transactions and an event update lock so competing requests cannot take the same last place (Microsoft, 2026s; 2026t).
 
-The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries. The result endpoints are described below; four image endpoints remain.
+The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries. The result endpoints are described below.
 
 ## Results
 
@@ -171,9 +171,22 @@ Writes require the event's Organiser, a Confirmed entry and an event that has st
 
 Finisher totals count all Completed results in the whole event, including other categories and Participants. Filters and paging do not reduce this total. The [result notes](docs/Part-2-Results.md) record access, validation, corrections and checks.
 
+## Images
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| PUT | `/api/profile/picture` | Uploads or replaces the Participant's own picture |
+| DELETE | `/api/profile/picture` | Removes the Participant's picture; repeated removal returns 204 |
+| PUT | `/api/events/{eventId}/banner` | Uploads or replaces a banner for the owning Organiser |
+| DELETE | `/api/events/{eventId}/banner` | Removes an owned-event banner; repeated removal returns 204 |
+
+Uploads take exactly one multipart `imageFile`. JPEG and PNG are accepted, up to 5 MiB and 4096 pixels per side. The API checks content, extension, MIME type and decoding, then re-encodes the image without its original metadata. Generated names are saved in SQL and the files are kept in a private Azure Blob container.
+
+Returned URLs allow reading one image for one hour. Profile and event reads supply fresh URLs. No account keys are returned. The [image notes](docs/Part-2-Images.md) explain validation, replacement, removal, storage settings and failure recovery (Microsoft, 2026u; 2026v).
+
 ## Setup and run
 
-Install the .NET 10 SDK and SQL Server LocalDB on Windows. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
+Install the .NET 10 SDK and SQL Server LocalDB on Windows, plus Node.js with npm for the local image-storage emulator. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
 
 1. Clone the repository and open its folder (GitHub, 2026a).
 
@@ -207,13 +220,21 @@ dotnet ef database update --project src/RaceDay.Api --configuration Release --no
 
 The command creates the tables and sample records. Running it again keeps the saved data and applies only missing migrations. Do not run the Part 1 SQL script against this database. The API does not run migrations automatically when it starts.
 
-5. Start the API using the local HTTP profile.
+5. Start local blob storage in a separate terminal from the repository folder (Microsoft, 2026w).
+
+```text
+npx --yes --package azurite@3.37.0 azurite-blob --blobHost 127.0.0.1 --location .azurite --silent
+```
+
+Development settings use `UseDevelopmentStorage=true` and the private `raceday-images` container. Emulator data is ignored by Git. For Azure, set `ImageStorage__ConnectionString` privately and optionally `ImageStorage__ContainerName`; do not commit real account keys. Keep the emulator running while using images or running the tests.
+
+6. Start the API using the local HTTP profile.
 
 ```text
 dotnet run --project src/RaceDay.Api --configuration Release --no-build --launch-profile http
 ```
 
-6. Open [Swagger](http://localhost:5120/swagger/index.html). Expand `GET /health`, select **Try it out**, then **Execute**. The response should be `200` with `{"status":"Healthy"}`. The Swagger JSON is at `http://localhost:5120/swagger/v1/swagger.json` (Swashbuckle, 2026).
+7. Open [Swagger](http://localhost:5120/swagger/index.html). Expand `GET /health`, select **Try it out**, then **Execute**. The response should be `200` with `{"status":"Healthy"}`. The Swagger JSON is at `http://localhost:5120/swagger/v1/swagger.json` (Swashbuckle, 2026).
 
 To check authentication, execute the login example using `naledi.mokoena@example.com` and `RaceDayDemo!2026`. Then execute logout without a body. Swagger sends the cookie automatically; entering it in **Authorize** is not needed. Logout returns 204, and a second logout returns 401.
 
@@ -231,7 +252,9 @@ For enrolments, log in as a Participant and choose an Open event and available c
 
 For results, log in as Thabo and use GET `/api/events/1/results` or GET `/api/enrolments/1/result` to read the original sample results. Naledi can read her own result at `/api/results/mine`. Capture requires a Confirmed entry without a result in an event that has started; upcoming events are rejected. The POST result example uses Completed with 3600 seconds. PUT corrects its editable fields. To use DidNotFinish, Disqualified or DidNotStart, set time and positions to null.
 
-7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
+For images, log in as Naledi, expand PUT `/api/profile/picture`, select Try it out and choose a JPEG or PNG at `imageFile`. Execute and open the returned URL. GET `/api/profile` also supplies the saved picture URL. Upload another file to replace it; DELETE removes it. Thabo uses the same steps for `/api/events/1/banner`. Other Organisers cannot change his banner. Event details and lists include the banner URL.
+
+8. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
 dotnet test RaceDay.sln --configuration Release --no-build
@@ -239,33 +262,25 @@ dotnet test RaceDay.sln --configuration Release --no-build
 
 In Visual Studio, open `RaceDay.sln`, set `RaceDay.Api` as the startup project and choose the `http` profile. Open **Test > Test Explorer** and select **Run All** to run the tests there.
 
-The tests create and remove their own temporary `RaceDayTests_...` database. They use LocalDB by default. For another SQL Server, set `RACEDAY_TEST_CONNECTION` before starting the tests; the test fixture always chooses a new database name. It does not use `RaceDay` or `RaceDayPart2`.
+The tests create and remove their own temporary `RaceDayTests_...` database. They use LocalDB by default. For another SQL Server, set `RACEDAY_TEST_CONNECTION` before starting the tests; the test fixture always chooses a new database name. It does not use `RaceDay` or `RaceDayPart2`. Image tests also create and remove their own `raceday-tests-...` container. They use local Azurite unless `RACEDAY_TEST_STORAGE_CONNECTION` selects a separate test account.
 
 The HTTP profile is for local development. Outside Development, Swagger is disabled and the API enables HTTPS redirection and HSTS. Set `ConnectionStrings:RaceDay` separately for that environment.
 
 ## CI/CD
 
-The planning checks are written in C# and use the .NET 10 SDK. They check the required files, image formats, all 40 endpoint rows, the lecturer's 25 required operations and matching SQL, ERD and data-dictionary columns. The workflow builds and runs them on every push and on pull requests to main (GitHub, 2026b; 2026c).
+The planning checks are written in C#. They check required files and image formats, all 40 endpoint rows, the lecturer's 25 required operations and matching SQL, ERD and data-dictionary columns. The workflow runs on every push and on pull requests to main (GitHub, 2026b; 2026c).
 
-The [C# planning build for 4560c17](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39063690485) passed on GitHub. The local checks also rejected all 13 invalid-document cases.
+The `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main. It uses Windows 2025 with SQL Server LocalDB, starts Azurite for blob tests and checks for pending migrations (GitHub, 2026d; 2026e).
 
-The `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main (GitHub, 2026d). The [API build for ecce46b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39100427831) passed with all seven startup tests.
-
-The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and runs the SQL Server tests and a pending-migration check (GitHub, 2026e). The [database build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations.
-
-The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed all 121 tests with none skipped, no build warnings or errors and no missing migrations.
-
-The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
-
-The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests with none skipped, no build warnings or errors and no missing migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The result work adds 89 checks. All 734 tests pass locally; the result changes await an approved commit and GitHub build. The API workflow runs the complete suite and migration check on every push.
+The [result build for 480d552](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842878) passed all 734 tests with none skipped, no warnings or errors and no pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842900) also passed. All 810 tests, including 76 image checks, pass locally. The workflow checks the image changes on push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks, 113 enrolment checks and 89 result checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks, 113 enrolment checks, 89 result checks and 76 image checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026a).
 
-All 734 pass locally with none skipped and no build warnings or errors. Result checks cover capture, correction history, private reads, roles, invalid values, filters, paging, finisher totals and competing writes. Image-operation tests will be added with that feature.
+All 810 tests pass locally with none skipped and no build warnings or errors. Image checks use the real Azure SDK and emulator for valid uploads, signed reads, replacements and removal. They also cover rejected files, roles, ownership, storage and SQL failures, concurrent writes and all 40 planned Swagger operations.
 
 Collections run sequentially to reduce LocalDB memory and connection pressure. Explicit concurrent HTTP requests inside the competing-write tests still run together (xUnit.net, 2026b).
 
@@ -289,6 +304,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Routes/` | Route CRUD, validation, visibility, ownership and saved-record checks |
 | `tests/RaceDay.Api.Tests/Enrolments/` | Entry rules, history, ownership, paging, bib numbers and competing requests |
 | `tests/RaceDay.Api.Tests/Results/` | Result capture, corrections, access, paging, totals and competing requests |
+| `tests/RaceDay.Api.Tests/Images/` | Image validation, private storage, replacement, removal, access and recovery checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -303,6 +319,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Routes.md](docs/Part-2-Routes.md) | Route rules, validation and Swagger checks |
 | [Part-2-Enrolments.md](docs/Part-2-Enrolments.md) | Entry rules, access, history and Swagger checks |
 | [Part-2-Results.md](docs/Part-2-Results.md) | Official results, corrections and checks |
+| [Part-2-Images.md](docs/Part-2-Images.md) | Image rules, storage setup and checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -366,9 +383,15 @@ Microsoft (2026s) 'Using Transactions', *Microsoft Learn*. Available at: https:/
 
 Microsoft (2026t) 'Table Hints (Transact-SQL)', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table (Accessed: 18 October 2026).
 
+Microsoft (2026u) 'Upload files in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026v) 'Create a service SAS for a container or blob with .NET', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/azure/storage/blobs/sas-service-create-dotnet (Accessed: 18 October 2026).
+
+Microsoft (2026w) 'Use the Azurite emulator for local Azure Storage development', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite (Accessed: 18 October 2026).
+
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 
-xUnit.net (2026) 'Getting started with xUnit.net v2'. Available at: https://xunit.net/docs/getting-started/v2/getting-started (Accessed: 17 October 2026).
+xUnit.net (2026a) 'Getting started with xUnit.net v2'. Available at: https://xunit.net/docs/getting-started/v2/getting-started (Accessed: 17 October 2026).
 
 xUnit.net (2026b) 'Running tests in parallel'. Available at: https://xunit.net/docs/running-tests-in-parallel (Accessed: 18 October 2026).
 

@@ -14,7 +14,7 @@ These routes follow the Part 1 endpoint plan. The user ID comes from the authent
 
 Profiles include names, email, phone number, date of birth, role, account status and UTC creation time. Passwords, hashes, storage object names and related private records are excluded. Responses use `Cache-Control: no-store`.
 
-Profile pictures will be added with the image endpoints. Until then, `profilePictureUrl` is null.
+The [image endpoints](Part-2-Images.md) now manage Participant pictures. A saved picture has a one-hour read-only URL, refreshed by GET; an account without a picture returns null.
 
 ## 2. Personal details
 

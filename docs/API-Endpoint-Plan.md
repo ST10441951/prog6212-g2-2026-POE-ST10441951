@@ -129,6 +129,14 @@ Authentication implementation notes, 18 October 2026: sessions expire 20 minutes
 
 Profile implementation notes, 18 October 2026: GET and PUT `/api/profile` and PUT `/api/profile/password` are implemented. PUT replaces the permitted personal details, clearing optional values when omitted or null. Successful password changes end the current browser's session; other sessions keep their existing expiry. Deleted accounts normally return 401 during authentication; the planned 404 covers deletion between authentication and the profile action. JSON writes also return 415 for non-JSON bodies. Image operations remain pending, so `profilePictureUrl` is currently null. The [profile notes](Part-2-Profiles.md) record these checks.
 
+### 6.3 Part 2 image implementation notes
+
+The four planned picture and banner operations are implemented. PUT takes exactly one multipart `imageFile` and rejects extra form fields. JPEG and PNG must have matching extensions, MIME types and decoded content. Input and processed files are limited to 5 MiB; the multipart request has an extra 64 KiB allowance for headers and is checked before form binding, including streamed requests. Dimensions are limited to 4096 pixels per side and 64 MiB of decoded pixels. Still images are re-encoded without their original metadata. Invalid or damaged images return 400, file-size violations return 413 and unsupported types return 415.
+
+SQL keeps generated names in its existing columns. Files use a private Blob container. Returned URLs are blob-specific, read-only and valid for one hour; profile reads and event details/lists generate fresh URLs. Replacement saves a new object before changing SQL, then removes the old object. DELETE clears its SQL name and returns 204 even when no image exists. Storage failures return 503; missing accounts or events return 404. Only Participants can change profile pictures, and only an event's Organiser can change its banner.
+
+The [image notes](Part-2-Images.md) explain configuration, validation, competing requests and recovery when SQL or storage fails. These are Part 2 API operations; MVC upload pages and Docker remain Part 3 work.
+
 ## 7. Event endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
@@ -403,7 +411,7 @@ The cancellation route covers the required PUT status change. Reactivation provi
 
 The other 15 endpoints remain in Part 2: password changes, profile-picture upload and removal, the Organiser dashboard, event-banner upload and removal, single-category and Organiser-category reads, four route operations, the second enrolment status route, bib numbers and a single-enrolment result read.
 
-The image endpoints are already in this plan, so they will be implemented and tested through the API in Part 2. The MVC interface, its upload pages and Docker setup remain Part 3 work.
+The image endpoints are implemented and tested through the API in Part 2. The MVC interface, its upload pages and Docker setup remain Part 3 work.
 
 ### 14.3 Corrections dated 17 October 2026
 

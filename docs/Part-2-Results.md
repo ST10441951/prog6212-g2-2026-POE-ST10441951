@@ -32,7 +32,7 @@ Each result includes its event, category, Participant, bib number and timestamps
 
 ## 4. Checks
 
-All 734 tests pass locally with none skipped, including 89 result checks. The solution builds with no warnings or errors, the planning checks pass and there are no pending model changes.
+At the result revision, all 734 tests passed locally and on GitHub with none skipped, including 89 result checks. The solution built with no warnings or errors, the planning checks passed and there were no pending model changes.
 
 The 89 result checks cover all five endpoints, both roles, ownership, missing and expired sessions, SQL persistence, invalid fields, all four statuses, correction history, filters, paging, ordering, finisher totals and duplicate capture. Competing requests check duplicate capture and result capture against event cancellation. Tests use their own temporary SQL Server databases (Microsoft, 2026f).
 
@@ -48,7 +48,7 @@ Separate HTTP checks read the single result and owned-event list, change Complet
 | Corrected time and original record | [Swagger result correction](evidence/swagger-result-update.jpg) |
 | Participant history | [Swagger personal results](evidence/swagger-personal-results.jpg) |
 
-The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests available at that revision. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The result changes have been checked locally and await an approved commit and GitHub build. Four image endpoints remain.
+The [result build for 480d552](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842878) passed all 734 tests, with none skipped, no warnings or errors and no pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842900) also passed. The subsequent [image notes](Part-2-Images.md) cover the four image operations.
 
 ## References
 

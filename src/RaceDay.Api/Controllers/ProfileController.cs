@@ -7,6 +7,7 @@ using RaceDay.Api.Authentication;
 using RaceDay.Api.Contracts.Profiles;
 using RaceDay.Api.Data;
 using RaceDay.Api.Models;
+using RaceDay.Api.Storage;
 
 namespace RaceDay.Api.Controllers;
 
@@ -25,13 +26,13 @@ namespace RaceDay.Api.Controllers;
 [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden, "application/problem+json")]
 [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
 public sealed class ProfileController(
-    RaceDayDbContext database, IPasswordHasher<User> passwords, SessionStore sessions, TimeProvider clock) : ControllerBase
+    RaceDayDbContext database, IPasswordHasher<User> passwords, SessionStore sessions, TimeProvider clock, IImageStorage images) : ControllerBase
 {
     /// <summary>View your own profile.</summary>
     /// <remarks>
     /// Both roles can use this endpoint after login. No user ID is accepted; identity comes from the session.
     /// Returns personal details, role and account status without passwords, hashes or storage object names.
-    /// ProfilePictureUrl is currently null; image storage will be added separately.
+    /// ProfilePictureUrl is a fresh one-hour read URL when a supported image has been saved.
     /// </remarks>
     /// <response code="200">The signed-in user's profile.</response>
     /// <response code="401">The session is missing, invalid, expired or revoked.</response>
@@ -152,7 +153,7 @@ public sealed class ProfileController(
         return database.Users.Include(x => x.Role).SingleOrDefaultAsync(x => x.UserId == userId, cancellationToken);
     }
 
-    private static ProfileResponse Profile(User user) => new()
+    private ProfileResponse Profile(User user) => new()
     {
         UserId = user.UserId,
         FirstName = user.FirstName,
@@ -160,6 +161,7 @@ public sealed class ProfileController(
         Email = user.Email,
         PhoneNumber = user.PhoneNumber,
         DateOfBirth = user.DateOfBirth,
+        ProfilePictureUrl = images.ReadUrl(user.ProfilePictureBlobName),
         Role = user.Role.RoleName,
         IsActive = user.IsActive,
         CreatedAt = DateTime.SpecifyKind(user.CreatedAt, DateTimeKind.Utc)

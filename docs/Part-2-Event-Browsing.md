@@ -34,7 +34,7 @@ Public details show available categories and their routes. The owning Organiser 
 
 Event details use an optional session. Login is not required for public information. When a cookie is supplied, it must pass the existing session, account-status and role checks before owner access is granted. Expired, logged-out, inactive or changed-role sessions cannot reveal hidden information. Request headers and query values cannot select the owner (Microsoft, 2026d).
 
-Responses use selected fields rather than serialising database entities. They exclude user contact information, credentials, enrolments and storage object names. Banner image URLs remain null until image storage is implemented. Responses use no-store because the visible categories can depend on the caller.
+Responses use selected fields rather than serialising database entities. They exclude user contact information, credentials, enrolments and storage object names. Saved banners now have one-hour read-only URLs, refreshed by event reads and lists. The [image notes](Part-2-Images.md) explain storage and access. Responses use no-store because the visible categories can depend on the caller.
 
 ## 4. Swagger checks
 

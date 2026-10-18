@@ -60,7 +60,7 @@ Swagger and HTTP checks on 18 October 2026 use a separate temporary Open event a
 | Reactivated entry | [Swagger enrolment reactivation](evidence/swagger-enrolment-reactivate.jpg) |
 | Owned event roster | [Swagger event enrolments](evidence/swagger-event-enrolments.jpg) |
 
-The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests, with no warnings, errors or pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The subsequent [result notes](Part-2-Results.md) cover result capture and corrections. Four image endpoints remain.
+The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests, with no warnings, errors or pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The subsequent [result notes](Part-2-Results.md) cover result capture and corrections. The [image notes](Part-2-Images.md) cover the four image operations.
 
 ## References
 

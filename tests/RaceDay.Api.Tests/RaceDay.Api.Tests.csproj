@@ -18,5 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="../../src/RaceDay.Api/RaceDay.Api.csproj" />
     <None Include="../../docs/RaceDay.sql" Link="Planning/RaceDay.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/API-Endpoint-Plan.md" Link="Planning/API-Endpoint-Plan.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
