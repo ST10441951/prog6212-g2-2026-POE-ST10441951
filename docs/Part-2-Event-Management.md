@@ -55,7 +55,7 @@ No account contact details, passwords, storage object names or Participant recor
 
 ## 5. Checks
 
-All 354 tests pass locally with none skipped. This includes 121 Organiser event-management checks. The build has no warnings or errors, and the model needs no migration changes.
+At the event-management revision, all 354 tests passed locally and on GitHub with none skipped. This includes 121 Organiser event-management checks. The build had no warnings or errors, and the model needed no migration changes.
 
 The new checks cover all five endpoints, both roles, expired sessions, ownership, required and invalid fields, SQL precision, UTC offsets, creation locations, all 25 status pairs, opening readiness, saved history, deletion conflicts, filters, paging, dashboard counts and usable Swagger examples. Tests use temporary SQL Server databases (Microsoft, 2026g).
 
@@ -66,7 +66,7 @@ Swagger checks on 18 October 2026 use the existing Organiser demonstration login
 | Created Draft and Location | [Swagger event creation](evidence/swagger-event-create.jpg) |
 | Owned event and enrolment totals | [Swagger Organiser dashboard](evidence/swagger-organiser-dashboard.jpg) |
 
-The [event-browsing build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39120804257) passed the 233 tests available at that revision. The API workflow includes all 354 tests on every push. Category write endpoints are still to be added; test categories are created only in temporary test databases.
+The [event-management build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed all 354 tests. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637429) also passed. The subsequent [category work](Part-2-Categories.md) adds the category writes needed to open a new Draft through the API. All 447 tests pass locally.
 
 ## References
 

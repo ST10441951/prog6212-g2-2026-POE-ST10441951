@@ -10,6 +10,9 @@ public sealed class CategorySummaryResponse
     /// <summary>Unique category identifier.</summary>
     public required int EventCategoryId { get; init; }
 
+    /// <summary>Identifier of the event that owns this category.</summary>
+    public required int EventId { get; init; }
+
     /// <summary>Category name.</summary>
     public required string CategoryName { get; init; }
 

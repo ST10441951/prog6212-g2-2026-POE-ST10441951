@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, public event reads, owned-event management and the Organiser dashboard are implemented. Thirteen of the 40 planned business endpoints are complete; 27 remain. All 354 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, event browsing and management, the Organiser dashboard and category management are implemented. Nineteen of the 40 planned business endpoints are complete; 21 remain. All 447 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -108,6 +108,21 @@ Opening or reopening needs an available category and future event and closing ti
 
 The dashboard counts all saved enrolments, with Confirmed and Cancelled rows shown separately. Its totals and event list belong only to the signed-in Organiser. The [event-management notes](docs/Part-2-Event-Management.md) record the status rules, validation and checks.
 
+## Categories
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| GET | `/api/events/{eventId}/categories` | Available categories for Open, Closed and Completed events |
+| GET | `/api/events/{eventId}/categories/{categoryId}` | Public category details; the owner can also read hidden records |
+| GET | `/api/organiser/events/{eventId}/categories` | All categories for an owned event |
+| POST | `/api/events/{eventId}/categories` | Creates an owned category and returns 201 with its Location |
+| PUT | `/api/events/{eventId}/categories/{categoryId}` | Updates permitted category details |
+| DELETE | `/api/events/{eventId}/categories/{categoryId}` | Deletes an unused category and its optional route |
+
+Writes require an Organiser session and event ownership. Names are unique within each event. Requests validate distance, age limits, entry fee, availability and capacity. Saved entries protect the category's distance, age limits and fee. Capacity cannot be below Confirmed entries, and an Open event must keep an available category (Microsoft, 2026p; 2026r).
+
+Category responses include the event ID and optional route details. Route CRUD is still to be added. The [category notes](docs/Part-2-Categories.md) record the rules, tests and Swagger checks.
+
 ## Setup and run
 
 Install the .NET 10 SDK and SQL Server LocalDB on Windows. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
@@ -160,7 +175,7 @@ The registration example uses `new.participant@example.com`. Use another email t
 
 To check event browsing without login, execute `GET /api/events`. The original sample data includes the upcoming Cape Peninsula cycling event and Soweto walk. Filter `eventType` to `Cycling`, then execute `GET /api/events/{eventId}` with event ID `2` to see its details, categories and routes. The past Completed event at ID `1` can be viewed directly but is excluded from the upcoming list. The list changes as event dates pass.
 
-For event management, log in as `thabo.ndlovu@example.com` using the same demonstration password. Execute the POST event example and follow its Location to view the new Draft. Use its ID with PUT to update it or change its status to Cancelled. GET `/api/events/mine` and `/api/organiser/dashboard` show only that Organiser's records. A Draft cannot open until it has an available category; category write endpoints are still to be added.
+For event management, log in as `thabo.ndlovu@example.com` using the same demonstration password. Execute the POST event example and follow its Location to view the new Draft. Use its ID with POST `/api/events/{eventId}/categories` and execute the category example. GET `/api/organiser/events/{eventId}/categories` shows its saved categories. For PUT, reuse the editable fields from the creation request and add `"status": "Open"`. The event must have an available category and future start and closing times. The public category list can then show it. GET `/api/events/mine` and `/api/organiser/dashboard` show only that Organiser's records.
 
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
@@ -188,15 +203,15 @@ The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2
 
 The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
 
-The [event-browsing build for 64250d3](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39120804257) passed all 233 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed. Event management adds 121 checks and brings the local total to 354. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) runs the complete suite and migration check on every push.
+The [event-management build for 6d3a956](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637480) passed all 354 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39124637429) also passed. Category management adds 93 checks and brings the local total to 447. The API workflow runs the complete suite and migration check on every push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks and 121 Organiser event-management checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks and 93 category checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 354 pass locally with none skipped and no build warnings or errors. GitHub Actions runs the same suite on every push. The new checks cover event CRUD, every status transition, both roles, ownership, invalid fields, SQL persistence, protected history, dashboard counts and Swagger examples. Category, route, enrolment, result and image-operation tests will be added with those features.
+All 447 pass locally with none skipped and no build warnings or errors. The new checks cover category CRUD, both roles, ownership, invalid fields, capacity, saved history, route removal, public visibility, duplicate requests and Swagger examples. Route, enrolment, result and image-operation tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -214,6 +229,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
 | `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
 | `tests/RaceDay.Api.Tests/Events/` | Event browsing, management, ownership, history and dashboard checks |
+| `tests/RaceDay.Api.Tests/Categories/` | Category validation, ownership, visibility, capacity and history checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -224,6 +240,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Profiles.md](docs/Part-2-Profiles.md) | Personal details, password changes and checks |
 | [Part-2-Event-Browsing.md](docs/Part-2-Event-Browsing.md) | Event filters, visibility and read checks |
 | [Part-2-Event-Management.md](docs/Part-2-Event-Management.md) | Owned events, status changes and dashboard checks |
+| [Part-2-Categories.md](docs/Part-2-Categories.md) | Category rules, validation and Swagger checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |

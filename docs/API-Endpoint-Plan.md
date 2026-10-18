@@ -214,6 +214,8 @@ Event-management implementation notes, 18 October 2026: the five Organiser opera
 }
 ```
 
+Category implementation notes, 18 October 2026: all six operations are implemented. Public lists show available categories only for Open, Closed and Completed events; the protected owner list includes all records. Single-category reads also allow the owner to see Draft, Cancelled and unavailable records. Responses include `eventId` and the full optional route details. PUT clears omitted optional ages and capacity. Names are trimmed and unique within each event; non-JSON writes return 415. Any saved enrolment freezes distance, age limits and fee. Capacity counts Confirmed entries only. An Open event's last available category cannot be disabled or deleted; close the event first. Unused categories and their optional routes are deleted together. These additional history and readiness conflicts return 409. The [category notes](Part-2-Categories.md) explain the checks.
+
 ## 9. Event Route endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |

@@ -87,7 +87,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Store each event's name, description, date, location, distance and type.
 - [x] Validate event status transitions, opening readiness, field sizes and SQL precision.
 - [x] Protect saved event history and reject deletion with dependent records or a banner.
-- [ ] Add category CRUD with age, distance, fee, availability and capacity checks.
+- [x] Add category CRUD with age, distance, fee, availability and capacity checks.
+- [x] Protect category ownership, saved entries and Open-event readiness.
+- [x] Separate public category reads from the owner's full category list.
 - [ ] Add route CRUD and check the category belongs to the event.
 - [ ] Save enrolments with the correct Participant, Event and Category links.
 - [ ] Check entry dates, event status, age, capacity and duplicate enrolments.
@@ -113,6 +115,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Describe profile inputs and responses, add usable examples and check profile reads and updates in Swagger.
 - [x] Describe event-browsing filters and optional owner login; check public reads through Swagger.
 - [x] Describe all five Organiser event operations and provide working event-write examples.
+- [x] Describe all six category operations and test the creation example through Swagger.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -130,7 +133,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Pass all 55 event-browsing checks locally, including hidden events and owner sessions.
 - [x] Include the event-browsing tests in the GitHub build and test workflow.
 - [x] Pass all 121 Organiser event-management checks locally.
-- [ ] Confirm the event-management revision passes on GitHub after an approved push.
+- [x] Confirm the event-management revision passes on GitHub after an approved push.
+- [x] Pass all 93 category checks locally, including duplicate writes and event-opening rules.
+- [ ] Confirm the category revision passes on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [x] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.
