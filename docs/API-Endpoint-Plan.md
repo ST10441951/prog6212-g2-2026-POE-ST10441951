@@ -56,7 +56,9 @@ The exact wording may change during implementation, but the documented HTTP stat
 |---|---|---|---|---|---|
 | POST | `/api/auth/register` | Creates a new Organiser or Participant account using the selected role. The email address is normalised and checked for uniqueness. Only the two seeded role names are accepted, and an unrestricted role identifier is never accepted from the request. | None (public) | `firstName` string, required<br>`lastName` string, required<br>`email` string, required<br>`password` string, required<br>`role` string, required: Organiser or Participant<br>`phoneNumber` string, optional<br>`dateOfBirth` date, optional | `201 Created`: Safe account summary and a `Location` header for the profile resource.<br>`400 Bad Request`: A required field, role or other value is missing or invalid.<br>`409 Conflict`: An account already uses the supplied email address. |
 | POST | `/api/auth/login` | Checks the supplied credentials and creates a server-side session containing the user's identifier and role. Both Organisers and Participants use this endpoint. | None (public) | `email` string, required<br>`password` string, required | `200 OK`: Safe user summary and session expiry time. A secure session cookie is established.<br>`400 Bad Request`: Required fields are missing or incorrectly formatted.<br>`401 Unauthorized`: The email address or password is incorrect.<br>`403 Forbidden`: The account exists but is inactive. |
-| POST | `/api/auth/logout` | Ends the signed-in user's session so that the existing session cookie can no longer access protected endpoints. | Any authenticated user | None | `204 No Content`: The session was ended.<br>`401 Unauthorized`: No valid authenticated session exists. |
+| POST | `/api/auth/logout` | Ends the signed-in user's session so that the existing session cookie can no longer access protected endpoints. | Any authenticated user | None | `204 No Content`: The session was ended.<br>`401 Unauthorized`: No valid authenticated session exists.<br>`403 Forbidden`: The account has become inactive. |
+
+Authentication implementation notes, 18 October 2026: sessions expire 20 minutes after login. A new login replaces that browser's previous session. The [authentication notes](Part-2-Authentication.md) record the validation rules and completed checks. The logout 403 response makes the existing inactive-account rule explicit.
 
 ### 5.1 Registration response example
 
@@ -81,7 +83,8 @@ The exact wording may change during implementation, but the documented HTTP stat
     "firstName": "Naledi",
     "lastName": "Mokoena",
     "email": "naledi.mokoena@example.com",
-    "role": "Participant"
+    "role": "Participant",
+    "isActive": true
   }
 }
 ```

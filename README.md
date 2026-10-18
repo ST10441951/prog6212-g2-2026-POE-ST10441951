@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 2 builds the REST API in C# and ASP.NET Core, using SQL Server and Entity Framework Core (The Independent Institute of Education, 2026a).
 
-The API will follow the [Part 1 endpoint plan](docs/API-Endpoint-Plan.md). Login will store the user's ID and role in a server-side session. Passwords will be hashed (Microsoft, 2026a).
+The API follows the [Part 1 endpoint plan](docs/API-Endpoint-Plan.md). Login stores the user's ID and role in a server-side session. Passwords are hashed before they are saved.
 
 ## Part 2 status
 
@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API now has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. All 70 current tests pass locally and on GitHub. The 40 planned business endpoints are still to be implemented.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login and logout are implemented. All 121 current tests pass locally. The other 37 planned business endpoints are still to be implemented.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -46,6 +46,22 @@ Profile pictures and event banners will pass through the API. SQL Server will st
 `GET /health` is a separate public host check. It returns `200 OK` with `{"status":"Healthy"}`. It uses ASP.NET Core controller routing and JSON responses (Microsoft, 2026c). It does not check the database, storage or login, and is not one of the 40 planned business endpoints.
 
 The current [Swagger host-check screenshot](docs/evidence/swagger-host-check.jpg) shows the response.
+
+## Authentication
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| POST | `/api/auth/register` | Creates an Organiser or Participant account and returns 201 |
+| POST | `/api/auth/login` | Checks the password, starts a session and returns 200 |
+| POST | `/api/auth/logout` | Ends the session and returns 204; returns 401 when no session exists |
+
+Registration accepts only the planned account fields. Email addresses are trimmed, converted to lower case and checked for duplicates. Passwords need 8 to 128 characters, including an upper-case letter, lower-case letter, digit and symbol. ASP.NET Core's password hasher creates the stored hash (Microsoft, 2026k).
+
+The session lasts 20 minutes. The user ID, role and expiry stay in the server cache; the browser receives a protected random ID in an HttpOnly, SameSite=Strict cookie. HTTPS uses a Secure cookie. Logout removes the server record, and another login replaces the old session (Microsoft, 2026l; 2026m).
+
+Controllers require authentication by default. Role policies return 403 for the wrong role. Protected requests check that the account still exists, is active and still has the same role (Microsoft, 2026n; 2026o).
+
+The [authentication notes](docs/Part-2-Authentication.md) include the request examples and checks. The registration Location points to `/api/profile`; the profile endpoint will be added next.
 
 ## Setup and run
 
@@ -91,6 +107,10 @@ dotnet run --project src/RaceDay.Api --configuration Release --no-build --launch
 
 6. Open [Swagger](http://localhost:5120/swagger/index.html). Expand `GET /health`, select **Try it out**, then **Execute**. The response should be `200` with `{"status":"Healthy"}`. The Swagger JSON is at `http://localhost:5120/swagger/v1/swagger.json` (Swashbuckle, 2026).
 
+To check authentication, execute the login example using `naledi.mokoena@example.com` and `RaceDayDemo!2026`. Then execute logout without a body. Swagger sends the cookie automatically; entering it in **Authorize** is not needed. Logout returns 204, and a second logout returns 401.
+
+The registration example uses `new.participant@example.com`. Use another email to create another account. Reusing an existing email returns 409.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -113,13 +133,15 @@ The `.github/workflows/part2-build.yml` restores, builds and tests the whole sol
 
 The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and runs the SQL Server tests and a pending-migration check (GitHub, 2026e). The [database build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations.
 
+The authentication changes and 121-test result are checked locally. Their GitHub run is pending.
+
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. Seven startup checks use an in-memory ASP.NET Core host, and 63 database checks run against SQL Server LocalDB (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 SQL Server database checks and 51 authentication checks. Authentication requests run through the real API pipeline against a temporary SQL Server database (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 70 pass locally and in GitHub Actions with no skipped tests. They cover the host, Swagger, schema, seed records, password hashes, duplicate values, every SQL CHECK constraint, cross-event category rejection, protected history and persistence through new contexts. Registration, login, sessions, roles, ownership and business endpoint tests will be added with those features.
+All 121 pass locally with none skipped and no build warnings or errors. The authentication checks cover both roles, validation, duplicate accounts, password hashes, server-side session data, cookie flags, logout replay, expiry, inactive accounts and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -131,14 +153,17 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `src/RaceDay.Api/` | ASP.NET Core API, controllers and response contracts |
 | `src/RaceDay.Api/Models/` | Seven database entities |
 | `src/RaceDay.Api/Data/` | SQL Server context, configurations, seed data and migrations |
+| `src/RaceDay.Api/Authentication/` | Server-side sessions, authentication handler and Swagger examples |
 | `tests/RaceDay.Api.Tests/` | xUnit API tests |
 | `tests/RaceDay.Api.Tests/Database/` | SQL Server migration and constraint tests |
+| `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
 | [RaceDay.sql](docs/RaceDay.sql) | Part 1 database script |
 | [Part-1-Database-Corrections.md](docs/Part-1-Database-Corrections.md) | Corrected database checks and fresh SSMS evidence |
 | [Part-2-Database.md](docs/Part-2-Database.md) | EF Core mapping, migration and database checks |
+| [Part-2-Authentication.md](docs/Part-2-Authentication.md) | Account validation, sessions and Swagger checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -181,6 +206,16 @@ Microsoft (2026h) 'DbContext lifetime, configuration, and initialization', *Micr
 Microsoft (2026i) 'Applying migrations', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying (Accessed: 18 October 2026).
 
 Microsoft (2026j) 'Testing against your production database system', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/testing/testing-with-the-database (Accessed: 18 October 2026).
+
+Microsoft (2026k) 'PasswordHasher<TUser> class', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordhasher-1?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026l) 'Distributed caching in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026m) 'Consumer APIs overview', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/overview?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026n) 'AuthenticationHandler<TOptions> class', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026o) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 October 2026).
 
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 

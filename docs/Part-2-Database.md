@@ -43,7 +43,7 @@ The migration contains the fixed sample records from the corrected Part 1 SQL sc
 | Enrolments | 4 |
 | Results | 2 |
 
-The four fictional accounts retain the local demonstration password `RaceDayDemo!2026`. Only their hashes are stored in the database. These are development sample accounts. The registration and login endpoints have not been implemented yet.
+The four fictional accounts retain the local demonstration password `RaceDayDemo!2026`. Only their hashes are stored in the database. These are development sample accounts. Registration and login are now implemented; the [authentication notes](Part-2-Authentication.md) describe them.
 
 Applying the same migration again does not duplicate the records or reset changes made to them.
 
@@ -65,7 +65,7 @@ Seven tests cover the API host and Swagger. The other 63 use real SQL Server Loc
 
 Each test run creates a new `RaceDayTests_...` database. It is removed after the tests. The fixture does not use the Part 1 or Part 2 application database. A supplied `RACEDAY_TEST_CONNECTION` changes the server and authentication settings; the database name is always replaced.
 
-The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. The [build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations. Business endpoint, authentication and role tests will be added as those features are implemented.
+The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. The [build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations. The authentication work adds 51 checks, giving 121 passing tests locally. Its GitHub run is pending. Event ownership and the other business endpoint tests will be added with those features.
 
 ## References
 

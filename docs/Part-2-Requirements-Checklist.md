@@ -48,21 +48,24 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Configure the Part 2 workflow to build the solution and run all tests on every push.
 - [x] Confirm the Part 2 API build and test workflow is green on GitHub.
 - [x] Confirm the SQL Server tests and migration check pass on GitHub.
+- [ ] Confirm the authentication changes and tests pass on GitHub.
 - [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 
 ## Authentication and role-based access: 20 marks
 
-- [ ] Register and log in as Organiser and Participant.
-- [ ] Validate account fields and reject duplicate emails.
-- [ ] Hash passwords and keep them out of responses and session data.
-- [ ] Store the signed-in user's ID and role in a server-side session.
-- [ ] End access after logout or session expiry and reject inactive accounts.
-- [ ] Return 401 for missing authentication and 403 for forbidden access.
+- [x] Register and log in as Organiser and Participant.
+- [x] Validate account fields and reject duplicate emails.
+- [x] Hash passwords and keep them out of responses and session data.
+- [x] Store the signed-in user's ID and role in a server-side session.
+- [x] End access after logout or session expiry and reject inactive accounts.
+- [x] Return 401 for missing authentication and 403 for forbidden access.
+- [x] Require authentication by default and test both role policies.
 - [ ] Reject the wrong role on every protected operation.
 - [ ] Check event ownership and protect each Participant's private records.
 - [ ] Prevent requests from changing roles or assigning another user's identity.
-- [ ] Check login and protected requests through Swagger.
+- [x] Reject user IDs, role IDs, password hashes and account status in registration requests.
+- [x] Check login and protected requests through Swagger.
 
 ## API endpoints and database: 25 marks
 
@@ -99,6 +102,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Describe each endpoint's purpose, inputs and responses.
 - [ ] Add useful examples and relevant error responses.
 - [ ] Keep the login session working across Swagger requests.
+- [x] Use the login cookie automatically for logout and reject another logout after sign-out.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -108,8 +112,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Add the xUnit project and pass all seven startup integration checks locally.
 - [x] Pass the 63 SQL Server mapping, migration and constraint tests locally.
 - [ ] Organise tests by feature and use separate test data.
-- [ ] Cover successful and failed registration and login for both roles.
-- [ ] Cover logout, sessions and unauthenticated requests.
+- [x] Cover successful and failed registration and login for both roles.
+- [x] Cover logout, sessions and unauthenticated requests.
+- [x] Pass all 51 authentication checks locally.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [ ] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.

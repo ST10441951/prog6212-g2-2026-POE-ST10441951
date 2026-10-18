@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RaceDay.Api.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RaceDay.Api.Controllers;
 
@@ -10,6 +11,7 @@ namespace RaceDay.Api.Controllers;
 // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-10.0
 // Accessed: 17 October 2026.
 [ApiController]
+[AllowAnonymous]
 [Route("health")]
 [Produces("application/json")]
 public sealed class HealthController : ControllerBase
