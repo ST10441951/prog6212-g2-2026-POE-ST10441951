@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes and enrolments are implemented. Thirty-one of the 40 planned business endpoints are complete; nine remain. All 645 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes, enrolments and results are implemented. Thirty-six of the 40 planned business endpoints are complete; four image endpoints remain. All 734 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -155,7 +155,21 @@ Entries require an Open event, a future closing time, an available category, the
 
 Cancellation keeps the entry time and bib number. Changing category during reactivation clears the old bib. Cancelled entries, closed-event history and entries with results cannot be deleted. Writes use SQL transactions and an event update lock so competing requests cannot take the same last place (Microsoft, 2026s; 2026t).
 
-The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries; the five result endpoints and four image endpoints remain to be added.
+The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries. The result endpoints are described below; four image endpoints remain.
+
+## Results
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| GET | `/api/results/mine` | Paged personal results with status and event filters |
+| GET | `/api/enrolments/{enrolmentId}/result` | Private result for its Participant or event Organiser |
+| GET | `/api/events/{eventId}/results` | Paged owned-event results with status and category filters |
+| POST | `/api/enrolments/{enrolmentId}/result` | First official result, with 201 and its Location |
+| PUT | `/api/enrolments/{enrolmentId}/result` | Corrects the existing result |
+
+Writes require the event's Organiser, a Confirmed entry and an event that has started and is not Cancelled. Completed needs a positive finish time. Other statuses have no official time or positions. Corrections keep the original result, recorder and recording time and set the update time. Each entry has at most one result.
+
+Finisher totals count all Completed results in the whole event, including other categories and Participants. Filters and paging do not reduce this total. The [result notes](docs/Part-2-Results.md) record access, validation, corrections and checks.
 
 ## Setup and run
 
@@ -215,6 +229,8 @@ To add a route, use the same event ID and saved category ID with POST `/api/even
 
 For enrolments, log in as a Participant and choose an Open event and available category. POST `/api/enrolments` takes only their IDs. Use the returned entry ID for GET, cancellation and reactivation. The Participant's own list is `/api/enrolments/mine`. To assign a bib or view the event roster, log in as that event's Organiser. The example IDs refer to the original sample data; an existing Cancelled entry must be reactivated, and actual event/category IDs must be selected when using a new event.
 
+For results, log in as Thabo and use GET `/api/events/1/results` or GET `/api/enrolments/1/result` to read the original sample results. Naledi can read her own result at `/api/results/mine`. Capture requires a Confirmed entry without a result in an event that has started; upcoming events are rejected. The POST result example uses Completed with 3600 seconds. PUT corrects its editable fields. To use DidNotFinish, Disqualified or DidNotStart, set time and positions to null.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -241,15 +257,17 @@ The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2
 
 The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
 
-The [route build for 0881b7e](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167081) passed all 532 tests with none skipped, no build warnings or errors and no missing migrations. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167123) also passed. Enrolments add 113 checks and bring the local total to 645. The API workflow runs the complete suite and migration check on every push.
+The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests with none skipped, no build warnings or errors and no missing migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The result work adds 89 checks. All 734 tests pass locally; the result changes await an approved commit and GitHub build. The API workflow runs the complete suite and migration check on every push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks and 113 enrolment checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks, 113 enrolment checks and 89 result checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 645 pass locally with none skipped and no build warnings or errors. The new checks cover entries, cancellation, reactivation, DELETE, bib numbers, private lists, both roles, ownership, invalid fields, age boundaries, capacity and competing writes. Result and image-operation tests will be added with those features.
+All 734 pass locally with none skipped and no build warnings or errors. Result checks cover capture, correction history, private reads, roles, invalid values, filters, paging, finisher totals and competing writes. Image-operation tests will be added with that feature.
+
+Collections run sequentially to reduce LocalDB memory and connection pressure. Explicit concurrent HTTP requests inside the competing-write tests still run together (xUnit.net, 2026b).
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -270,6 +288,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Categories/` | Category validation, ownership, visibility, capacity and history checks |
 | `tests/RaceDay.Api.Tests/Routes/` | Route CRUD, validation, visibility, ownership and saved-record checks |
 | `tests/RaceDay.Api.Tests/Enrolments/` | Entry rules, history, ownership, paging, bib numbers and competing requests |
+| `tests/RaceDay.Api.Tests/Results/` | Result capture, corrections, access, paging, totals and competing requests |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -283,6 +302,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Categories.md](docs/Part-2-Categories.md) | Category rules, validation and Swagger checks |
 | [Part-2-Routes.md](docs/Part-2-Routes.md) | Route rules, validation and Swagger checks |
 | [Part-2-Enrolments.md](docs/Part-2-Enrolments.md) | Entry rules, access, history and Swagger checks |
+| [Part-2-Results.md](docs/Part-2-Results.md) | Official results, corrections and checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -349,6 +369,8 @@ Microsoft (2026t) 'Table Hints (Transact-SQL)', *Microsoft Learn*. Available at:
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 
 xUnit.net (2026) 'Getting started with xUnit.net v2'. Available at: https://xunit.net/docs/getting-started/v2/getting-started (Accessed: 17 October 2026).
+
+xUnit.net (2026b) 'Running tests in parallel'. Available at: https://xunit.net/docs/running-tests-in-parallel (Accessed: 18 October 2026).
 
 The Independent Institute of Education (2026a) *PROG6212 Portfolio of Evidence*. Part 1 and Part 2 requirements and Part 2 marking rubric. Assessment brief.
 

@@ -329,6 +329,16 @@ Enrolment implementation notes, 18 October 2026: all eight operations are implem
 - Corrections update the existing result and its `updatedAt` value. Official results are not deleted through the API.
 - A Participant can view only results connected to their own enrolments.
 
+### 11.3 Part 2 implementation notes
+
+Result capture and correction require a Confirmed entry and an event that has started and is not Cancelled. These extra event checks return 409 and prevent results being saved before a race. Non-finishing statuses require null time and positions; invalid combinations return 400. Positive positions are optional for Completed results, and ties are allowed.
+
+Statuses are trimmed and normalised without changing their meaning. Unknown JSON fields return 400 and non-JSON writes return 415. PUT replaces editable values, clearing omitted optional positions and notes. It keeps the original ID, entry link, recorder and recording time and sets the UTC update time.
+
+Responses also include event, category and Participant IDs, Participant name, category distance and bib number. Total finishers counts all Completed official results for the whole event, regardless of filters or paging, and changes after corrections. Personal lists show newest event date then highest result ID. Event lists show Completed results first, then supplied overall position, finish time and result ID. Supplied values sort before missing ones.
+
+Writes use the same serializable transaction and event update lock as enrolment and event changes. This prevents duplicate capture and inconsistent cancellation. The database schema stays unchanged. The [result notes](Part-2-Results.md) record the checks.
+
 ## 12. Part 2 implementation and verification requirements
 
 - The API will be built in C# as an ASP.NET Core Web API project.

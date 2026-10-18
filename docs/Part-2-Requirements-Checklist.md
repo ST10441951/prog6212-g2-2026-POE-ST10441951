@@ -100,9 +100,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Protect private entry reads, Participant actions and Organiser rosters with ownership checks.
 - [x] Keep Cancelled history, preserve reactivated IDs and clear bib numbers when the category changes.
 - [x] Check simultaneous entry, reactivation, bib, capacity and event-closing requests.
-- [ ] Add result capture, updates and personal and event result lists.
-- [ ] Check result times, positions, ownership and one result per enrolment.
-- [ ] Protect cancelled enrolments and historical records.
+- [x] Add result capture, updates and personal and event result lists.
+- [x] Check result times, positions, ownership and one result per enrolment.
+- [x] Protect cancelled enrolments and historical records.
 - [ ] Add profile-picture and event-banner upload, replacement and removal.
 - [ ] Validate images, store blob names in SQL and keep storage settings out of Git.
 - [ ] Return the planned status codes, bodies, Location headers and errors.
@@ -123,6 +123,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Describe all six category operations and test the creation example through Swagger.
 - [x] Describe all four route operations and provide working write examples.
 - [x] Describe all eight enrolment operations, their roles, fields, filters and responses.
+- [x] Describe all five result operations, their fields, access rules, filters and responses.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -146,7 +147,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Pass all 85 route checks locally, including saved relationships, visibility and duplicate creation.
 - [x] Confirm the route revision passes on GitHub after an approved push.
 - [x] Pass all 113 enrolment checks locally, including saved links, age boundaries and competing writes.
-- [ ] Confirm the enrolment revision passes on GitHub after an approved push.
+- [x] Confirm the enrolment revision passes on GitHub after an approved push.
+- [x] Pass all 89 result checks locally, including corrections, private history, finisher totals and competing writes.
+- [ ] Confirm the result revision passes on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [x] Cover event CRUD and ownership checks.
 - [x] Cover enrolment rules and the saved database relationships.

@@ -48,7 +48,7 @@ Entry writes use a serializable SQL transaction and a parameterised event read w
 
 ## 5. Checks
 
-All 645 tests pass locally with none skipped, including 113 enrolment checks. The build has no warnings or errors, and there are no pending model changes.
+At the enrolment revision, all 645 tests passed locally and on GitHub with none skipped, including 113 enrolment checks. The build has no warnings or errors, and there are no pending model changes.
 
 The checks cover all eight operations, both roles, ownership, private response fields, invalid JSON and IDs, list filters and paging, SQL persistence, age boundaries and leap-day birthdays, closing-time boundaries, capacity, duplicate entries, cancellation, reactivation, DELETE and bib numbers. Six competing-request checks cover the last place, duplicate entry creation, reactivation, capacity reduction, event closure and duplicate bib assignment. Tests use separate temporary SQL Server databases (Microsoft, 2026h).
 
@@ -60,7 +60,7 @@ Swagger and HTTP checks on 18 October 2026 use a separate temporary Open event a
 | Reactivated entry | [Swagger enrolment reactivation](evidence/swagger-enrolment-reactivate.jpg) |
 | Owned event roster | [Swagger event enrolments](evidence/swagger-event-enrolments.jpg) |
 
-The [route build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167081) passed the 532 tests available at that revision. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39127167123) also passed. The API workflow includes the enrolment tests on every push; this revision has been checked locally. The result and image endpoints remain to be added.
+The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests, with no warnings, errors or pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The subsequent [result notes](Part-2-Results.md) cover result capture and corrections. Four image endpoints remain.
 
 ## References
 

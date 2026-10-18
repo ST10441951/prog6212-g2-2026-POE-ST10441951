@@ -10,6 +10,7 @@ using RaceDay.Api.Contracts.Events;
 using RaceDay.Api.Contracts.Categories;
 using RaceDay.Api.Contracts.Routes;
 using RaceDay.Api.Contracts.Enrolments;
+using RaceDay.Api.Contracts.Results;
 
 // Swagger setup: Swashbuckle (2026).
 // https://github.com/domaindrivendev/Swashbuckle.AspNetCore
@@ -69,6 +70,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SchemaFilter<CategoryExamples>();
     options.SchemaFilter<RouteExamples>();
     options.SchemaFilter<EnrolmentExamples>();
+    options.SchemaFilter<ResultExamples>();
 });
 
 var app = builder.Build();
