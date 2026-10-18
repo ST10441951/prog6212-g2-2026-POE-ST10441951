@@ -47,7 +47,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Keep the workflow in `.github/workflows/`.
 - [x] Configure the Part 2 workflow to build the solution and run all tests on every push.
 - [x] Confirm the Part 2 API build and test workflow is green on GitHub.
-- [ ] Confirm the SQL Server tests and migration check pass on GitHub.
+- [x] Confirm the SQL Server tests and migration check pass on GitHub.
 - [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 

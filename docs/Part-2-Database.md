@@ -65,7 +65,7 @@ Seven tests cover the API host and Swagger. The other 63 use real SQL Server Loc
 
 Each test run creates a new `RaceDayTests_...` database. It is removed after the tests. The fixture does not use the Part 1 or Part 2 application database. A supplied `RACEDAY_TEST_CONNECTION` changes the server and authentication settings; the database name is always replaced.
 
-The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. Its first run with these changes is pending. Business endpoint, authentication and role tests will be added as those features are implemented.
+The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. The [build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations. Business endpoint, authentication and role tests will be added as those features are implemented.
 
 ## References
 

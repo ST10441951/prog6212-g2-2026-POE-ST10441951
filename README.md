@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API now has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. All 70 current tests pass locally. The 40 planned business endpoints are still to be implemented.
+The API now has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. All 70 current tests pass locally and on GitHub. The 40 planned business endpoints are still to be implemented.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -111,7 +111,7 @@ The [C# planning build for 4560c17](https://github.com/ST10441951/prog6212-g2-20
 
 The `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main (GitHub, 2026d). The [API build for ecce46b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39100427831) passed with all seven startup tests.
 
-The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and runs the SQL Server tests and a pending-migration check (GitHub, 2026e). These changes pass locally; the updated GitHub run is pending.
+The updated workflow uses Windows 2025, which includes SQL Server LocalDB, and runs the SQL Server tests and a pending-migration check (GitHub, 2026e). The [database build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations.
 
 Part 2 green-build screenshot: to be added.
 
@@ -119,7 +119,7 @@ Part 2 green-build screenshot: to be added.
 
 The tests use xUnit. Seven startup checks use an in-memory ASP.NET Core host, and 63 database checks run against SQL Server LocalDB (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 70 pass locally with no skipped tests. They cover the host, Swagger, schema, seed records, password hashes, duplicate values, every SQL CHECK constraint, cross-event category rejection, protected history and persistence through new contexts. Registration, login, sessions, roles, ownership and business endpoint tests will be added with those features.
+All 70 pass locally and in GitHub Actions with no skipped tests. They cover the host, Swagger, schema, seed records, password hashes, duplicate values, every SQL CHECK constraint, cross-event category rejection, protected history and persistence through new contexts. Registration, login, sessions, roles, ownership and business endpoint tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
