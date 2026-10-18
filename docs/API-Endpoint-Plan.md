@@ -118,7 +118,7 @@ Authentication implementation notes, 18 October 2026: sessions expire 20 minutes
 
 ### 6.2 Profile access decisions
 
-- Profile routes do not contain a user ID. The future API will obtain the current user's identity from the validated session.
+- Profile routes do not contain a user ID. The API obtains the current user's identity from the validated session.
 - An authenticated user can retrieve and update only their own profile through these routes.
 - A user cannot change their own role or account status.
 - An email address cannot be changed through the general profile update endpoint. A separate verified process would be needed if email changes are added later.
@@ -126,6 +126,8 @@ Authentication implementation notes, 18 October 2026: sessions expire 20 minutes
 - Profile picture files are sent only to the API. The API stores the image in Azure Blob Storage and saves the generated blob name in `Users.ProfilePictureBlobName`.
 - The API returns a usable profile picture URL in the response. The MVC application does not receive or store Azure Storage credentials.
 - The API will validate request bodies before accepting changes. ASP.NET Core supports automatic validation responses when API controller conventions are used (Microsoft, 2026a).
+
+Profile implementation notes, 18 October 2026: GET and PUT `/api/profile` and PUT `/api/profile/password` are implemented. PUT replaces the permitted personal details, clearing optional values when omitted or null. Successful password changes end the current browser's session; other sessions keep their existing expiry. Deleted accounts normally return 401 during authentication; the planned 404 covers deletion between authentication and the profile action. JSON writes also return 415 for non-JSON bodies. Image operations remain pending, so `profilePictureUrl` is currently null. The [profile notes](Part-2-Profiles.md) record these checks.
 
 ## 7. Event endpoints
 

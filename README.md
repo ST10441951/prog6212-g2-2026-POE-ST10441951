@@ -12,7 +12,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login and logout are implemented. All 121 current tests pass locally and on GitHub. The other 37 planned business endpoints are still to be implemented.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Registration, login, logout, own-profile reads and updates, and password changes are implemented. Six of the 40 planned business endpoints are complete; 34 remain. All 178 current tests pass locally. The authentication build passed 121 tests; the profile build result is pending.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -61,7 +61,21 @@ The session lasts 20 minutes. The user ID, role and expiry stay in the server ca
 
 Controllers require authentication by default. Role policies return 403 for the wrong role. Protected requests check that the account still exists, is active and still has the same role (Microsoft, 2026n; 2026o).
 
-The [authentication notes](docs/Part-2-Authentication.md) include the request examples and checks. The registration Location points to `/api/profile`; the profile endpoint will be added next.
+The [authentication notes](docs/Part-2-Authentication.md) include the request examples and checks. After login, the registration Location at `/api/profile` returns the new user's own profile.
+
+## User profiles
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| GET | `/api/profile` | Returns the signed-in user's profile |
+| PUT | `/api/profile` | Updates names, phone number and date of birth |
+| PUT | `/api/profile/password` | Checks the current password, saves a new hash and ends the current session |
+
+Both roles use these endpoints. The user ID comes from the session. Profile updates cannot change email, role, account status, passwords or image fields. Optional phone and birth-date values are cleared when omitted or null. A supplied birth date must be earlier than today's UTC date.
+
+Password changes require the correct current password and matching new-password fields. Sign in again with the new password after the 204 response. Other browsers keep their existing sessions until logout or normal expiry. Profile image URLs remain null until the image endpoints are added.
+
+The [profile notes](docs/Part-2-Profiles.md) record the validation, persistence and privacy checks (Microsoft, 2026p).
 
 ## Setup and run
 
@@ -109,6 +123,8 @@ dotnet run --project src/RaceDay.Api --configuration Release --no-build --launch
 
 To check authentication, execute the login example using `naledi.mokoena@example.com` and `RaceDayDemo!2026`. Then execute logout without a body. Swagger sends the cookie automatically; entering it in **Authorize** is not needed. Logout returns 204, and a second logout returns 401.
 
+While signed in, execute `GET /api/profile` to view your own account. Execute the `PUT /api/profile` example to update its personal details, then GET again to check the saved values. To test a password change, register a separate sample account first. Supply its current password and matching replacement values at `PUT /api/profile/password`, then log in again with the replacement. The Swagger example passwords are local demonstration values, not private credentials.
+
 The registration example uses `new.participant@example.com`. Use another email to create another account. Reusing an existing email returns 409.
 
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
@@ -139,9 +155,9 @@ Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 SQL Server database checks and 51 authentication checks. Authentication requests run through the real API pipeline against a temporary SQL Server database (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 SQL Server database checks, 51 authentication checks and 57 profile and password checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 121 pass locally and in GitHub Actions with none skipped and no build warnings or errors. The authentication checks cover both roles, validation, duplicate accounts, password hashes, server-side session data, cookie flags, logout replay, expiry, inactive accounts and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
+All 178 pass locally with none skipped and no build warnings or errors. The latest pushed build passed the 121 tests available at that revision. The new checks cover own-profile access for both roles, protected fields, optional details, invalid bodies, UTC dates, SQL persistence, password replacement, session removal and Swagger examples. Event ownership and other business endpoint tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -157,6 +173,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/` | xUnit API tests |
 | `tests/RaceDay.Api.Tests/Database/` | SQL Server migration and constraint tests |
 | `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
+| `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -164,6 +181,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-1-Database-Corrections.md](docs/Part-1-Database-Corrections.md) | Corrected database checks and fresh SSMS evidence |
 | [Part-2-Database.md](docs/Part-2-Database.md) | EF Core mapping, migration and database checks |
 | [Part-2-Authentication.md](docs/Part-2-Authentication.md) | Account validation, sessions and Swagger checks |
+| [Part-2-Profiles.md](docs/Part-2-Profiles.md) | Personal details, password changes and checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -216,6 +234,8 @@ Microsoft (2026m) 'Consumer APIs overview', *Microsoft Learn*. Available at: htt
 Microsoft (2026n) 'AuthenticationHandler<TOptions> class', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1?view=aspnetcore-10.0 (Accessed: 18 October 2026).
 
 Microsoft (2026o) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 October 2026).
+
+Microsoft (2026p) 'Model validation in ASP.NET Core MVC', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0 (Accessed: 18 October 2026).
 
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 

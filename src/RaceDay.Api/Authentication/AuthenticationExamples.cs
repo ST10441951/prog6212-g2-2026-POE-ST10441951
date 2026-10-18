@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.OpenApi;
 using RaceDay.Api.Contracts.Authentication;
+using RaceDay.Api.Contracts.Profiles;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RaceDay.Api.Authentication;
@@ -28,6 +29,18 @@ public sealed class AuthenticationExamples : ISchemaFilter
             example.Example = JsonSerializer.SerializeToNode(new
             {
                 email = "naledi.mokoena@example.com", password = "RaceDayDemo!2026"
+            });
+        else if (context.Type == typeof(UpdateProfileRequest))
+            example.Example = JsonSerializer.SerializeToNode(new
+            {
+                firstName = "Naledi", lastName = "Mokoena",
+                phoneNumber = "0825550100", dateOfBirth = "1995-06-12"
+            });
+        else if (context.Type == typeof(ChangePasswordRequest))
+            example.Example = JsonSerializer.SerializeToNode(new
+            {
+                currentPassword = "RaceDayDemo!2026", newPassword = "RaceDayNew!2026",
+                confirmPassword = "RaceDayNew!2026"
             });
     }
 }

@@ -76,7 +76,9 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Map all seven tables, relationships, datatypes, constraints and indexes; explain the category-name index difference.
 - [x] Create and seed a separate Part 2 database.
 - [ ] Implement every endpoint in the corrected plan and explain any changes.
-- [ ] Add own-profile reads, updates and password changes.
+- [x] Add own-profile reads, updates and password changes.
+- [x] Use the session identity for both roles' profiles and reject protected account fields.
+- [x] Check the current password, hash its replacement and end the current session after a change.
 - [ ] Add event browsing, details and the Organiser dashboard.
 - [ ] Add owned-event creation, updates and safe deletion or cancellation.
 - [ ] Store each event's name, description, date, location, distance and type.
@@ -103,6 +105,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Add useful examples and relevant error responses.
 - [ ] Keep the login session working across Swagger requests.
 - [x] Use the login cookie automatically for logout and reject another logout after sign-out.
+- [x] Describe profile inputs and responses, add usable examples and check profile reads and updates in Swagger.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -115,6 +118,8 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Cover successful and failed registration and login for both roles.
 - [x] Cover logout, sessions and unauthenticated requests.
 - [x] Pass all 51 authentication checks locally.
+- [x] Pass all 57 profile and password checks locally, including privacy and SQL persistence.
+- [ ] Confirm the profile changes and tests pass on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
 - [ ] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.

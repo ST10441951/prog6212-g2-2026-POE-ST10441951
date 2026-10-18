@@ -6,7 +6,7 @@ This table connects each confirmed requirement to the planned database area, API
 
 The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 business endpoints (The Independent Institute of Education, 2026b).
 
-The API host, development Swagger UI and xUnit project are set up. EF Core Code First creates and seeds the separate `RaceDayPart2` database. Registration, login and logout are implemented with server-side sessions and tested role policies. All 121 current tests pass locally and in the [GitHub authentication build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046). The [database notes](Part-2-Database.md) and [authentication notes](Part-2-Authentication.md) record the checks. The other 37 planned business endpoints are still to be implemented.
+The API host, development Swagger UI and xUnit project are set up. EF Core Code First creates and seeds the separate `RaceDayPart2` database. Authentication, own-profile reads and updates, and password changes are implemented. Six planned business endpoints are complete and 34 remain. All 178 current tests pass locally. The [GitHub authentication build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed the 121 tests available at that revision; the profile build result is pending. The [database notes](Part-2-Database.md), [authentication notes](Part-2-Authentication.md) and [profile notes](Part-2-Profiles.md) record the checks.
 
 ## 2. Functional requirement traceability
 

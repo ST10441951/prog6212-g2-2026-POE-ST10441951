@@ -10,7 +10,7 @@ The three authentication endpoints follow the Part 1 plan.
 | POST | `/api/auth/login` | Public | 200 with account details and session expiry |
 | POST | `/api/auth/logout` | Signed-in user | 204 without a response body |
 
-Registration does not sign in the account. Its Location header points to `/api/profile`, which will be implemented with the profile endpoints.
+Registration does not sign in the account. Its Location header points to `/api/profile`, which returns the new user's own profile after login. The [profile notes](Part-2-Profiles.md) cover profile updates and password changes.
 
 ## 2. Account validation
 
@@ -61,7 +61,7 @@ The extra account created by the browser registration check was removed after te
 
 ## 5. Test results
 
-All 121 tests pass locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution builds with no warnings or errors. The database model has no pending migration changes.
+At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work adds 57 checks; all 178 now pass locally. The GitHub profile build result is pending.
 
 Authentication checks cover both roles, invalid fields, duplicate and simultaneous registration, password hashing, rehashing, stored session fields, cookie flags, session replacement, logout replay, expiry, separate browsers and account changes.
 
