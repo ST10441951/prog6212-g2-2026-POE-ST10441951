@@ -13,7 +13,7 @@ permissions:
 jobs:
   build-and-test:
     name: Build and test API
-    runs-on: ubuntu-latest
+    runs-on: windows-2025
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -26,11 +26,19 @@ jobs:
       - name: Restore packages
         run: dotnet restore RaceDay.sln
 
+      - name: Restore migration tool
+        run: dotnet tool restore
+
       - name: Build solution
         run: dotnet build RaceDay.sln --configuration Release --no-restore
 
       - name: Run tests
         run: dotnet test RaceDay.sln --configuration Release --no-build
+
+      - name: Check for missing migrations
+        run: dotnet ef migrations has-pending-model-changes --project src/RaceDay.Api --configuration Release --no-build
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
 
 # References
 # GitHub (2026) 'Building and testing .NET', GitHub Docs.
@@ -38,3 +46,6 @@ jobs:
 # Microsoft (2026) 'dotnet test', Microsoft Learn.
 # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test
 # Accessed: 17 October 2026.
+# SQL Server LocalDB is included in the Windows 2025 runner:
+# https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
+# Accessed: 18 October 2026.

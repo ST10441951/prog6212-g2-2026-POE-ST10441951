@@ -1,4 +1,6 @@
 using Microsoft.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using RaceDay.Api.Data;
 
 // Swagger setup: Swashbuckle (2026).
 // https://github.com/domaindrivendev/Swashbuckle.AspNetCore
@@ -10,6 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
+// SQL Server context registration: Microsoft (2026).
+// https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/
+// Accessed: 18 October 2026.
+builder.Services.AddDbContext<RaceDayDbContext>(options =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("RaceDay")
+        ?? throw new InvalidOperationException("Set the ConnectionStrings:RaceDay setting before using the database.");
+    options.UseSqlServer(connectionString);
+});
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

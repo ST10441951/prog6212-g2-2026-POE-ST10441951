@@ -33,7 +33,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Keep the API, tests, documents and evidence clearly organised.
 - [ ] Explain the API and both roles in the completed README.
 - [x] Give the .NET SDK requirement and numbered clone, restore, build and startup steps.
-- [ ] Give a tested connection-string example and database creation commands.
+- [x] Give a tested connection-string example and database creation commands.
 - [x] Give the API startup command, URL and Swagger address.
 - [x] Explain the test command and Test Explorer Run All.
 - [ ] Add the green CI screenshot and run link.
@@ -47,6 +47,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Keep the workflow in `.github/workflows/`.
 - [x] Configure the Part 2 workflow to build the solution and run all tests on every push.
 - [x] Confirm the Part 2 API build and test workflow is green on GitHub.
+- [ ] Confirm the SQL Server tests and migration check pass on GitHub.
 - [x] Keep the Part 1 file and endpoint checks working locally.
 - [ ] Get a green build for the final submitted revision.
 
@@ -67,10 +68,10 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 
 - [x] Set C# and SQL as the project code languages.
 - [x] Build the initial C# ASP.NET Core API host and public health check.
-- [ ] Connect the API to SQL Server.
-- [ ] Use EF Core Code First, configurations and migrations.
-- [ ] Match all seven tables, relationships, datatypes, constraints and indexes to Part 1.
-- [ ] Create and seed a separate Part 2 database.
+- [x] Connect the API to SQL Server.
+- [x] Use EF Core Code First, configurations and migrations.
+- [x] Map all seven tables, relationships, datatypes, constraints and indexes; explain the category-name index difference.
+- [x] Create and seed a separate Part 2 database.
 - [ ] Implement every endpoint in the corrected plan and explain any changes.
 - [ ] Add own-profile reads, updates and password changes.
 - [ ] Add event browsing, details and the Organiser dashboard.
@@ -88,7 +89,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Add profile-picture and event-banner upload, replacement and removal.
 - [ ] Validate images, store blob names in SQL and keep storage settings out of Git.
 - [ ] Return the planned status codes, bodies, Location headers and errors.
-- [ ] Read saved data through a new context or request to check persistence.
+- [x] Read saved data through a new context or request to check persistence.
 
 ## Swagger integration: 10 marks
 
@@ -105,6 +106,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 ## Unit testing: 15 marks
 
 - [x] Add the xUnit project and pass all seven startup integration checks locally.
+- [x] Pass the 63 SQL Server mapping, migration and constraint tests locally.
 - [ ] Organise tests by feature and use separate test data.
 - [ ] Cover successful and failed registration and login for both roles.
 - [ ] Cover logout, sessions and unauthenticated requests.
@@ -112,8 +114,8 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [ ] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.
 - [ ] Cover profiles, categories, routes, results and images.
-- [ ] Check SQL Server constraints against SQL Server.
-- [ ] Keep the tests repeatable and separate from the Part 1 database.
+- [x] Check SQL Server constraints against SQL Server.
+- [x] Keep the tests repeatable and separate from the Part 1 database.
 - [ ] Pass Run All locally and pass the tests in GitHub Actions.
 
 ## Video presentation: 15 marks
