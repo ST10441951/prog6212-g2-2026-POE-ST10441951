@@ -177,6 +177,8 @@ Profile implementation notes, 18 October 2026: GET and PUT `/api/profile` and PU
 
 Event-read implementation notes, 18 October 2026: the upcoming list includes only Open and Closed events with a UTC start later than now. Completed events remain readable through the details endpoint. Draft and Cancelled details require a valid session belonging to the owning Organiser. Public details exclude unavailable categories; the owner can see them. Paging defaults to page 1 and 10 items, with a maximum page size of 100. Event type and full South African province filters ignore case and surrounding spaces. Date bounds include the whole UTC day. The [event-browsing notes](Part-2-Event-Browsing.md) record these decisions and checks.
 
+Event-management implementation notes, 18 October 2026: the five Organiser operations are implemented. Creation assigns Draft status and requires future start and closing times. Writes use whole-second times, two-decimal distances and six-decimal coordinates to match SQL. Opening needs an available category and future dates. Cancelled and Completed are terminal statuses. Saved enrolments protect dates, type and distance; recorded results prevent cancellation. Deletion also requires an existing banner to be removed first. Status and history checks share a SQL transaction with updates. The dashboard counts saved Confirmed and Cancelled enrolments separately. The [event-management notes](Part-2-Event-Management.md) give the transition table and test results. JSON writes also return 415 for non-JSON bodies.
+
 ## 8. Event Category endpoints
 
 | HTTP Method | Route | Description | Role Required | Request Body | Expected Response |

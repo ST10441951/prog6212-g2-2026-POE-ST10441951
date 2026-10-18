@@ -14,7 +14,7 @@ The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 requi
 
 The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
 
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, password changes, event browsing and event details are implemented. Eight of the 40 planned business endpoints are complete; 32 remain. All 233 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch build result.
+The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, public event reads, owned-event management and the Organiser dashboard are implemented. Thirteen of the 40 planned business endpoints are complete; 27 remain. All 354 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
 
 Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
 
@@ -90,7 +90,23 @@ Browsing does not require login. Filters cover event type, province and inclusiv
 
 Open, Closed and Completed event details are public. Draft and Cancelled details are visible only to the owning Organiser after login. Other callers receive 404. Public details show available categories; the owner also sees unavailable ones. Responses exclude account contact details, enrolments and storage object names.
 
-The [event-browsing notes](docs/Part-2-Event-Browsing.md) explain the filters, visibility rules and checks. Event management and the Organiser dashboard are still to be added.
+The [event-browsing notes](docs/Part-2-Event-Browsing.md) explain the filters, visibility rules and checks.
+
+## Organiser event management
+
+| Method | Route | Current behaviour |
+|---|---|---|
+| GET | `/api/events/mine` | Paged owned events in every status, with an optional status filter |
+| POST | `/api/events` | Creates a Draft event for the signed-in Organiser |
+| PUT | `/api/events/{eventId}` | Updates an owned event or changes its status |
+| DELETE | `/api/events/{eventId}` | Deletes an owned event with no dependent records or banner |
+| GET | `/api/organiser/dashboard` | Owned event dates and saved-enrolment totals |
+
+Every operation requires an Organiser session. The API assigns ownership and checks it before updates or deletion. Requests cannot assign IDs, image fields or timestamps. Event writes validate the planned fields, future creation dates, SQL precision and paired coordinates (Microsoft, 2026p; 2026r).
+
+Opening or reopening needs an available category and future event and closing times. Cancelled and Completed statuses cannot be reversed. Saved entries protect the event's dates, type and distance. Events with results cannot be cancelled. Categories and entries prevent deletion, so cancellation keeps their history. Descriptive corrections remain possible.
+
+The dashboard counts all saved enrolments, with Confirmed and Cancelled rows shown separately. Its totals and event list belong only to the signed-in Organiser. The [event-management notes](docs/Part-2-Event-Management.md) record the status rules, validation and checks.
 
 ## Setup and run
 
@@ -144,6 +160,8 @@ The registration example uses `new.participant@example.com`. Use another email t
 
 To check event browsing without login, execute `GET /api/events`. The original sample data includes the upcoming Cape Peninsula cycling event and Soweto walk. Filter `eventType` to `Cycling`, then execute `GET /api/events/{eventId}` with event ID `2` to see its details, categories and routes. The past Completed event at ID `1` can be viewed directly but is excluded from the upcoming list. The list changes as event dates pass.
 
+For event management, log in as `thabo.ndlovu@example.com` using the same demonstration password. Execute the POST event example and follow its Location to view the new Draft. Use its ID with PUT to update it or change its status to Cancelled. GET `/api/events/mine` and `/api/organiser/dashboard` show only that Organiser's records. A Draft cannot open until it has an available category; category write endpoints are still to be added.
+
 7. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
 
 ```text
@@ -170,15 +188,15 @@ The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2
 
 The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed.
 
-Event browsing adds 55 checks, bringing the local total to 233 passing tests. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) runs the complete suite and migration check on every push. The build badge links to its results.
+The [event-browsing build for 64250d3](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39120804257) passed all 233 tests with none skipped, no build warnings or errors and no missing migrations. The planning workflow also passed. Event management adds 121 checks and brings the local total to 354. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) runs the complete suite and migration check on every push.
 
 Part 2 green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 SQL Server database checks, 51 authentication checks, 57 profile and password checks, and 55 event-browsing checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
+The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks and 121 Organiser event-management checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026).
 
-All 233 pass locally with none skipped and no build warnings or errors. GitHub Actions runs the same suite on every push. Event-browsing checks cover public statuses, date boundaries, all event types and provinces, paging, invalid filters, hidden events, unavailable categories and valid owner sessions. Event management and other business endpoint tests will be added with those features.
+All 354 pass locally with none skipped and no build warnings or errors. GitHub Actions runs the same suite on every push. The new checks cover event CRUD, every status transition, both roles, ownership, invalid fields, SQL persistence, protected history, dashboard counts and Swagger examples. Category, route, enrolment, result and image-operation tests will be added with those features.
 
 The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
 
@@ -195,7 +213,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | `tests/RaceDay.Api.Tests/Database/` | SQL Server migration and constraint tests |
 | `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
 | `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
-| `tests/RaceDay.Api.Tests/Events/` | Event filters, paging, public details and owner visibility |
+| `tests/RaceDay.Api.Tests/Events/` | Event browsing, management, ownership, history and dashboard checks |
 | `README-Part1.md` | Original Part 1 README |
 | [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
 | [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
@@ -205,6 +223,7 @@ The tests must pass locally and in GitHub Actions. A screenshot of the passing *
 | [Part-2-Authentication.md](docs/Part-2-Authentication.md) | Account validation, sessions and Swagger checks |
 | [Part-2-Profiles.md](docs/Part-2-Profiles.md) | Personal details, password changes and checks |
 | [Part-2-Event-Browsing.md](docs/Part-2-Event-Browsing.md) | Event filters, visibility and read checks |
+| [Part-2-Event-Management.md](docs/Part-2-Event-Management.md) | Owned events, status changes and dashboard checks |
 | [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
 | `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
 | `docs/evidence/` | Screenshots |
@@ -261,6 +280,8 @@ Microsoft (2026o) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*.
 Microsoft (2026p) 'Model validation in ASP.NET Core MVC', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0 (Accessed: 18 October 2026).
 
 Microsoft (2026q) 'Pagination', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/querying/pagination (Accessed: 18 October 2026).
+
+Microsoft (2026r) 'Basic SaveChanges', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/saving/basic (Accessed: 18 October 2026).
 
 Swashbuckle (2026) *Swashbuckle.AspNetCore*. Available at: https://github.com/domaindrivendev/Swashbuckle.AspNetCore (Accessed: 17 October 2026).
 

@@ -81,9 +81,12 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Check the current password, hash its replacement and end the current session after a change.
 - [x] Add public event browsing with paging, event type, province and UTC date filters.
 - [x] Add event details with visible categories and routes; restrict Draft and Cancelled events to their owner.
-- [ ] Add the Organiser dashboard.
-- [ ] Add owned-event creation, updates and safe deletion or cancellation.
-- [ ] Store each event's name, description, date, location, distance and type.
+- [x] Add the Organiser dashboard with owned-event and saved-enrolment totals.
+- [x] Add a paged owned-event list with a status filter.
+- [x] Add owned-event creation, updates and safe deletion or cancellation.
+- [x] Store each event's name, description, date, location, distance and type.
+- [x] Validate event status transitions, opening readiness, field sizes and SQL precision.
+- [x] Protect saved event history and reject deletion with dependent records or a banner.
 - [ ] Add category CRUD with age, distance, fee, availability and capacity checks.
 - [ ] Add route CRUD and check the category belongs to the event.
 - [ ] Save enrolments with the correct Participant, Event and Category links.
@@ -109,6 +112,7 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Use the login cookie automatically for logout and reject another logout after sign-out.
 - [x] Describe profile inputs and responses, add usable examples and check profile reads and updates in Swagger.
 - [x] Describe event-browsing filters and optional owner login; check public reads through Swagger.
+- [x] Describe all five Organiser event operations and provide working event-write examples.
 - [ ] Test file uploads through Swagger.
 - [ ] Check successful requests, invalid input and forbidden access.
 - [ ] Match the Swagger operation list to the endpoint plan.
@@ -125,8 +129,10 @@ The [database correction notes](Part-1-Database-Corrections.md) record the local
 - [x] Confirm the profile changes and tests pass on GitHub.
 - [x] Pass all 55 event-browsing checks locally, including hidden events and owner sessions.
 - [x] Include the event-browsing tests in the GitHub build and test workflow.
+- [x] Pass all 121 Organiser event-management checks locally.
+- [ ] Confirm the event-management revision passes on GitHub after an approved push.
 - [ ] Cover wrong roles and attempts to access another user's records.
-- [ ] Cover event CRUD and ownership checks.
+- [x] Cover event CRUD and ownership checks.
 - [ ] Cover enrolment rules and the saved database relationships.
 - [ ] Cover profiles, categories, routes, results and images.
 - [x] Check SQL Server constraints against SQL Server.

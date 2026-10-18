@@ -66,14 +66,7 @@ public sealed class EventsController(RaceDayDbContext database, TimeProvider clo
         int count = await query.CountAsync(cancellationToken);
         var items = await query.OrderBy(x => x.EventDateTime).ThenBy(x => x.EventId)
             .Skip((request.Page - 1) * request.PageSize).Take(request.PageSize)
-            .Select(x => new EventSummaryResponse
-            {
-                EventId = x.EventId, EventName = x.EventName, EventType = x.EventType,
-                DistanceKm = x.DistanceKm,
-                EventDateTime = DateTime.SpecifyKind(x.EventDateTime, DateTimeKind.Utc),
-                EntryClosingDateTime = DateTime.SpecifyKind(x.EntryClosingDateTime, DateTimeKind.Utc),
-                VenueName = x.VenueName, City = x.City, Province = x.Province, Status = x.Status
-            }).ToListAsync(cancellationToken);
+            .Select(EventResponses.Summary).ToListAsync(cancellationToken);
 
         return Ok(new EventPageResponse
         {
@@ -110,27 +103,6 @@ public sealed class EventsController(RaceDayDbContext database, TimeProvider clo
         if (item is null)
             return Problem(statusCode: 404, title: "Event not found");
 
-        return Ok(new EventDetailsResponse
-        {
-            EventId = item.EventId, EventName = item.EventName, EventType = item.EventType,
-            Description = item.Description, DistanceKm = item.DistanceKm,
-            EventDateTime = DateTime.SpecifyKind(item.EventDateTime, DateTimeKind.Utc),
-            EntryClosingDateTime = DateTime.SpecifyKind(item.EntryClosingDateTime, DateTimeKind.Utc),
-            VenueName = item.VenueName, AddressLine1 = item.AddressLine1, City = item.City, Province = item.Province,
-            Latitude = item.Latitude, Longitude = item.Longitude, Status = item.Status,
-            Categories = item.Categories.OrderBy(x => x.EventCategoryId).Select(x => new CategorySummaryResponse
-            {
-                EventCategoryId = x.EventCategoryId, CategoryName = x.CategoryName, DistanceKm = x.DistanceKm,
-                MinimumAge = x.MinimumAge, MaximumAge = x.MaximumAge, EntryFee = x.EntryFee,
-                Capacity = x.Capacity, IsAvailable = x.IsAvailable,
-                Route = x.Route is null ? null : new RouteSummaryResponse
-                {
-                    RouteId = x.Route.RouteId, RouteName = x.Route.RouteName,
-                    StartLocation = x.Route.StartLocation, FinishLocation = x.Route.FinishLocation,
-                    RouteDescription = x.Route.RouteDescription, RouteMapUrl = x.Route.RouteMapUrl,
-                    ElevationGainMetres = x.Route.ElevationGainMetres
-                }
-            }).ToList()
-        });
+        return Ok(EventResponses.Details(item));
     }
 }

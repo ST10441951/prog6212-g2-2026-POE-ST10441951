@@ -57,7 +57,7 @@ The temporary browser-check account was removed after testing. The original four
 
 ## 5. Test results
 
-At the profile revision, all 178 tests passed locally and in GitHub Actions: seven startup, 63 database, 51 authentication and 57 profile and password checks. None were skipped. The build had no warnings or errors, the planning checks passed and the model had no pending migration changes. The [event-browsing work](Part-2-Event-Browsing.md) adds 55 checks, bringing the local total to 233, all included in the API workflow.
+At the profile revision, all 178 tests passed locally and in GitHub Actions: seven startup, 63 database, 51 authentication and 57 profile and password checks. None were skipped. The build had no warnings or errors, the planning checks passed and the model had no pending migration changes. Event browsing then passed 233 tests locally and on GitHub. The [event-management work](Part-2-Event-Management.md) brings the current local total to 354, all included in the API workflow.
 
 The new checks cover both roles, own-account access, protected fields, optional values, invalid dates and bodies, length limits, SQL persistence, UTC timestamps, password hashing, session removal, replay rejection and working Swagger examples (Microsoft, 2026f).
 

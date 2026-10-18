@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using RaceDay.Api.Authentication;
 using RaceDay.Api.Models;
+using RaceDay.Api.Contracts.Events;
 
 // Swagger setup: Swashbuckle (2026).
 // https://github.com/domaindrivendev/Swashbuckle.AspNetCore
@@ -61,6 +62,7 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.DocumentFilter<SessionSecurityFilter>();
     options.SchemaFilter<AuthenticationExamples>();
+    options.SchemaFilter<EventWriteExamples>();
 });
 
 var app = builder.Build();

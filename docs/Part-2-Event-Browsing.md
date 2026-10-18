@@ -7,7 +7,7 @@
 | GET | `/api/events` | 200 with matching upcoming events and paging totals |
 | GET | `/api/events/{eventId}` | 200 with one visible event, categories and routes |
 
-Both endpoints follow the Part 1 plan. Event creation, updates, deletion and the Organiser dashboard are still to be added.
+Both endpoints follow the Part 1 plan. Event creation, updates, deletion, the owned-event list and dashboard are now covered in the [event-management notes](Part-2-Event-Management.md).
 
 ## 2. Filters and paging
 
@@ -54,11 +54,11 @@ The results depend on the current date. These checks were completed on 18 Octobe
 
 ## 5. Test results
 
-All 233 tests pass locally with none skipped: seven startup, 63 database, 51 authentication, 57 profile and password, and 55 event-browsing checks. The build has no warnings or errors, and the model needs no migration changes.
+At the event-browsing revision, all 233 tests passed locally and on GitHub with none skipped: seven startup, 63 database, 51 authentication, 57 profile and password, and 55 event-browsing checks. The build had no warnings or errors, and the model needed no migration changes. The event-management work adds 121 tests and brings the local total to 354, all included in the API workflow.
 
 The new checks cover event statuses, current-time boundaries, all event types and provinces, combined filters, inclusive dates, extreme dates, paging, invalid input, historical details, category visibility, routes, private events and owner sessions. Requests use the real API pipeline and temporary SQL Server databases (Microsoft, 2026e).
 
-The [profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed the 178 tests available at that revision. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) now includes all 233 tests on every push. The README build badge shows its latest main-branch result.
+The [event-browsing build for 64250d3](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39120804257) passed all 233 tests. The [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml) runs the full solution on every push. The README build badge shows its latest main-branch result.
 
 ## References
 
