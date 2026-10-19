@@ -21,7 +21,7 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Add the green CI and GitHub test screenshots.
 - [x] Add the passing Visual Studio Run All screenshot.
 - [x] Add and verify the unlisted video link.
-- [ ] Submit the repository link on ARC.
+- [x] Submit the repository link on ARC.
 
 ## GitHub and CI/CD: 10 marks
 
