@@ -41,7 +41,7 @@ The 63 SQL tests check columns, keys, indexes, constraints, defaults, seeds, has
 
 Metadata queries allow 120 seconds on a busy LocalDB instance; assertions and API timeouts are unchanged (Microsoft, 2026h).
 
-Current test/build results and the local execution issue are in the [rubric review](Part-2-Rubric-Review.md).
+Current test, build and migration results are in the [rubric review](Part-2-Rubric-Review.md).
 
 ## References
 

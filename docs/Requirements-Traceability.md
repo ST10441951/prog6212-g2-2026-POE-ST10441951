@@ -4,7 +4,7 @@
 
 This links the brief and lecturer's feedback to the database and endpoint plan (The Independent Institute of Education, 2026; 2026b). All 40 business endpoints are implemented; the [mapping](API-Endpoint-Plan.md#141-required-operations) covers all 25 required operations.
 
-The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub revision, local execution issue and outstanding submission evidence. [Feature notes](../README.md#project-files) contain detailed rules and screenshots.
+The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub and local runs, screenshots and outstanding submission tasks. [Feature notes](../README.md#project-files) contain detailed rules and screenshots.
 
 ## 2. Functional requirement traceability
 

@@ -31,6 +31,20 @@ The [endpoint plan](docs/API-Endpoint-Plan.md) lists all 40 methods, routes, rol
 
 Swagger also includes `GET /health`, a separate host check returning `200` and `{"status":"Healthy"}`. It does not check SQL or storage (Microsoft, 2026c; Swashbuckle, 2026).
 
+## API screenshots
+
+Participant login returns `200` and starts a session.
+
+![Successful Participant login in Swagger](docs/evidence/swagger-authentication-login.jpg)
+
+An Organiser creates a Draft event and receives `201 Created`.
+
+![Organiser event creation in Swagger](docs/evidence/swagger-event-create.jpg)
+
+A Participant enters an event category and receives a Confirmed enrolment.
+
+![Participant enrolment creation in Swagger](docs/evidence/swagger-enrolment-create.jpg)
+
 ## Setup and run
 
 Install the .NET 10 SDK, SQL Server LocalDB and Node.js with npm. Visual Studio needs .NET 10 support and the ASP.NET/web workload. Another SQL Server can be used by changing the connection string.
@@ -108,9 +122,9 @@ Outside Development, configure SQL/storage separately. Swagger is disabled and H
 
 GitHub Actions builds and tests the solution on every push, checks migrations and validates the planning files (GitHub, 2026b; 2026c; 2026d; 2026e).
 
-Revision `8925213`: [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39151854297) passed all 810 tests with none skipped, zero warnings/errors and no pending model changes. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39151854258) also passed.
+Revision `67b1489`: [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030480) passed all 810 tests with none skipped, zero warnings/errors and no pending model changes. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030482) also passed.
 
-Green-build screenshot: to be added.
+![Successful Part 2 GitHub build](docs/evidence/part2-github-build.jpg)
 
 ## Unit tests
 
@@ -131,7 +145,11 @@ Green-build screenshot: to be added.
 
 Tests cover success/failure, sessions, roles, ownership, validation, saved data and concurrent requests. Collections run sequentially; explicit concurrent-request tests still run together (xUnit.net, 2026a; 2026b).
 
-All 810 passed locally on 18 October. On 19 October, both builds passed but Windows Application Control blocked local execution. A fresh passing Run All screenshot is still needed; see the [rubric review](docs/Part-2-Rubric-Review.md).
+Visual Studio Run All passed all 810 tests on 19 October, with zero failed or skipped. The local Windows execution block is resolved. Planning checks passed, the database is up to date and EF reports no pending model changes. See the [rubric review](docs/Part-2-Rubric-Review.md).
+
+![Visual Studio Run All: 810 tests passed](docs/evidence/part2-visual-studio-tests.jpg)
+
+The [GitHub test output](docs/evidence/part2-github-tests.jpg) also shows all 810 tests passing.
 
 ## Project files
 

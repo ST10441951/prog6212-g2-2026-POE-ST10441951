@@ -1,6 +1,6 @@
 # RaceDay Part 2 Checklist
 
-Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Independent Institute of Education, 2026a; 2026b; 2026c). Tick only verified work. See the [rubric review](Part-2-Rubric-Review.md) for results and the local execution issue.
+Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Independent Institute of Education, 2026a; 2026b; 2026c). Tick only verified work. See the [rubric review](Part-2-Rubric-Review.md) for results.
 
 ## Part 1 corrections
 
@@ -18,7 +18,8 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Organise API, tests, documents and evidence.
 - [x] Explain the API and both roles.
 - [x] Give numbered clone, connection-string, database, API, Swagger and test steps.
-- [ ] Add the green CI and passing Run All screenshots.
+- [x] Add the green CI and GitHub test screenshots.
+- [x] Add the passing Visual Studio Run All screenshot.
 - [ ] Add and verify the unlisted video link.
 - [ ] Submit the repository link on ARC.
 
@@ -76,7 +77,7 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Cover event CRUD, categories, routes, enrolments, results and images.
 - [x] Check SQL constraints, saved relationships and concurrent requests.
 - [x] Confirm all 810 tests pass on GitHub.
-- [ ] Resolve the local execution block and capture Visual Studio Run All passing.
+- [x] Resolve the local execution block and capture Visual Studio Run All passing.
 
 ## Video: 15 marks
 
