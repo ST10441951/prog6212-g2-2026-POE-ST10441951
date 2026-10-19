@@ -29,8 +29,8 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Build and run tests on every push.
 - [x] Validate planning files and check for pending migrations.
 - [x] Confirm revision d18e1da passes both GitHub workflows.
-- [ ] Confirm at least 20 meaningful Part 2 commits using my account.
-- [ ] Confirm a green build for the final submitted revision.
+- [x] Confirm at least 20 meaningful Part 2 commits using my account.
+- [x] Confirm a green build for the final submitted revision.
 
 ## Authentication and roles: 20 marks
 
