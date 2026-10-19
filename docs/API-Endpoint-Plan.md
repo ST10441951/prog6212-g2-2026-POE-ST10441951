@@ -2,26 +2,19 @@
 
 ## 1. Purpose
 
-This endpoint plan was prepared before API development. It includes the Part 1 corrections dated 17 October 2026 and guides the Part 2 API and Part 3 MVC application.
-
-The Part 2 API will be developed in C# using ASP.NET Core. Part 1 contains the endpoint design only and does not include application code.
+This plan was prepared before API development and corrected on 17 October 2026. All 40 business endpoints are implemented in Part 2; Part 3 adds MVC.
 
 ## 2. API conventions
 
-- Every planned business route starts with `/api/`.
-- Normal request and response bodies use JSON. Image uploads use `multipart/form-data`, and 204 responses have no body.
-- HTTPS must be used when the API is deployed.
-- Protected endpoints require a valid authenticated server-side session.
-- The session stores the signed-in user's identifier and role for later requests. Passwords and password hashes are never stored in the session.
-- Authentication identifies the signed-in user. Authorisation determines whether that user may perform an action (Microsoft, 2026b; Microsoft, 2026c).
-- A `401 Unauthorized` response means that valid authentication credentials were not supplied.
-- A `403 Forbidden` response means that the user is authenticated but is not permitted to perform the action (Fielding, Nottingham and Reschke, 2022).
-- Dates and times use ISO 8601 format and are stored or exchanged in UTC where a time value is required.
-- Passwords and password hashes are never returned in a response.
-- Validation and error responses use one consistent JSON structure.
-- Resource creation responses use `201 Created` and include the created resource or a safe summary of it. ASP.NET Core can also include a `Location` header for the new resource (Microsoft, 2026a).
+- Business routes start with `/api/`.
+- Use JSON, except multipart image uploads and empty 204 responses.
+- Protected operations use a server-side session containing user ID and role, never passwords.
+- 401 means no valid session; 403 means insufficient role or ownership.
+- Dates use ISO 8601 and UTC. Responses exclude passwords and hashes.
+- Validation uses JSON problem responses. Creation returns 201 with a resource or safe summary and Location.
+- Use HTTPS when deployed (Microsoft, 2026a; 2026b; 2026c; Fielding, Nottingham and Reschke, 2022).
 
-The API also has `GET /health` as a public host check. It takes no input and returns `200 OK` with `{"status":"Healthy"}`. It does not query the database or storage and is separate from the 40 business endpoints below.
+`GET /health` is a separate public host check: 200 with `{"status":"Healthy"}`. It does not query SQL or storage.
 
 ## 3. Role and access terms
 
@@ -36,7 +29,7 @@ The role shown in the plan is the minimum access requirement. Ownership checks a
 
 ## 4. Common error response
 
-The future API will return a consistent error body so that the client can display useful feedback.
+Validation errors use a JSON problem response:
 
 ```json
 {
@@ -48,7 +41,7 @@ The future API will return a consistent error body so that the client can displa
 }
 ```
 
-The exact wording may change during implementation, but the documented HTTP status codes and reasons must remain consistent with this plan.
+Error wording may vary; documented status codes and rules still apply.
 
 ## 5. Authentication endpoints
 
@@ -58,7 +51,7 @@ The exact wording may change during implementation, but the documented HTTP stat
 | POST | `/api/auth/login` | Checks the supplied credentials and creates a server-side session containing the user's identifier and role. Both Organisers and Participants use this endpoint. | None (public) | `email` string, required<br>`password` string, required | `200 OK`: Safe user summary and session expiry time. A secure session cookie is established.<br>`400 Bad Request`: Required fields are missing or incorrectly formatted.<br>`401 Unauthorized`: The email address or password is incorrect.<br>`403 Forbidden`: The account exists but is inactive. |
 | POST | `/api/auth/logout` | Ends the signed-in user's session so that the existing session cookie can no longer access protected endpoints. | Any authenticated user | None | `204 No Content`: The session was ended.<br>`401 Unauthorized`: No valid authenticated session exists.<br>`403 Forbidden`: The account has become inactive. |
 
-Authentication implementation notes, 18 October 2026: sessions expire 20 minutes after login. A new login replaces that browser's previous session. The [authentication notes](Part-2-Authentication.md) record the validation rules and completed checks. The logout 403 response makes the existing inactive-account rule explicit.
+Sessions last 20 minutes; a new login replaces that browser's previous session. See [authentication](Part-2-Authentication.md).
 
 ### 5.1 Registration response example
 
@@ -118,24 +111,16 @@ Authentication implementation notes, 18 October 2026: sessions expire 20 minutes
 
 ### 6.2 Profile access decisions
 
-- Profile routes do not contain a user ID. The API obtains the current user's identity from the validated session.
-- An authenticated user can retrieve and update only their own profile through these routes.
-- A user cannot change their own role or account status.
-- An email address cannot be changed through the general profile update endpoint. A separate verified process would be needed if email changes are added later.
-- A password change requires the current password and matching new-password fields.
-- Profile picture files are sent only to the API. The API stores the image in Azure Blob Storage and saves the generated blob name in `Users.ProfilePictureBlobName`.
-- The API returns a usable profile picture URL in the response. The MVC application does not receive or store Azure Storage credentials.
-- The API will validate request bodies before accepting changes. ASP.NET Core supports automatic validation responses when API controller conventions are used (Microsoft, 2026a).
-
-Profile implementation notes, 18 October 2026: GET and PUT `/api/profile` and PUT `/api/profile/password` are implemented. PUT replaces the permitted personal details, clearing optional values when omitted or null. Successful password changes end the current browser's session; other sessions keep their existing expiry. Deleted accounts normally return 401 during authentication; the planned 404 covers deletion between authentication and the profile action. JSON writes also return 415 for non-JSON bodies. Image operations remain pending, so `profilePictureUrl` is currently null. The [profile notes](Part-2-Profiles.md) record these checks.
+- Identity comes from the validated session; both roles manage only their own profile.
+- Profile PUT rejects email, role, account status, password and image fields. It clears omitted optional phone/birth-date values.
+- Password change verifies the current password, saves a hash and ends the current browser session. Other browsers retain their sessions until logout/expiry.
+- Invalid fields return 400; non-JSON writes return 415. See [profiles](Part-2-Profiles.md).
 
 ### 6.3 Part 2 image implementation notes
 
-The four planned picture and banner operations are implemented. PUT takes exactly one multipart `imageFile` and rejects extra form fields. JPEG and PNG must have matching extensions, MIME types and decoded content. Input and processed files are limited to 5 MiB; the multipart request has an extra 64 KiB allowance for headers and is checked before form binding, including streamed requests. Dimensions are limited to 4096 pixels per side and 64 MiB of decoded pixels. Still images are re-encoded without their original metadata. Invalid or damaged images return 400, file-size violations return 413 and unsupported types return 415.
+Images use one multipart `imageFile`: JPEG/PNG, maximum 5 MiB before and after processing, 4096 pixels per side and 64 MiB decoded pixels. The request allows 64 KiB extra for form headers. Oversized files/bodies return 413, invalid images 400 and unsupported formats 415.
 
-SQL keeps generated names in its existing columns. Files use a private Blob container. Returned URLs are blob-specific, read-only and valid for one hour; profile reads and event details/lists generate fresh URLs. Replacement saves a new object before changing SQL, then removes the old object. DELETE clears its SQL name and returns 204 even when no image exists. Storage failures return 503; missing accounts or events return 404. Only Participants can change profile pictures, and only an event's Organiser can change its banner.
-
-The [image notes](Part-2-Images.md) explain configuration, validation, competing requests and recovery when SQL or storage fails. These are Part 2 API operations; MVC upload pages and Docker remain Part 3 work.
+The API validates and re-encodes images, stores generated blob names in SQL and returns one-hour read-only URLs. Private storage failures return 503. Picture writes require the Participant; banner writes require the event owner. See [image rules and recovery](Part-2-Images.md). MVC upload pages remain Part 3.
 
 ## 7. Event endpoints
 
@@ -171,21 +156,16 @@ The [image notes](Part-2-Images.md) explain configuration, validation, competing
 
 ### 7.2 Event design decisions
 
-- Public browsing returns only events that visitors are allowed to see.
-- The Organiser's own list includes every status so that Draft and historical events can still be managed.
-- A new event starts in Draft status. It must have at least one category before it can be opened for enrolment.
-- The entry closing date and time must be earlier than the event date and time.
-- The advertised event distance must be greater than zero.
-- Banner image files are sent only to the API. The API stores them in Azure Blob Storage and saves the generated blob name in `Events.BannerImageBlobName`.
-- Creating or editing an event in the MVC interface may save the event details first and then call the banner endpoint when an image was selected.
-- Latitude and longitude are optional, but both should be supplied together when coordinates are used.
-- Ownership is checked using the signed-in Organiser's user ID and the event's `organiserUserId` value.
-- Existing event history is protected. An event with dependent records is cancelled instead of being permanently deleted.
-- The owning Organiser can follow a newly created event's `Location` header and read the Draft event. Public callers and other users cannot read that Draft.
+- New events start Draft. Owners can follow the creation Location; public callers cannot read Draft/Cancelled records.
+- The upcoming list contains future Open/Closed events. Completed details remain public. Public reads show available categories; owners also see unavailable ones.
+- Browse filters use type, province and inclusive UTC dates. Lists default to page 1/size 10, maximum 100, ordered by date then ID.
+- Creation requires future start/closing times, closing before start, positive distance and paired optional coordinates. Use whole seconds, two decimal distance places and six coordinate places.
+- Opening requires an available category and future dates. Draft may become Open/Cancelled; Open and Closed may switch or become Cancelled/Completed. Completion requires the start to have passed. Cancelled/Completed are terminal.
+- Saved entries and terminal statuses protect dates, type and distance. Results prevent cancellation. Descriptive corrections remain allowed.
+- Deletion requires no categories/entries and no banner. Cancel instead to keep history. Conflicts return 409.
+- Writes share a serializable transaction and event update lock. The dashboard counts owned Confirmed/Cancelled entries separately.
 
-Event-read implementation notes, 18 October 2026: the upcoming list includes only Open and Closed events with a UTC start later than now. Completed events remain readable through the details endpoint. Draft and Cancelled details require a valid session belonging to the owning Organiser. Public details exclude unavailable categories; the owner can see them. Paging defaults to page 1 and 10 items, with a maximum page size of 100. Event type and full South African province filters ignore case and surrounding spaces. Date bounds include the whole UTC day. The [event-browsing notes](Part-2-Event-Browsing.md) record these decisions and checks.
-
-Event-management implementation notes, 18 October 2026: the five Organiser operations are implemented. Creation assigns Draft status and requires future start and closing times. Writes use whole-second times, two-decimal distances and six-decimal coordinates to match SQL. Opening needs an available category and future dates. Cancelled and Completed are terminal statuses. Saved enrolments protect dates, type and distance; recorded results prevent cancellation. Deletion also requires an existing banner to be removed first. Status and history checks share a SQL transaction with updates. The dashboard counts saved Confirmed and Cancelled enrolments separately. The [event-management notes](Part-2-Event-Management.md) give the transition table and test results. JSON writes also return 415 for non-JSON bodies.
+See [browsing](Part-2-Event-Browsing.md) and [event management](Part-2-Event-Management.md).
 
 ## 8. Event Category endpoints
 
@@ -222,7 +202,7 @@ Event-management implementation notes, 18 October 2026: the five Organiser opera
 }
 ```
 
-Category implementation notes, 18 October 2026: all six operations are implemented. Public lists show available categories only for Open, Closed and Completed events; the protected owner list includes all records. Single-category reads also allow the owner to see Draft, Cancelled and unavailable records. Responses include `eventId` and the full optional route details. PUT clears omitted optional ages and capacity. Names are trimmed and unique within each event; non-JSON writes return 415. Any saved enrolment freezes distance, age limits and fee. Capacity counts Confirmed entries only. An Open event's last available category cannot be disabled or deleted; close the event first. Unused categories and their optional routes are deleted together. These additional history and readiness conflicts return 409. The [category notes](Part-2-Categories.md) explain the checks.
+Category names are unique within an event. Public lists show available categories in Open/Closed/Completed events; owners use the full Organiser list or single-category reads for hidden records. PUT clears omitted optional fields. Saved entries protect distance, ages and fees. Capacity counts Confirmed entries only. An Open event must keep an available category. An unused category and its route can be deleted together. Conflicts return 409. See [categories](Part-2-Categories.md).
 
 ## 9. Event Route endpoints
 
@@ -235,18 +215,13 @@ Category implementation notes, 18 October 2026: all six operations are implement
 
 ### 9.1 Category and route design decisions
 
-- Category routes are nested under an event so that the API can confirm that the category belongs to the stated event.
-- Category names must be unique within the same event.
-- Distance must be greater than zero. Entry fees cannot be negative.
-- Minimum age must be from 1 to 120 when supplied. Capacity must be greater than zero when supplied.
-- Maximum age must be from 1 to 120 when supplied, and minimum age cannot exceed maximum age.
-- An unavailable category remains visible to its Organiser but is excluded from public category lists and new enrolments.
-- A category with enrolments cannot be permanently deleted because its history must be preserved.
-- Each category may have zero or one route. `POST` creates that route and `PUT` updates the existing route.
-- Category and route creation locations remain readable by the owning Organiser when the event is Draft or the category is unavailable. Other callers see only public available records.
-- Route elevation gain cannot be negative when it is supplied.
+- One category may have one route. The event/category IDs must match.
+- Owners can read Draft, Cancelled and unavailable category routes; public reads require an available category in an Open/Closed/Completed event.
+- Route text follows SQL length limits. Map links are optional HTTP/HTTPS URLs without credentials; the API does not visit them. Elevation is a non-negative integer.
+- PUT clears omitted optional map/elevation values. Invalid/unknown fields return 400; non-JSON bodies return 415.
+- Duplicate creation returns 409, including concurrent requests. Updates/deletion preserve the event, category, entries and results; missing routes return 404.
 
-Route implementation notes, 18 October 2026: all four route operations are implemented. GET uses the same public/owner visibility rules as category details, including owner access to Cancelled events. Writes validate the SQL text limits, optional HTTP/HTTPS map links without credentials and non-negative integer elevation. Blank map links become null; omitted optional values are cleared on PUT. Unexpected JSON fields return 400 and non-JSON writes return 415. The database enforces one route per category, including simultaneous creation requests. Route updates and deletion keep categories, enrolments and results; the owner may create a replacement after deleting a route. A route removed during an update or deletion returns 404. The [route notes](Part-2-Routes.md) record the checks.
+See [route rules](Part-2-Routes.md).
 
 ## 10. Enrolment endpoints
 
@@ -277,21 +252,17 @@ Route implementation notes, 18 October 2026: all four route operations are imple
 
 ### 10.2 Enrolment design decisions
 
-- The Participant user ID is read from the session and is not accepted in the enrolment request body.
-- The selected category must belong to the selected event.
-- New and reactivated enrolments require an Open event, a future closing date and an available category with remaining capacity.
-- A Participant has at most one saved enrolment per event. POST returns 409 for an existing row, including a Cancelled row. Reactivation updates that row.
-- `/cancel` and `/reactivate` are the planned PUT status operations. Each route selects a fixed status, so a free-text status field is not needed.
-- Cancellation requires a Confirmed entry, an Open event, a future entry-closing time and no result. It keeps the row and bib number, changes `Status` and updates `UpdatedAt`.
-- DELETE removes only the Participant's own Confirmed entry under the same event, closing-time and result checks. It returns 204 with no body; later reads return 404.
-- Cancelled entries, closed-event history and entries with results cannot be deleted. Use cancellation when the entry should stay in the Participant's history.
-- Age is measured in completed years on the date part of the stored UTC event date. Minimum and maximum ages are inclusive. New entries and reactivations outside either limit return 400.
-- A date of birth is required when either age limit is set. A missing date of birth returns 400 before saving. Categories without age limits do not require it.
-- A Cancelled entry does not use category capacity. Reactivation checks the new category, age and available capacity before updating the same row.
-- Bib numbers are optional until assigned, but an assigned value must be unique within the event.
-- If reactivation changes the category, clear the old bib number so the Organiser can assign one for the new category.
+- Participant identity comes from the session; the selected category must belong to the event.
+- New/reactivated entries require Open status, a future closing time, category availability and capacity. Only Confirmed entries use places.
+- One saved entry per Participant/event. POST returns 409 for existing Confirmed or Cancelled rows; reactivate the latter.
+- Cancellation keeps the ID, time, category and bib. DELETE removes only an owned Confirmed entry. Both require Open status, entries not closed and no result. Cancelled/history rows are retained.
+- Reactivation updates the same row and repeats all entry checks. Changing category clears the bib.
+- Age uses completed years on the UTC event date, inclusive minimum/maximum. Missing required birth dates or ineligible ages return 400. Leap-day birthdays advance on 1 March in non-leap years.
+- Bibs are uppercase, 1-20 letters/digits/hyphens, starting with a letter/digit. They are unique within the event, including Cancelled entries.
+- Lists default to page 1/size 10, maximum 100, newest entry first. Responses add names, UTC times, distance and an optional result summary.
+- Shared event locks and serializable transactions protect concurrent entry, capacity, status and bib changes. Invalid/unknown JSON returns 400; non-JSON writes return 415.
 
-Enrolment implementation notes, 18 October 2026: all eight operations are implemented. Responses retain the planned fields and add Participant/event/category names, UTC event and update times, category distance and an optional result summary. Lists default to page 1 and 10 items, allow up to 100, and sort by descending entry time then ID. Status filters ignore case and surrounding spaces. A roster's category filter must belong to its event or return 400. Bib numbers are trimmed, uppercased and limited to 20 letters, digits or hyphens, starting with a letter or digit; Cancelled entries keep their number reserved. Historical bib corrections remain allowed. Entry and reactivation ages use the UTC event date; 29 February birthdays advance on 1 March in non-leap years. JSON writes reject unknown fields and return 415 for non-JSON bodies. Entry writes, event updates and category updates/deletion share a transaction-held event update lock to protect capacity and state checks. The [enrolment notes](Part-2-Enrolments.md) record the checks.
+See [enrolment rules](Part-2-Enrolments.md).
 
 ## 11. Result endpoints
 
@@ -326,50 +297,34 @@ Enrolment implementation notes, 18 October 2026: all eight operations are implem
 
 ### 11.2 Result design decisions
 
-- The recording Organiser is identified from the session and is not accepted in the request body.
-- The Organiser must manage the event connected to the enrolment.
-- A cancelled enrolment cannot receive a result.
-- Each enrolment may have no more than one official result.
-- A Completed result requires a positive `finishTimeSeconds` value.
-- DidNotFinish, Disqualified and DidNotStart results do not have an official finish time.
-- Overall and category positions must be positive when supplied.
-- Personal result responses include the Event name, Event date, selected Category, finish time, finishing position and total number of finishers required by the Part 3 My Results page.
-- Corrections update the existing result and its `updatedAt` value. Official results are not deleted through the API.
-- A Participant can view only results connected to their own enrolments.
+- The recorder comes from the session and must own the entry's event.
+- One official result per enrolment; Participants read only their own results.
+- Completed requires positive seconds. Other statuses require null time/positions. Optional finishing positions must be positive; ties are allowed.
+- PUT corrects the same result, sets UpdatedAt and keeps its original recorder/time. No result DELETE is provided.
 
 ### 11.3 Part 2 implementation notes
 
-Result capture and correction require a Confirmed entry and an event that has started and is not Cancelled. These extra event checks return 409 and prevent results being saved before a race. Non-finishing statuses require null time and positions; invalid combinations return 400. Positive positions are optional for Completed results, and ties are allowed.
+Capture/correction requires a Confirmed entry and a started, non-Cancelled event; state conflicts return 409. Status ignores case/spaces. PUT clears omitted optional notes/positions. Invalid/unknown fields return 400; non-JSON writes return 415.
 
-Statuses are trimmed and normalised without changing their meaning. Unknown JSON fields return 400 and non-JSON writes return 415. PUT replaces editable values, clearing omitted optional positions and notes. It keeps the original ID, entry link, recorder and recording time and sets the UTC update time.
+Responses add Participant/event/category IDs, name, distance and bib. Total finishers counts all Completed results in the event regardless of paging/filters. Personal history uses newest event first; event lists use Completed, position, time and ID, with missing values last.
 
-Responses also include event, category and Participant IDs, Participant name, category distance and bib number. Total finishers counts all Completed official results for the whole event, regardless of filters or paging, and changes after corrections. Personal lists show newest event date then highest result ID. Event lists show Completed results first, then supplied overall position, finish time and result ID. Supplied values sort before missing ones.
-
-Writes use the same serializable transaction and event update lock as enrolment and event changes. This prevents duplicate capture and inconsistent cancellation. The database schema stays unchanged. The [result notes](Part-2-Results.md) record the checks.
+Serializable transactions and the shared event lock prevent duplicate capture and conflicting cancellation. See [results](Part-2-Results.md).
 
 ## 12. Part 2 implementation and verification requirements
 
-- The API will be built in C# as an ASP.NET Core Web API project.
-- Entity Framework Core will use the Code-First approach. The entity classes and Fluent API configuration must reproduce the Part 1 ERD and SQL constraints. EF Core migrations provide a tracked way to keep the database schema aligned with the application model (Microsoft, 2026e).
-- Login will create a server-side session containing the signed-in user's identifier and role. ASP.NET Core session state is intended for retaining user data while a user interacts with an application (Microsoft, 2026d).
-- Protected endpoints will return `401 Unauthorized` when no valid session exists. Role and ownership failures will return `403 Forbidden`.
-- Swagger UI must display and allow browser testing of every implemented endpoint. Each operation must describe its purpose, parameters or request body, success response and relevant failure responses. Swagger tooling can generate interactive API documentation from ASP.NET Core endpoint information (Microsoft, 2026f).
-- Unit tests must cover successful and failed registration and login, authenticated and unauthenticated requests, Organiser event management, rejection of the wrong role, Participant enrolment and correct persistence of the enrolment relationship.
-- The Part 2 GitHub Actions workflow must build the solution and run all tests on each push. The `dotnet test` command runs the configured test projects and can be used in an automated workflow (Microsoft, 2026g).
+- C# ASP.NET Core API with EF Core Code First matching the Part 1 schema (Microsoft, 2026e).
+- Server-side identity/role sessions, role/ownership checks and 401/403 responses (Microsoft, 2026d).
+- Swagger descriptions, request inputs and responses for every endpoint (Microsoft, 2026f).
+- Success/failure tests for authentication, both roles, events and saved enrolments.
+- GitHub Actions builds and runs all tests on each push (Microsoft, 2026g).
 
 ## 13. Part 3 MVC, storage and container requirements
 
-- The ASP.NET Core MVC application will consume the Part 2 API for every data operation. It will not use the database directly or duplicate API business rules.
-- Registration, login and logout in MVC will call the API. The MVC application will maintain only the safe identity, role and API session information needed for the current user. Passwords will never be stored in MVC session state.
-- Organiser and Participant pages will have distinct role-appropriate navigation. Protected MVC actions will reject unauthenticated users and redirect them to login.
-- The Organiser dashboard will use `/api/organiser/dashboard` for event totals, enrolment totals and upcoming dates.
-- Participant pages will use the public Event endpoints, Participant Enrolment endpoints, `/api/results/mine` and the Profile endpoints.
-- Image files will always pass from MVC to the API. Only the API will communicate with Azure Blob Storage. The Azure Storage client library for .NET supports uploading blob content from streams, files and other data sources (Microsoft, 2026h).
-- Profile and Event responses will contain image URLs generated by the API from their stored blob names.
-- Image validation will restrict accepted content types and file sizes before upload. Storage credentials will be kept in API configuration and will not be committed to GitHub.
-- The MVC project will include a well-structured multi-stage Dockerfile and one documented Docker run command. Microsoft documents separate SDK and ASP.NET runtime images for building and running containerised ASP.NET Core applications (Microsoft, 2026i).
-- The Part 3 GitHub Actions workflow will build the API, tests and MVC project on each push.
-- Part 3 will retain the Part 2 API unit tests and add suitable MVC or integration checks where practical.
+- MVC uses the API for all data operations, including login, dashboards, entries, results and profiles. It has no direct SQL or storage access.
+- Keep only safe identity/role/session information in MVC, never passwords. Use role-based navigation and protected actions.
+- MVC sends files to the API; the API validates them and generates image URLs. Storage keys stay private (Microsoft, 2026h).
+- Add a multi-stage Dockerfile and one documented run command (Microsoft, 2026i).
+- CI builds MVC, API and tests; retain Part 2 tests and add relevant MVC checks.
 
 ## 14. Endpoint-plan coverage
 

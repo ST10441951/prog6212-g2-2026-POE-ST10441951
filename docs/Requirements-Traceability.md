@@ -2,11 +2,9 @@
 
 ## 1. Purpose
 
-This table connects each confirmed requirement to the planned database area, API resource and Part 1 evidence. The Part 1, Part 2 and Part 3 requirements have been cross-checked against the ERD, endpoint plan and SQL Server script. The requirements originate from the supplied Portfolio of Evidence brief and the business rules documented for RaceDay (The Independent Institute of Education, 2026).
+This links the brief and lecturer's feedback to the database and endpoint plan (The Independent Institute of Education, 2026; 2026b). All 40 business endpoints are implemented; the [mapping](API-Endpoint-Plan.md#141-required-operations) covers all 25 required operations.
 
-The endpoint mapping was updated on 17 October 2026. The [25-operation table](API-Endpoint-Plan.md#141-required-operations) shows how the plan covers the lecturer's feedback. The plan contains 40 business endpoints (The Independent Institute of Education, 2026b).
-
-The API host, development Swagger UI and xUnit project are set up. EF Core Code First creates and seeds the separate `RaceDayPart2` database. Authentication, own profiles, events, the Organiser dashboard, categories, routes, enrolments and results are implemented. All 40 planned business endpoints are implemented. All 810 current tests pass locally. The [result build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842878) passed all 734 tests available at that revision. The workflow checks the image changes on push. The [database notes](Part-2-Database.md), [authentication notes](Part-2-Authentication.md), [profile notes](Part-2-Profiles.md), [event-browsing notes](Part-2-Event-Browsing.md), [event-management notes](Part-2-Event-Management.md), [category notes](Part-2-Categories.md), [route notes](Part-2-Routes.md), [enrolment notes](Part-2-Enrolments.md), [result notes](Part-2-Results.md) and [image notes](Part-2-Images.md) record the checks.
+The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub revision, local execution issue and outstanding submission evidence. [Feature notes](../README.md#project-files) contain detailed rules and screenshots.
 
 ## 2. Functional requirement traceability
 
@@ -47,24 +45,7 @@ The API host, development Swagger UI and xUnit project are set up. EF Core Code 
 | FR-RESULT-03 | View personal Results | Participant | Results and Enrolments | Results | Participant GET endpoint and ownership rule |
 | FR-RESULT-04 | Allow no more than one official Result per Enrolment | System | Results | Results | Unique SQL constraint and conflict response |
 
-## 3. Role traceability
-
-| Role requirement | Database support | Endpoint-plan support | Access rule |
-|---|---|---|---|
-| Organiser creates and manages Events | Event record refers to its Organiser | Organiser-only Event write endpoints | Organiser may alter only Events assigned to them |
-| Organiser manages Event Categories | Category record refers to an Event | Organiser-only Category write endpoints | Event ownership must be checked |
-| Organiser views Event Enrolments | Enrolment refers to Event and Participant | Organiser Event-enrolment endpoint | Event ownership must be checked |
-| Organiser captures Results | Result refers to a valid Enrolment | Organiser-only Result write endpoints | Enrolment must belong to an owned Event |
-| Organiser views dashboard summaries | Events and Enrolments support aggregation | Organiser dashboard endpoint | Only records for the signed-in Organiser are counted |
-| Organiser manages Event banners | Event stores an optional banner blob name | Event banner endpoints | Event ownership must be checked |
-| User registers as an Organiser or Participant | User record refers to one seeded Role | Public registration endpoint with required role name | Only Organiser and Participant role names are accepted |
-| Participant browses Events | Event and Category information supports browsing | Public Event read endpoints | No authentication required for public Event information |
-| Participant enters an Event | Enrolment links Participant, Event and Category | Participant-only enrolment endpoint | Participant may enrol only themselves |
-| Participant views personal Enrolments | Enrolment refers to its Participant | Participant enrolment-list endpoint | Query is restricted to the signed-in Participant |
-| Participant tracks personal Results | Result is linked through Enrolment | Participant Result-history endpoint | Query is restricted to the signed-in Participant |
-| Participant manages a profile picture | User stores an optional profile-picture blob name | Profile picture endpoints | The signed-in Participant may change only their own picture |
-
-## 4. Submission requirement traceability
+## 4. Part 1 submission requirement traceability
 
 | ID | Submission requirement | Planned evidence | Status |
 |---|---|---|---|
@@ -79,52 +60,13 @@ The API host, development Swagger UI and xUnit project are set up. EF Core Code 
 | SUB-09 | Unlisted video explains planning and SQL execution | [Part 1 README](../README-Part1.md#video-presentation) | Original walkthrough link present |
 | SUB-10 | GitHub repository link submitted on ARC | Part 1 requirements checklist | Recorded as submitted in the original checklist |
 
-## 5. Part 2 requirements cross-check
+## 5. Part 2 and Part 3
 
-The supplied Part 2 requirements were reviewed on 20 September 2026.
+Part 2 implements authentication, sessions/roles, profiles, events, categories, routes, enrolments, results and image endpoints. Swagger and tests check the plan. See the [Part 2 checklist](Part-2-Requirements-Checklist.md).
 
-| Part 2 item | Part 1 planning decision |
-|---|---|
-| Role selection during registration | Registration accepts Organiser or Participant and rejects any other role value |
-| Session management | Login establishes a server-side session, logout ends it, and protected endpoints read the user's identifier and role from it |
-| Event distance | `Events.DistanceKm` is required in the ERD, endpoint request, data dictionary and SQL script |
-| Age or distance categories | Categories include distance, minimum age and maximum age fields |
-| Event deletion | Organisers have a DELETE endpoint; events with dependent history return a conflict and are cancelled instead |
-| Required endpoint operations | All 25 feedback operations map to the corrected plan; the plan contains 40 endpoints in total |
-| Enrolment status changes | PUT cancellation and reactivation update the same row and keep its history |
-| Enrolment DELETE | Participant owner only; Confirmed entry, Open event, entries still open and no result |
-| Age eligibility | Both limits are inclusive; use the event date and require a date of birth when a limit is set |
-| Existing additional endpoints | Password, dashboard, route, bib-number and image operations remain in the Part 2 plan |
-| Swagger UI | Recorded as a mandatory Part 2 implementation and verification requirement |
-| Unit tests and CI | Required success, failure, authentication and role scenarios are recorded in the endpoint plan |
+Part 3 adds MVC, role-based navigation, live weather, image-upload pages and Docker. MVC uses the API for data and uploads; it has no direct database or storage access. Its workflow will build MVC, API and tests.
 
-## 6. Part 3 requirements cross-check
-
-The supplied Part 3 requirements were reviewed on 20 September 2026.
-
-| Part 3 item | Part 1 planning decision |
-|---|---|
-| MVC consumes the API | MVC will have no direct database access and will not duplicate API business rules |
-| MVC sessions and role navigation | MVC retains safe identity, role and API session information, with separate Organiser and Participant navigation |
-| Organiser dashboard | A dedicated Organiser endpoint returns owned Event summaries, enrolment totals and upcoming dates |
-| Event banner upload | Event records store an optional Azure Blob object name and the API provides upload and delete endpoints |
-| Participant profile picture | User records store an optional Azure Blob object name and the API provides upload and delete endpoints |
-| Azure Blob Storage boundary | MVC sends files to the API and never communicates with Azure Storage directly |
-| Docker | Part 3 will include a multi-stage Dockerfile and a single documented run command |
-| UI design | MVC will use a consistent RaceDay theme, responsive layout, role navigation, status colours and friendly validation messages |
-| CI | Part 3 workflow will build the API, test projects and MVC project |
-
-## 7. Data-model decisions
-
-| Design item | Decision | Evidence |
-|---|---|---|
-| Final entity list | Seven entities selected | `RaceDay-Data-Dictionary.md` |
-| User roles | Separate Roles table | `RaceDay-Data-Dictionary.md` |
-| Route storage | Separate EventRoutes table linked to EventCategories | `RaceDay-Data-Dictionary.md` |
-| Weather storage | Live weather is not stored in the Part 1 database | Requirements and business rules |
-| Location fields | Venue, address, city, province, latitude and longitude | Events data dictionary |
-| Primary-key strategy | Fixed Role key and identity keys for main entities | Data dictionary conventions |
-| Delete behaviour | `NO ACTION` for historical and transactional relationships | Data dictionary integrity plan |
+The [data dictionary](RaceDay-Data-Dictionary.md) and [ERD notes](RaceDay-ERD-Notes.md) record keys, relationships, locations, route storage and NO ACTION deletion rules.
 
 ## References
 

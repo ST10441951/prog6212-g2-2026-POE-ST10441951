@@ -2,10 +2,7 @@
 
 ## 1. Purpose
 
-This data dictionary defines the proposed SQL Server structure for RaceDay. The same table names, columns, keys and relationships must be used in the ERD and SQL script. Any later change must be applied consistently to all three artefacts.
-
-The datatype choices use the SQL Server datatype definitions documented by Microsoft (2026a). Variable-length Unicode text uses `NVARCHAR` so that names and locations can support a broad range of characters (Microsoft, 2026b). Primary and foreign keys are used to enforce entity and referential integrity (Microsoft, 2026c).
-
+This defines RaceDay's SQL columns, keys and relationships. ERD and SQL use the same definitions. Unicode text uses NVARCHAR; keys enforce integrity (Microsoft, 2026a; 2026b; 2026c).
 ## 2. Naming and datatype conventions
 
 | Convention | Decision |
@@ -78,7 +75,7 @@ The `Users` table stores account and profile information for Organisers and Part
 | `FirstName` | `NVARCHAR(50)` | No |  | User's first name |
 | `LastName` | `NVARCHAR(50)` | No |  | User's surname |
 | `Email` | `NVARCHAR(254)` | No | Unique | Normalised sign-in email address |
-| `PasswordHash` | `NVARCHAR(255)` | No |  | Password hash produced by the future API |
+| `PasswordHash` | `NVARCHAR(255)` | No |  | Stored password hash |
 | `PhoneNumber` | `NVARCHAR(20)` | Yes |  | Optional contact number |
 | `DateOfBirth` | `DATE` | Yes | Check date is earlier than the current date | Participant date of birth when supplied |
 | `ProfilePictureBlobName` | `NVARCHAR(255)` | Yes | Check nonblank when supplied | Azure Blob Storage object name for the Participant's profile picture |
@@ -86,16 +83,9 @@ The `Users` table stores account and profile information for Organisers and Part
 | `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Account creation timestamp |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest profile update timestamp |
 
-Table rules:
+Table rules: Email is unique; names, email, hash and supplied blob names cannot be blank. RoleId references Roles. The API checks roles and privacy; SQL protects referenced users with NO ACTION.
 
-- `Email` must be unique.
-- `FirstName`, `LastName`, `Email` and `PasswordHash` may not be empty strings.
-- `ProfilePictureBlobName` is optional, but may not be an empty string when supplied.
-- `RoleId` must refer to an existing Role.
-- User records referenced by Events, Enrolments or Results use `NO ACTION` delete behaviour.
-- Organiser ownership and Participant privacy are enforced by the future API because a foreign key alone cannot verify a User's Role.
-
-Planned indexes:
+Indexes:
 
 - Unique index on `Email`.
 - Nonclustered index on `RoleId`.
@@ -125,19 +115,9 @@ The `Events` table stores the event information managed by an Organiser.
 | `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Event creation timestamp |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Event update timestamp |
 
-Table rules:
+Table rules: Required text and supplied blob names cannot be blank. Distance is positive; entries close before start. Types, provinces and statuses use the listed choices. The API checks the active Organiser. Cancel events with dependent history instead of deleting them.
 
-- `EventName`, `Description`, `VenueName`, `AddressLine1` and `City` may not be empty strings.
-- `BannerImageBlobName` is optional, but may not be an empty string when supplied.
-- `DistanceKm` must be greater than zero.
-- `EntryClosingDateTime` must be earlier than `EventDateTime`.
-- `EventType` is limited to Running, Walking or Cycling.
-- `Province` is limited to the nine South African provinces.
-- `Status` is limited to Draft, Open, Closed, Cancelled or Completed.
-- `OrganiserUserId` must refer to an active Organiser before the future API accepts the request.
-- An Event with dependent Categories, Enrolments or Results should be cancelled instead of deleted.
-
-Planned indexes:
+Indexes:
 
 - Nonclustered index on `OrganiserUserId`.
 - Nonclustered index on `EventDateTime` and `Status` to support upcoming-event browsing.
@@ -160,19 +140,9 @@ The `EventCategories` table stores the entry choices available for an Event.
 | `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Category creation timestamp |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Category update timestamp |
 
-Table rules:
+Table rules: Names are unique within the event. The category/event composite key supports matching enrolments. Distance/capacity are positive; fee is non-negative. Optional ages are 1-120 with minimum no higher than maximum. Categories with entries are made unavailable instead of deleted.
 
-- The combination of `EventId` and `CategoryName` must be unique.
-- The combination of `EventCategoryId` and `EventId` will be an alternate key used by the Enrolments composite foreign key.
-- `DistanceKm` must be greater than zero.
-- `MinimumAge` must be between 1 and 120 when supplied.
-- `MaximumAge` must be between 1 and 120 when supplied.
-- `MinimumAge` cannot be greater than `MaximumAge` when both are supplied.
-- `EntryFee` must be zero or greater.
-- `Capacity` must be greater than zero when supplied.
-- A Category with Enrolments should be made unavailable instead of deleted.
-
-Planned indexes:
+Indexes:
 
 - Unique index on `EventId` and `CategoryName`.
 - Unique index on `EventCategoryId` and `EventId` for composite referential integrity.
@@ -195,14 +165,9 @@ The `EventRoutes` table stores route details for an Event Category. Keeping rout
 | `CreatedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Route creation timestamp |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Route update timestamp |
 
-Table rules:
+Table rules: One route per category. Required text cannot be blank; optional elevation is non-negative. A route cannot exist without its category.
 
-- `EventCategoryId` must be unique so that a Category has no more than one Route.
-- `RouteName`, `StartLocation`, `FinishLocation` and `RouteDescription` may not be empty strings.
-- `ElevationGainMetres` must be zero or greater when supplied.
-- A Route record cannot exist without its Event Category.
-
-Planned indexes:
+Indexes:
 
 - Unique index on `EventCategoryId`.
 
@@ -221,21 +186,9 @@ The `Enrolments` table records a Participant's entry into an Event and the Categ
 | `BibNumber` | `NVARCHAR(20)` | Yes | Unique within an Event when supplied | Race number allocated to the Participant |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Enrolment update timestamp |
 
-Table rules:
+Table rules: One saved entry per Participant/event. The composite category/event link must match. Status is Confirmed or Cancelled; assigned bibs are unique within the event. The API checks role, Open status, closing time, availability, capacity and inclusive age on the UTC event date. Missing required birth dates return 400. Cancellation keeps the row; DELETE removes only eligible Confirmed entries. Reactivation reuses the Cancelled row and clears the bib if category changes.
 
-- `ParticipantUserId` must refer to an existing User.
-- The future API must verify that `ParticipantUserId` belongs to a Participant.
-- `EventId` must refer to an existing Event.
-- The combination of `EventCategoryId` and `EventId` must refer to the matching alternate key in `EventCategories`.
-- The combination of `ParticipantUserId` and `EventId` must be unique. A cancelled entry may be reactivated or updated instead of creating another row.
-- `Status` is limited to Confirmed or Cancelled.
-- `BibNumber` must be unique within an Event when supplied.
-- The future API must check Event status, closing date, Category availability and capacity before creating an Enrolment.
-- New entries and reactivations use both age limits, inclusive, against completed years of age on the date part of the stored UTC event date. A missing date of birth for an age-restricted Category returns 400.
-- Cancellation keeps the row. DELETE may remove only the Participant's own Confirmed entry while the Event is Open, entries have not closed and no Result exists. Cancelled rows and historical entries are retained.
-- Reactivation updates the same row. Cancelled rows do not use capacity, and changing Category during reactivation clears the old bib number.
-
-Planned indexes:
+Indexes:
 
 - Unique index on `ParticipantUserId` and `EventId`.
 - Nonclustered index on `EventId` and `Status` for Organiser enrolment lists.
@@ -259,19 +212,9 @@ The `Results` table stores the official outcome for an Enrolment.
 | `RecordedAt` | `DATETIME2(0)` | No | Default current UTC date and time | Date and time the Result was first recorded |
 | `UpdatedAt` | `DATETIME2(0)` | Yes |  | Latest Result correction timestamp |
 
-Table rules:
+Table rules: One result per enrolment. The API checks the owning Organiser and rejects Cancelled entries. Completed requires positive, non-null seconds; other statuses require NULL. IS NOT NULL prevents an UNKNOWN CHECK result accepting a missing finish time. Supplied positions are positive (Microsoft, 2026d).
 
-- `EnrolmentId` must be unique so that an Enrolment has no more than one official Result.
-- `RecordedByUserId` must refer to an existing User.
-- The future API must verify that `RecordedByUserId` belongs to the Organiser responsible for the related Event.
-- `ResultStatus` is limited to Completed, DidNotFinish, Disqualified or DidNotStart.
-- A Completed Result must have a non-null `FinishTimeSeconds` value greater than zero.
-- DidNotFinish, Disqualified and DidNotStart Results must have `FinishTimeSeconds` set to NULL.
-- The check includes `IS NOT NULL` because SQL Server accepts an UNKNOWN check result when comparing NULL values (Microsoft, 2026d).
-- `OverallPosition` and `CategoryPosition` must be positive when supplied.
-- The future API must reject a Result for a cancelled Enrolment.
-
-Planned indexes:
+Indexes:
 
 - Unique index on `EnrolmentId`.
 - Nonclustered index on `RecordedByUserId`.
@@ -295,39 +238,13 @@ Planned indexes:
 
 ## 7. Delete and update behaviour
 
-Foreign keys protect related data from becoming orphaned. SQL Server supports several referential actions, including `NO ACTION`, `CASCADE`, `SET NULL` and `SET DEFAULT` (Microsoft, 2026c). RaceDay will use the following approach:
-
-| Relationship | Delete behaviour | Reason |
-|---|---|---|
-| Roles to Users | `NO ACTION` | A Role in use must be retained |
-| Users to Events | `NO ACTION` | Event ownership history must be retained |
-| Events to EventCategories | `NO ACTION` | Existing Event structure must not be removed accidentally |
-| EventCategories to EventRoutes | `NO ACTION` | Route removal must be deliberate |
-| Users to Enrolments | `NO ACTION` | Participation history must be retained |
-| Events to Enrolments | `NO ACTION` | Event-entry history must be retained |
-| EventCategories to Enrolments | `NO ACTION` | The selected Category must remain traceable |
-| Enrolments to Results | `NO ACTION` | Official Result history must be retained |
-| Users to Results | `NO ACTION` | The recording Organiser must remain traceable |
-
-Records that already have dependent transactional data should generally be made inactive or cancelled instead of being deleted.
-
+All nine foreign keys use NO ACTION on delete and update. Remove dependent records deliberately where permitted; otherwise cancel or deactivate records to preserve history (Microsoft, 2026c).
 ## 8. Application-level validation
 
-Some rules require information from more than one row or table and will be enforced by the future API rather than by simple table constraints:
-
-- Confirm that an Event owner has the Organiser Role.
-- Confirm that an Enrolment user has the Participant Role.
-- Confirm that the Event is Open and entries have not closed.
-- Confirm that an Event Category is available and has capacity.
-- Confirm that a Participant satisfies the Category's minimum and maximum age rules when those values are supplied.
-- Confirm that a Result is captured by the Organiser responsible for the related Event.
-- Confirm that a cancelled Enrolment cannot receive a Result.
-- Update `UpdatedAt` when a record changes.
-
+The API checks roles, ownership, event status/closing times, category availability/capacity, ages and result eligibility. It also updates UpdatedAt. These rules need more than a simple foreign key or table CHECK.
 ## 9. Normalisation summary
 
-The model separates Roles, Users, Events, Categories, Routes, Enrolments and Results so that each table represents one main subject. Repeating groups are avoided, descriptive values are stored once where practical and many-to-many activity between Participants and Events is resolved through Enrolments. The separate Results table prevents result details from being repeated in user or event records.
-
+Each table represents one subject. Enrolments resolves Participant/Event entries, while Results keeps outcomes separate. Shared account, event and category descriptions are not repeated in entries.
 ## References
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Unpublished assessment brief.

@@ -1,101 +1,53 @@
 # RaceDay ERD Design Notes
 
-## 1. Purpose
+## 1. Model
 
-The RaceDay ERD shows seven tables, 71 columns and nine relationships. Table names, column names, datatypes and NULL rules match `RaceDay.sql` and the data dictionary. Relationships use the UML multiplicities requested in the lecturer's feedback (The Independent Institute of Education, 2026a; 2026b).
+The ERD contains seven tables, 71 columns and nine relationships. Names, types and NULL rules match SQL and the data dictionary. UML multiplicities follow the lecturer's feedback (The Independent Institute of Education, 2026a; 2026b).
 
-The diagram files are:
-
-- `RaceDay-ERD.drawio`, which is the editable draw.io source file.
-- `RaceDay-ERD.png`, which is the submission image.
-- `RaceDay-ERD.svg`, which is the scalable export.
-- `RaceDay-Data-Dictionary.md`, which contains the detailed constraints and column descriptions.
-
-The `.drawio` file is editable in draw.io. The SVG and PNG show the same model (JGraph Ltd, 2026).
-
-## 2. Entity summary
-
-| Entity | Main responsibility |
+| File | Use |
 |---|---|
-| `Roles` | Controls the Organiser and Participant role values |
-| `Users` | Stores account and profile information |
-| `Events` | Stores events managed by Organisers |
-| `EventCategories` | Stores the entry choices offered by Events |
-| `EventRoutes` | Stores route details for individual Event Categories |
-| `Enrolments` | Records Participant entries and selected Categories |
-| `Results` | Stores official outcomes for Enrolments |
+| `RaceDay-ERD.drawio` | Editable diagram |
+| `RaceDay-ERD.png` | Submission image |
+| `RaceDay-ERD.svg` | Scalable export |
+| `RaceDay-Data-Dictionary.md` | Columns and constraints |
 
-## 3. Relationship and cardinality explanation
+The exports use the same draw.io model (JGraph Ltd, 2026).
 
-| Relationship | Parent cardinality | Child cardinality | Explanation |
-|---|---:|---:|---|
-| Roles to Users | 1 | 0..* | Every User has one Role, while one Role may be assigned to many Users |
-| Users to Events | 1 | 0..* | Every Event has one Organiser, while one Organiser may manage many Events |
-| Events to EventCategories | 1 | 0..* | Every Category belongs to one Event, while a draft Event may initially have no Categories |
-| EventCategories to EventRoutes | 1 | 0..1 | A Category may have one Route record, while every Route belongs to one Category |
-| Users to Enrolments | 1 | 0..* | Every Enrolment belongs to one Participant, while a Participant may have many Enrolments |
-| Events to Enrolments | 1 | 0..* | Every Enrolment refers to one Event, while an Event may have many Enrolments |
-| EventCategories to Enrolments | 1 | 0..* | Every Enrolment selects one Category, while a Category may be selected many times |
-| Enrolments to Results | 1 | 0..1 | An Enrolment may receive one official Result, while every Result belongs to one Enrolment |
-| Users to Results | 1 | 0..* | Every Result records one Organiser, while an Organiser may record many Results |
+## 2. Relationships
 
-## 4. Many-to-many resolution
+| Parent | Child | Rule |
+|---|---|---|
+| Roles | Users | One Role to zero/many Users; each User has one Role |
+| Users | Events | One Organiser to zero/many Events; each Event has one owner |
+| Events | EventCategories | One Event to zero/many Categories; Draft may have none |
+| EventCategories | EventRoutes | One Category to zero/one Route |
+| Users | Enrolments | One Participant to zero/many entries |
+| Events | Enrolments | One Event to zero/many entries |
+| EventCategories | Enrolments | One Category to zero/many entries |
+| Enrolments | Results | One entry to zero/one official Result |
+| Users | Results | One Organiser to zero/many recorded Results |
 
-Participants and Events have a logical many-to-many relationship. A Participant may enter many Events, and an Event may receive many Participants. The `Enrolments` entity resolves this relationship and records the Event Category selected for each entry.
+## 3. Keys and integrity
 
-`(ParticipantUserId, EventId)` is unique. A Participant can have only one saved Enrolment for an Event, including a Cancelled entry. Reactivation updates that entry instead of adding another row.
+Enrolments resolves Participants and Events. `(ParticipantUserId, EventId)` is unique, including Cancelled history; reactivation updates that row.
 
-## 5. Composite relationship rule
+`Enrolments(EventCategoryId, EventId)` references the matching composite key in EventCategories, preventing selection of another event's category.
 
-`Enrolments(EventCategoryId, EventId)` references the alternate key `EventCategories(EventCategoryId, EventId)`. Both columns are used together, in that order.
-
-This rule prevents an Enrolment from selecting a Category that belongs to a different Event.
-
-## 6. Key notation
-
-| Notation | Meaning |
+| Label | Meaning |
 |---|---|
-| `PK` | Primary key |
-| `FK` | Foreign key |
-| `UQ` | Single-column unique key |
-| `FK UQ` | Column is both a foreign key and unique |
-| `UQ1`, `UQ2` | Separate composite unique keys listed below the columns |
-| `UQ*`, `UQ2*` | Filtered unique index; the full column combination and filter are listed below the columns |
-| `NULL` | Optional column |
-| `NOT NULL` | Required column |
+| PK / FK | Primary / foreign key |
+| UQ / FK UQ | Unique key / unique foreign key |
+| UQ1, UQ2 | Separate composite unique keys |
+| UQ*, UQ2* | Filtered unique index; full rule shown below columns |
+| NULL / NOT NULL | Optional / required |
 
-Category names are unique within an Event through `(EventId, CategoryName)`. They do not have to be unique across all Events.
+Category names are unique within an event. Assigned bibs are unique per event; NULL bibs and reuse at other events are allowed. Completed results need positive, non-null seconds; other outcomes have no finish time. All foreign keys use NO ACTION.
 
-Assigned bib numbers are unique within an Event through `(EventId, BibNumber) WHERE BibNumber IS NOT NULL`. Multiple entries may have no bib number. A bib number may be reused at a different Event.
+## 4. Requirement checks
 
-`FinishTimeSeconds` is nullable because non-completed Results have no finish time. A Completed Result must have a non-null value greater than zero. All nine foreign keys use `NO ACTION` on delete and update.
+Event distance and category age/distance fields cover Part 2. Optional User/Event blob-name columns support images; binaries stay outside SQL. Part 3 MVC uses the API for uploads.
 
-## 7. Part 2 requirements cross-check
-
-The ERD was checked against the supplied Part 2 functional requirements. `Events.DistanceKm` records the advertised Event distance required by the brief. `EventCategories.MinimumAge` and `EventCategories.MaximumAge` allow an Organiser to define age categories such as Under 20 or Senior, while `EventCategories.DistanceKm` supports distance categories such as 10 km or 21 km.
-
-## 8. Part 3 requirements cross-check
-
-The ERD was checked against the supplied Part 3 requirements. `Users.ProfilePictureBlobName` stores the Azure Blob Storage object name for an optional Participant profile picture. `Events.BannerImageBlobName` stores the object name for an optional Event banner. The actual image data remains in Azure Blob Storage and is not stored in SQL Server.
-
-## 9. ERD validation checklist
-
-- [x] At least six entities are present.
-- [x] Seven entities are included.
-- [x] Every entity displays its attributes.
-- [x] Every entity has a primary key.
-- [x] Foreign keys are identified.
-- [x] SQL Server datatypes are displayed.
-- [x] Optional and required attributes are identified.
-- [x] Every relationship displays cardinality.
-- [x] Participant and Event many-to-many activity is resolved through Enrolments.
-- [x] A Category cannot be linked to the wrong Event through an Enrolment.
-- [x] An Enrolment may have no more than one official Result.
-- [x] The entity and attribute names match the current data dictionary.
-- [x] The editable draw.io source is available in the `/docs` folder.
-- [x] The diagram is available as a PNG in the `/docs` folder.
-
-The corrected schema was checked on a separate SQL Server LocalDB database on 17 October 2026. All 71 column definitions matched the ERD and data dictionary. See [Part 1 database corrections](Part-1-Database-Corrections.md) for the checks.
+The [17 October corrections](Part-1-Database-Corrections.md) verified all 71 columns against an isolated SQL database. Keys, nullability, nine relationships and matching PNG/SVG/draw.io exports are included.
 
 ## References
 

@@ -4,198 +4,45 @@
 
 ## Project overview
 
-RaceDay manages South African running, walking and cycling events. Part 2 builds the REST API in C# and ASP.NET Core, using SQL Server and Entity Framework Core (The Independent Institute of Education, 2026a).
+RaceDay manages South African running, walking and cycling events. Part 2 is a C# ASP.NET Core API using SQL Server and EF Core (The Independent Institute of Education, 2026a).
 
-The API follows the [Part 1 endpoint plan](docs/API-Endpoint-Plan.md). Login stores the user's ID and role in a server-side session. Passwords are hashed before they are saved.
-
-## Part 2 status
-
-The endpoint plan now has 40 endpoints and a [mapping of the lecturer's 25 required operations](docs/API-Endpoint-Plan.md#141-required-operations). Enrolment deletion, status changes and age rules have been clarified.
-
-The Part 1 planning and database corrections are complete. All 71 column definitions match, 21 database checks passed and the corrected script ran successfully in SSMS. The [database correction notes](docs/Part-1-Database-Corrections.md) include the fresh screenshots and results.
-
-The API has an EF Core SQL Server context, seven entity models, table configurations, an initial migration and the Part 1 sample data. Authentication, own profiles, events, the Organiser dashboard, categories, routes, enrolments and results are implemented. All 40 planned business endpoints are implemented, including image uploads and removal. All 810 current tests pass locally. GitHub Actions runs the full suite on every push; the badge above shows the latest main-branch result.
-
-Progress is recorded in the [Part 2 checklist](docs/Part-2-Requirements-Checklist.md).
-
-The original README is kept in [Part 1 README](README-Part1.md).
+All 40 planned business endpoints are implemented. The original [Part 1 README](README-Part1.md) is preserved. Progress is in the [checklist](docs/Part-2-Requirements-Checklist.md) and [rubric review](docs/Part-2-Rubric-Review.md).
 
 ## User roles
 
-| Role | What they can do |
+| Role | Responsibilities |
 |---|---|
-| Organiser | Manage their own events, categories and routes; view event enrolments; assign bib numbers; record and update results. |
-| Participant | Manage their profile, browse events, enter a category and view their own enrolments and results. |
+| Organiser | Manage owned events, categories, routes and banners; view rosters, assign bibs and record results. |
+| Participant | Update own profile and picture, browse events, enter a category and view own entries/results. |
 
-Both roles can view events and available categories. Users cannot change another user's private records.
+Both roles manage their own profile. Login keeps user ID and role in a server-side session for 20 minutes. Passwords are hashed; role and ownership checks protect private records (Microsoft, 2026a; 2026k; 2026o).
 
 ## Database
 
-The seven tables are `Roles`, `Users`, `Events`, `EventCategories`, `EventRoutes`, `Enrolments` and `Results`.
+The seven tables are Roles, Users, Events, EventCategories, EventRoutes, Enrolments and Results. EF migrations create `RaceDayPart2`, separate from Part 1 `RaceDay` (Microsoft, 2026b).
 
-EF Core Code First creates the separate `RaceDayPart2` database (Microsoft, 2026b). The mappings preserve all 71 columns, nine foreign keys, 36 checks and 12 named defaults. The original Part 1 database and SQL script are kept.
+All 71 columns and nine relationships match Part 1. One detail differs: `UQ_EventCategories_Event_CategoryName` is a unique index rather than a UNIQUE constraint, allowing EF to rename categories while preserving uniqueness. The composite category/event key remains (Microsoft, 2026f; 2026g).
 
-One SQL detail differs: the unique rule on `EventId, CategoryName` uses a unique index with the original name `UQ_EventCategories_Event_CategoryName`. It still rejects duplicate names within an event. It allows category names to be updated through EF Core, whereas an alternate-key property cannot be changed (Microsoft, 2026f; 2026g). The composite Category/Event foreign key remains an alternate key.
-
-The [Part 2 database notes](docs/Part-2-Database.md) explain the migration, sample data and checks.
+See the [database notes](docs/Part-2-Database.md). SQL stores generated image blob names; files stay in private Blob Storage. MVC and Docker belong to Part 3.
 
 ## API endpoints
 
-The API covers authentication, profiles, events, categories, routes, enrolments and results, including the planned password, dashboard, bib-number and image operations.
+The [endpoint plan](docs/API-Endpoint-Plan.md) lists all 40 methods, routes, roles, bodies and responses, including the [25 required operations](docs/API-Endpoint-Plan.md#141-required-operations).
 
-Profile pictures and event banners pass through the API. SQL Server stores their generated blob names. The MVC website and Docker setup belong to Part 3.
-
-`GET /health` is a separate public host check. It returns `200 OK` with `{"status":"Healthy"}`. It uses ASP.NET Core controller routing and JSON responses (Microsoft, 2026c). It does not check the database, storage or login, and is not one of the 40 planned business endpoints.
-
-The current [Swagger host-check screenshot](docs/evidence/swagger-host-check.jpg) shows the response.
-
-## Authentication
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| POST | `/api/auth/register` | Creates an Organiser or Participant account and returns 201 |
-| POST | `/api/auth/login` | Checks the password, starts a session and returns 200 |
-| POST | `/api/auth/logout` | Ends the session and returns 204; returns 401 when no session exists |
-
-Registration accepts only the planned account fields. Email addresses are trimmed, converted to lower case and checked for duplicates. Passwords need 8 to 128 characters, including an upper-case letter, lower-case letter, digit and symbol. ASP.NET Core's password hasher creates the stored hash (Microsoft, 2026k).
-
-The session lasts 20 minutes. The user ID, role and expiry stay in the server cache; the browser receives a protected random ID in an HttpOnly, SameSite=Strict cookie. HTTPS uses a Secure cookie. Logout removes the server record, and another login replaces the old session (Microsoft, 2026l; 2026m).
-
-Controllers require authentication by default. Role policies return 403 for the wrong role. Protected requests check that the account still exists, is active and still has the same role (Microsoft, 2026n; 2026o).
-
-The [authentication notes](docs/Part-2-Authentication.md) include the request examples and checks. After login, the registration Location at `/api/profile` returns the new user's own profile.
-
-## User profiles
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| GET | `/api/profile` | Returns the signed-in user's profile |
-| PUT | `/api/profile` | Updates names, phone number and date of birth |
-| PUT | `/api/profile/password` | Checks the current password, saves a new hash and ends the current session |
-
-Both roles use these endpoints. The user ID comes from the session. Profile updates cannot change email, role, account status, passwords or image fields. Optional phone and birth-date values are cleared when omitted or null. A supplied birth date must be earlier than today's UTC date.
-
-Password changes require the correct current password and matching new-password fields. Sign in again with the new password after the 204 response. Other browsers keep their existing sessions until logout or normal expiry. Saved pictures have read-only URLs valid for one hour. GET supplies a fresh URL; an account without a picture returns null.
-
-The [profile notes](docs/Part-2-Profiles.md) record the validation, persistence and privacy checks (Microsoft, 2026p).
-
-## Event browsing
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| GET | `/api/events` | Returns a filtered page of upcoming Open and Closed events |
-| GET | `/api/events/{eventId}` | Returns one visible event with its categories and routes |
-
-Browsing does not require login. Filters cover event type, province and inclusive UTC dates. Page numbers start at 1; page size defaults to 10 and is limited to 100. Results are ordered by event date and then event ID (Microsoft, 2026q).
-
-Open, Closed and Completed event details are public. Draft and Cancelled details are visible only to the owning Organiser after login. Other callers receive 404. Public details show available categories; the owner also sees unavailable ones. Responses exclude account contact details, enrolments and storage object names.
-
-The [event-browsing notes](docs/Part-2-Event-Browsing.md) explain the filters, visibility rules and checks.
-
-## Organiser event management
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| GET | `/api/events/mine` | Paged owned events in every status, with an optional status filter |
-| POST | `/api/events` | Creates a Draft event for the signed-in Organiser |
-| PUT | `/api/events/{eventId}` | Updates an owned event or changes its status |
-| DELETE | `/api/events/{eventId}` | Deletes an owned event with no dependent records or banner |
-| GET | `/api/organiser/dashboard` | Owned event dates and saved-enrolment totals |
-
-Every operation requires an Organiser session. The API assigns ownership and checks it before updates or deletion. Requests cannot assign IDs, image fields or timestamps. Event writes validate the planned fields, future creation dates, SQL precision and paired coordinates (Microsoft, 2026p; 2026r).
-
-Opening or reopening needs an available category and future event and closing times. Cancelled and Completed statuses cannot be reversed. Saved entries protect the event's dates, type and distance. Events with results cannot be cancelled. Categories and entries prevent deletion, so cancellation keeps their history. Descriptive corrections remain possible.
-
-The dashboard counts all saved enrolments, with Confirmed and Cancelled rows shown separately. Its totals and event list belong only to the signed-in Organiser. The [event-management notes](docs/Part-2-Event-Management.md) record the status rules, validation and checks.
-
-## Categories
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| GET | `/api/events/{eventId}/categories` | Available categories for Open, Closed and Completed events |
-| GET | `/api/events/{eventId}/categories/{categoryId}` | Public category details; the owner can also read hidden records |
-| GET | `/api/organiser/events/{eventId}/categories` | All categories for an owned event |
-| POST | `/api/events/{eventId}/categories` | Creates an owned category and returns 201 with its Location |
-| PUT | `/api/events/{eventId}/categories/{categoryId}` | Updates permitted category details |
-| DELETE | `/api/events/{eventId}/categories/{categoryId}` | Deletes an unused category and its optional route |
-
-Writes require an Organiser session and event ownership. Names are unique within each event. Requests validate distance, age limits, entry fee, availability and capacity. Saved entries protect the category's distance, age limits and fee. Capacity cannot be below Confirmed entries, and an Open event must keep an available category (Microsoft, 2026p; 2026r).
-
-Category responses include the event ID and optional route details. The [category notes](docs/Part-2-Categories.md) record the rules, tests and Swagger checks.
-
-## Routes
-
-All four operations use `/api/events/{eventId}/categories/{categoryId}/route`.
-
-| Method | Current behaviour |
-|---|---|
-| GET | Returns a public route; the owning Organiser can also read hidden routes |
-| POST | Creates the category's single route and returns 201 with its Location |
-| PUT | Replaces the editable route information |
-| DELETE | Removes the route and keeps the category, enrolments and results |
-
-Writes require an Organiser session and event ownership. Both path IDs must match the saved relationship. Requests validate the route name, start, finish, instructions, optional map URL and non-negative elevation gain. The API stores map links without downloading them (Microsoft, 2026p; 2026r).
-
-The [route notes](docs/Part-2-Routes.md) record validation, access and checks.
-
-## Enrolments
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| POST | `/api/enrolments` | Enters the signed-in Participant into an available category |
-| GET | `/api/enrolments/mine` | Paged personal entry history with status and event filters |
-| GET | `/api/enrolments/{enrolmentId}` | Entry details for its Participant or event Organiser |
-| PUT | `/api/enrolments/{enrolmentId}/cancel` | Cancels a Confirmed entry and keeps its history |
-| PUT | `/api/enrolments/{enrolmentId}/reactivate` | Reactivates a Cancelled entry after repeating entry checks |
-| DELETE | `/api/enrolments/{enrolmentId}` | Deletes an eligible Confirmed entry before entries close |
-| GET | `/api/events/{eventId}/enrolments` | Paged roster for the event's Organiser |
-| PUT | `/api/enrolments/{enrolmentId}/bib-number` | Assigns or corrects an event-unique bib number |
-
-Entries require an Open event, a future closing time, an available category, the correct age and capacity. Age uses completed years on the stored UTC event date. A date of birth is needed for an age-restricted category. Only Confirmed entries use places. A Participant has one saved entry per event; Cancelled entries are reactivated rather than inserted again.
-
-Cancellation keeps the entry time and bib number. Changing category during reactivation clears the old bib. Cancelled entries, closed-event history and entries with results cannot be deleted. Writes use SQL transactions and an event update lock so competing requests cannot take the same last place (Microsoft, 2026s; 2026t).
-
-The [enrolment notes](docs/Part-2-Enrolments.md) record access, validation and checks. Result summaries can be read with existing entries. The result endpoints are described below.
-
-## Results
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| GET | `/api/results/mine` | Paged personal results with status and event filters |
-| GET | `/api/enrolments/{enrolmentId}/result` | Private result for its Participant or event Organiser |
-| GET | `/api/events/{eventId}/results` | Paged owned-event results with status and category filters |
-| POST | `/api/enrolments/{enrolmentId}/result` | First official result, with 201 and its Location |
-| PUT | `/api/enrolments/{enrolmentId}/result` | Corrects the existing result |
-
-Writes require the event's Organiser, a Confirmed entry and an event that has started and is not Cancelled. Completed needs a positive finish time. Other statuses have no official time or positions. Corrections keep the original result, recorder and recording time and set the update time. Each entry has at most one result.
-
-Finisher totals count all Completed results in the whole event, including other categories and Participants. Filters and paging do not reduce this total. The [result notes](docs/Part-2-Results.md) record access, validation, corrections and checks.
-
-## Images
-
-| Method | Route | Current behaviour |
-|---|---|---|
-| PUT | `/api/profile/picture` | Uploads or replaces the Participant's own picture |
-| DELETE | `/api/profile/picture` | Removes the Participant's picture; repeated removal returns 204 |
-| PUT | `/api/events/{eventId}/banner` | Uploads or replaces a banner for the owning Organiser |
-| DELETE | `/api/events/{eventId}/banner` | Removes an owned-event banner; repeated removal returns 204 |
-
-Uploads take exactly one multipart `imageFile`. JPEG and PNG are accepted, up to 5 MiB and 4096 pixels per side. The API checks content, extension, MIME type and decoding, then re-encodes the image without its original metadata. Generated names are saved in SQL and the files are kept in a private Azure Blob container.
-
-Returned URLs allow reading one image for one hour. Profile and event reads supply fresh URLs. No account keys are returned. The [image notes](docs/Part-2-Images.md) explain validation, replacement, removal, storage settings and failure recovery (Microsoft, 2026u; 2026v).
+Swagger also includes `GET /health`, a separate host check returning `200` and `{"status":"Healthy"}`. It does not check SQL or storage (Microsoft, 2026c; Swashbuckle, 2026).
 
 ## Setup and run
 
-Install the .NET 10 SDK and SQL Server LocalDB on Windows, plus Node.js with npm for the local image-storage emulator. For Visual Studio, use a version that supports .NET 10 with the **ASP.NET and web development** workload. Another SQL Server instance can be used by changing the connection string.
+Install the .NET 10 SDK, SQL Server LocalDB and Node.js with npm. Visual Studio needs .NET 10 support and the ASP.NET/web workload. Another SQL Server can be used by changing the connection string.
 
-1. Clone the repository and open its folder (GitHub, 2026a).
+1. Clone the repository (GitHub, 2026a).
 
 ```text
 git clone https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git
 cd prog6212-g2-2026-POE-ST10441951
 ```
 
-2. Restore the packages, restore the local EF migration tool and build the solution.
+2. Restore and build.
 
 ```text
 dotnet restore RaceDay.sln
@@ -203,133 +50,113 @@ dotnet tool restore
 dotnet build RaceDay.sln --configuration Release --no-restore
 ```
 
-3. Set the connection string in PowerShell and select Development. This example uses Windows authentication and a separate Part 2 database. The same local connection is provided in `appsettings.Development.json` (Microsoft, 2026h).
+3. Set Development and the connection string in PowerShell (Microsoft, 2026h).
 
 ```text
 $env:ASPNETCORE_ENVIRONMENT = 'Development'
 $env:ConnectionStrings__RaceDay = 'Server=(localdb)\MSSQLLocalDB;Database=RaceDayPart2;Integrated Security=True;Encrypt=True;TrustServerCertificate=True'
 ```
 
-Use your SQL Server instance name if LocalDB is not installed. Keep private connection strings in environment settings or user secrets. The trusted-certificate option above is for local development.
+This local connection is also in `appsettings.Development.json`. Keep private settings in environment variables or user secrets. TrustServerCertificate is for local development.
 
-4. Create the database and apply its migration (Microsoft, 2026i).
+4. Create the database and apply migrations (Microsoft, 2026i).
 
 ```text
 dotnet ef database update --project src/RaceDay.Api --configuration Release --no-build
 ```
 
-The command creates the tables and sample records. Running it again keeps the saved data and applies only missing migrations. Do not run the Part 1 SQL script against this database. The API does not run migrations automatically when it starts.
+This creates tables and sample data. Rerunning preserves data. Do not apply the Part 1 SQL script to `RaceDayPart2`.
 
-5. Start local blob storage in a separate terminal from the repository folder (Microsoft, 2026w).
+5. Start Azurite in another terminal and keep it running for images/tests (Microsoft, 2026w).
 
 ```text
 npx --yes --package azurite@3.37.0 azurite-blob --blobHost 127.0.0.1 --location .azurite --silent
 ```
 
-Development settings use `UseDevelopmentStorage=true` and the private `raceday-images` container. Emulator data is ignored by Git. For Azure, set `ImageStorage__ConnectionString` privately and optionally `ImageStorage__ContainerName`; do not commit real account keys. Keep the emulator running while using images or running the tests.
+Development uses `UseDevelopmentStorage=true` and the private `raceday-images` container. Azure settings use `ImageStorage__ConnectionString` and optional `ImageStorage__ContainerName`; keep real keys out of Git. See [image setup](docs/Part-2-Images.md).
 
-6. Start the API using the local HTTP profile.
+6. Start the API.
 
 ```text
 dotnet run --project src/RaceDay.Api --configuration Release --no-build --launch-profile http
 ```
 
-7. Open [Swagger](http://localhost:5120/swagger/index.html). Expand `GET /health`, select **Try it out**, then **Execute**. The response should be `200` with `{"status":"Healthy"}`. The Swagger JSON is at `http://localhost:5120/swagger/v1/swagger.json` (Swashbuckle, 2026).
+7. Open [Swagger](http://localhost:5120/swagger/index.html). Select Try it out, then Execute. Start with `/health`, then log in. The browser sends the session cookie automatically; Authorize is not needed.
 
-To check authentication, execute the login example using `naledi.mokoena@example.com` and `RaceDayDemo!2026`. Then execute logout without a body. Swagger sends the cookie automatically; entering it in **Authorize** is not needed. Logout returns 204, and a second logout returns 401.
+| Role | Sample email | Password |
+|---|---|---|
+| Organiser | thabo.ndlovu@example.com | RaceDayDemo!2026 |
+| Organiser | ayesha.khan@example.com | RaceDayDemo!2026 |
+| Participant | naledi.mokoena@example.com | RaceDayDemo!2026 |
+| Participant | sipho.dlamini@example.com | RaceDayDemo!2026 |
 
-While signed in, execute `GET /api/profile` to view your own account. Execute the `PUT /api/profile` example to update its personal details, then GET again to check the saved values. To test a password change, register a separate sample account first. Supply its current password and matching replacement values at `PUT /api/profile/password`, then log in again with the replacement. The Swagger example passwords are local demonstration values, not private credentials.
+These are fictional local accounts. Use a new account for password-change checks. Event 1 has past sample results; events 2 and 3 are upcoming while their dates remain in the future. New events start Draft and need an available category before opening.
 
-The registration example uses `new.participant@example.com`. Use another email to create another account. Reusing an existing email returns 409.
-
-To check event browsing without login, execute `GET /api/events`. The original sample data includes the upcoming Cape Peninsula cycling event and Soweto walk. Filter `eventType` to `Cycling`, then execute `GET /api/events/{eventId}` with event ID `2` to see its details, categories and routes. The past Completed event at ID `1` can be viewed directly but is excluded from the upcoming list. The list changes as event dates pass.
-
-For event management, log in as `thabo.ndlovu@example.com` using the same demonstration password. Execute the POST event example and follow its Location to view the new Draft. Use its ID with POST `/api/events/{eventId}/categories` and execute the category example. GET `/api/organiser/events/{eventId}/categories` shows its saved categories. For PUT, reuse the editable fields from the creation request and add `"status": "Open"`. The event must have an available category and future start and closing times. The public category list can then show it. GET `/api/events/mine` and `/api/organiser/dashboard` show only that Organiser's records.
-
-To add a route, use the same event ID and saved category ID with POST `/api/events/{eventId}/categories/{categoryId}/route`. Execute the route example, then follow its Location with GET. PUT edits the route; omitted optional map and elevation values clear them. DELETE removes the route while keeping the category.
-
-For enrolments, log in as a Participant and choose an Open event and available category. POST `/api/enrolments` takes only their IDs. Use the returned entry ID for GET, cancellation and reactivation. The Participant's own list is `/api/enrolments/mine`. To assign a bib or view the event roster, log in as that event's Organiser. The example IDs refer to the original sample data; an existing Cancelled entry must be reactivated, and actual event/category IDs must be selected when using a new event.
-
-For results, log in as Thabo and use GET `/api/events/1/results` or GET `/api/enrolments/1/result` to read the original sample results. Naledi can read her own result at `/api/results/mine`. Capture requires a Confirmed entry without a result in an event that has started; upcoming events are rejected. The POST result example uses Completed with 3600 seconds. PUT corrects its editable fields. To use DidNotFinish, Disqualified or DidNotStart, set time and positions to null.
-
-For images, log in as Naledi, expand PUT `/api/profile/picture`, select Try it out and choose a JPEG or PNG at `imageFile`. Execute and open the returned URL. GET `/api/profile` also supplies the saved picture URL. Upload another file to replace it; DELETE removes it. Thabo uses the same steps for `/api/events/1/banner`. Other Organisers cannot change his banner. Event details and lists include the banner URL.
-
-8. Open another terminal in the repository folder to run the tests (Microsoft, 2026e).
+8. Run tests from another terminal (Microsoft, 2026e).
 
 ```text
 dotnet test RaceDay.sln --configuration Release --no-build
 ```
 
-In Visual Studio, open `RaceDay.sln`, set `RaceDay.Api` as the startup project and choose the `http` profile. Open **Test > Test Explorer** and select **Run All** to run the tests there.
+In Visual Studio, open `RaceDay.sln`, set `RaceDay.Api` as startup project and choose `http`. Open Test > Test Explorer > Run All.
 
-The tests create and remove their own temporary `RaceDayTests_...` database. They use LocalDB by default. For another SQL Server, set `RACEDAY_TEST_CONNECTION` before starting the tests; the test fixture always chooses a new database name. It does not use `RaceDay` or `RaceDayPart2`. Image tests also create and remove their own `raceday-tests-...` container. They use local Azurite unless `RACEDAY_TEST_STORAGE_CONNECTION` selects a separate test account.
+Tests use separate `RaceDayTests_...` databases and `raceday-tests-...` containers. `RACEDAY_TEST_CONNECTION` and `RACEDAY_TEST_STORAGE_CONNECTION` can select another server/account. The fixtures always choose their own test database/container names (Microsoft, 2026d; 2026j).
 
-The HTTP profile is for local development. Outside Development, Swagger is disabled and the API enables HTTPS redirection and HSTS. Set `ConnectionStrings:RaceDay` separately for that environment.
+Outside Development, configure SQL/storage separately. Swagger is disabled and HTTPS is enforced.
 
 ## CI/CD
 
-The planning checks are written in C#. They check required files and image formats, all 40 endpoint rows, the lecturer's 25 required operations and matching SQL, ERD and data-dictionary columns. The workflow runs on every push and on pull requests to main (GitHub, 2026b; 2026c).
+GitHub Actions builds and tests the solution on every push, checks migrations and validates the planning files (GitHub, 2026b; 2026c; 2026d; 2026e).
 
-The `.github/workflows/part2-build.yml` restores, builds and tests the whole solution on every push and on pull requests to main. It uses Windows 2025 with SQL Server LocalDB, starts Azurite for blob tests and checks for pending migrations (GitHub, 2026d; 2026e).
+Revision `8925213`: [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39151854297) passed all 810 tests with none skipped, zero warnings/errors and no pending model changes. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39151854258) also passed.
 
-The [result build for 480d552](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842878) passed all 734 tests with none skipped, no warnings or errors and no pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842900) also passed. All 810 tests, including 76 image checks, pass locally. The workflow checks the image changes on push.
-
-Part 2 green-build screenshot: to be added.
+Green-build screenshot: to be added.
 
 ## Unit tests
 
-The tests use xUnit. There are seven startup checks, 63 database checks, 51 authentication checks, 57 profile and password checks, 55 event-browsing checks, 121 Organiser event-management checks, 93 category checks, 85 route checks, 113 enrolment checks, 89 result checks and 76 image checks. API requests run through the real request pipeline against temporary SQL Server databases (Microsoft, 2026d; 2026j; xUnit.net, 2026a).
+| Area | Checks |
+|---|---:|
+| Startup | 7 |
+| Database | 63 |
+| Authentication | 51 |
+| Profiles/passwords | 57 |
+| Event browsing | 55 |
+| Event management | 121 |
+| Categories | 93 |
+| Routes | 85 |
+| Enrolments | 113 |
+| Results | 89 |
+| Images | 76 |
+| Total | 810 |
 
-All 810 tests pass locally with none skipped and no build warnings or errors. Image checks use the real Azure SDK and emulator for valid uploads, signed reads, replacements and removal. They also cover rejected files, roles, ownership, storage and SQL failures, concurrent writes and all 40 planned Swagger operations.
+Tests cover success/failure, sessions, roles, ownership, validation, saved data and concurrent requests. Collections run sequentially; explicit concurrent-request tests still run together (xUnit.net, 2026a; 2026b).
 
-Collections run sequentially to reduce LocalDB memory and connection pressure. Explicit concurrent HTTP requests inside the competing-write tests still run together (xUnit.net, 2026b).
-
-The tests must pass locally and in GitHub Actions. A screenshot of the passing **Run All** result will be added here.
+All 810 passed locally on 18 October. On 19 October, both builds passed but Windows Application Control blocked local execution. A fresh passing Run All screenshot is still needed; see the [rubric review](docs/Part-2-Rubric-Review.md).
 
 ## Project files
 
-| File or folder | Contents |
+| File/folder | Contents |
 |---|---|
-| `RaceDay.sln` | API, test and planning-checker projects |
-| `src/RaceDay.Api/` | ASP.NET Core API, controllers and response contracts |
-| `src/RaceDay.Api/Models/` | Seven database entities |
-| `src/RaceDay.Api/Data/` | SQL Server context, configurations, seed data and migrations |
-| `src/RaceDay.Api/Authentication/` | Server-side sessions, authentication handler and Swagger examples |
-| `tests/RaceDay.Api.Tests/` | xUnit API tests |
-| `tests/RaceDay.Api.Tests/Database/` | SQL Server migration and constraint tests |
-| `tests/RaceDay.Api.Tests/Authentication/` | Registration, login, logout and role-policy checks |
-| `tests/RaceDay.Api.Tests/Profiles/` | Own-profile, password-change and privacy checks |
-| `tests/RaceDay.Api.Tests/Events/` | Event browsing, management, ownership, history and dashboard checks |
-| `tests/RaceDay.Api.Tests/Categories/` | Category validation, ownership, visibility, capacity and history checks |
-| `tests/RaceDay.Api.Tests/Routes/` | Route CRUD, validation, visibility, ownership and saved-record checks |
-| `tests/RaceDay.Api.Tests/Enrolments/` | Entry rules, history, ownership, paging, bib numbers and competing requests |
-| `tests/RaceDay.Api.Tests/Results/` | Result capture, corrections, access, paging, totals and competing requests |
-| `tests/RaceDay.Api.Tests/Images/` | Image validation, private storage, replacement, removal, access and recovery checks |
-| `README-Part1.md` | Original Part 1 README |
-| [API-Endpoint-Plan.md](docs/API-Endpoint-Plan.md) | Planned endpoints |
-| [RaceDay-Data-Dictionary.md](docs/RaceDay-Data-Dictionary.md) | Tables, fields and constraints |
-| [RaceDay.sql](docs/RaceDay.sql) | Part 1 database script |
-| [Part-1-Database-Corrections.md](docs/Part-1-Database-Corrections.md) | Corrected database checks and fresh SSMS evidence |
-| [Part-2-Database.md](docs/Part-2-Database.md) | EF Core mapping, migration and database checks |
-| [Part-2-Authentication.md](docs/Part-2-Authentication.md) | Account validation, sessions and Swagger checks |
-| [Part-2-Profiles.md](docs/Part-2-Profiles.md) | Personal details, password changes and checks |
-| [Part-2-Event-Browsing.md](docs/Part-2-Event-Browsing.md) | Event filters, visibility and read checks |
-| [Part-2-Event-Management.md](docs/Part-2-Event-Management.md) | Owned events, status changes and dashboard checks |
-| [Part-2-Categories.md](docs/Part-2-Categories.md) | Category rules, validation and Swagger checks |
-| [Part-2-Routes.md](docs/Part-2-Routes.md) | Route rules, validation and Swagger checks |
-| [Part-2-Enrolments.md](docs/Part-2-Enrolments.md) | Entry rules, access, history and Swagger checks |
-| [Part-2-Results.md](docs/Part-2-Results.md) | Official results, corrections and checks |
-| [Part-2-Images.md](docs/Part-2-Images.md) | Image rules, storage setup and checks |
-| [Part-2-Requirements-Checklist.md](docs/Part-2-Requirements-Checklist.md) | Part 2 tasks |
-| `tools/RaceDay.PlanningChecks/` | C# endpoint-plan, schema-document and repository checks |
-| `docs/evidence/` | Screenshots |
-| `.github/workflows/` | GitHub Actions workflows |
+| `src/RaceDay.Api/` | API, models, EF mappings, authentication and storage |
+| `tests/RaceDay.Api.Tests/` | xUnit tests |
+| `tools/RaceDay.PlanningChecks/` | C# planning checks |
+| `.github/workflows/` | Build and validation workflows |
+| [Endpoint plan](docs/API-Endpoint-Plan.md) | All methods, routes, bodies and responses |
+| [Data dictionary](docs/RaceDay-Data-Dictionary.md) | Columns, keys and constraints |
+| [SQL script](docs/RaceDay.sql) | Part 1 schema and seeds |
+| [Part 1 corrections](docs/Part-1-Database-Corrections.md) | Corrected SQL and SSMS evidence |
+| [Authentication](docs/Part-2-Authentication.md) / [Profiles](docs/Part-2-Profiles.md) | Accounts, sessions and personal details |
+| [Browsing](docs/Part-2-Event-Browsing.md) / [Event management](docs/Part-2-Event-Management.md) | Events and dashboard |
+| [Categories](docs/Part-2-Categories.md) / [Routes](docs/Part-2-Routes.md) | Category and route rules |
+| [Enrolments](docs/Part-2-Enrolments.md) / [Results](docs/Part-2-Results.md) | Entries, bibs and official results |
+| [Images](docs/Part-2-Images.md) | Uploads and storage |
+| `docs/evidence/` | Screenshots, including the [host check](docs/evidence/swagger-host-check.jpg) |
 
 ## Video
 
 Part 2 YouTube link: to be added.
 
-The video must be no longer than 20 minutes. It must open with the rubric, show every endpoint working in Swagger, explain the core logic and show passing tests using **Run All** (The Independent Institute of Education, 2026b).
+The video must open the rubric, demonstrate every endpoint in Swagger, explain the core code and show Run All. Use my own voice and keep it within 20 minutes (The Independent Institute of Education, 2026b).
 
 ## References
 

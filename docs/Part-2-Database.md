@@ -1,37 +1,27 @@
 # RaceDay Part 2 Database
 
-## 1. Database setup
+## 1. Setup
 
-The API uses Entity Framework Core 10.0.13 with the SQL Server provider. The seven C# entity models and their configurations create the database through Code First migrations (Microsoft, 2026a).
+EF Core 10.0.13 uses SQL Server Code First migrations. Development uses `RaceDayPart2` on `(localdb)\MSSQLLocalDB`, separate from Part 1 `RaceDay`. Follow the [README setup](../README.md#setup-and-run) (Microsoft, 2026a; 2026b).
 
-The development database is `RaceDayPart2` on `(localdb)\MSSQLLocalDB`. It is separate from the Part 1 `RaceDay` database. The numbered setup commands are in the [README](../README.md#setup-and-run).
+The initial migration is `20261018053845_InitialCreate`. EF adds `__EFMigrationsHistory` alongside the seven business tables. Migrations are applied by command, not on API startup. Private connection strings belong in environment settings or user secrets.
 
-`Program.cs` registers `RaceDayDbContext` for each request and reads `ConnectionStrings:RaceDay` from configuration. The Development connection uses Windows authentication. Private connection strings can be supplied through environment settings or user secrets (Microsoft, 2026b).
+## 2. Part 1 mapping
 
-The initial migration is `20261018053845_InitialCreate`. EF also creates `__EFMigrationsHistory` to record applied migrations. This is an EF system table, separate from the seven planned business tables.
-
-## 2. Mapping to Part 1
-
-| Item | Part 2 mapping |
+| Item | Mapping |
 |---|---|
-| Tables | Roles, Users, Events, EventCategories, EventRoutes, Enrolments and Results |
-| Columns | All 71 names, SQL types, lengths, decimal precision, identity settings and NULL rules |
-| Primary keys | All seven original names and columns |
-| Foreign keys | All nine relationships use NO ACTION |
-| Category/Event link | Composite alternate key and foreign key prevent a category from another event being selected |
-| Validation | All 36 named CHECK constraints |
-| Defaults | All 12 named defaults retain the Part 1 values |
-| Indexes | Original index names, columns, uniqueness and bib-number filter |
+| Tables | Roles, Users, Events, EventCategories, EventRoutes, Enrolments, Results |
+| Columns | All 71 names, types, sizes, precision, identity and NULL rules |
+| Primary/foreign keys | Seven primary keys; nine foreign keys with NO ACTION |
+| Category/event link | Composite key prevents a category from another event |
+| Checks/defaults | 36 named CHECK constraints and 12 named defaults |
+| Indexes | Original names, columns, uniqueness and bib filter |
 
-One implementation detail differs from the Part 1 SQL script. `UQ_EventCategories_Event_CategoryName` is a unique index on `EventId, CategoryName` rather than a UNIQUE constraint. It enforces the same rule and allows category names to be changed through EF Core. Alternate-key properties cannot be changed, so the category name is not mapped as an alternate key. The separate `EventCategoryId, EventId` alternate key remains in place (Microsoft, 2026c; 2026d).
+`UQ_EventCategories_Event_CategoryName` is a unique index instead of a UNIQUE constraint. It enforces the same uniqueness while allowing EF to rename categories; alternate-key properties cannot change. The separate category/event alternate key remains (Microsoft, 2026c; 2026d).
 
-EF formats numeric defaults using explicit casts, such as `CAST(1 AS bit)`. Their values and SQL types are unchanged. Boolean properties are written explicitly so that a saved `false` value is not replaced by the database's `true` default (Microsoft, 2026g).
-
-Roles, ownership, entry dates, capacity and age eligibility still require API validation. A foreign key cannot prove that an account has the correct role.
+Equivalent casts in generated defaults do not change their values. Boolean mappings preserve explicit false values (Microsoft, 2026g).
 
 ## 3. Sample data
-
-The migration contains the fixed sample records from the corrected Part 1 SQL script. Fixed dates, identifiers and existing password hashes keep the migration repeatable (Microsoft, 2026e).
 
 | Table | Records |
 |---|---:|
@@ -43,31 +33,15 @@ The migration contains the fixed sample records from the corrected Part 1 SQL sc
 | Enrolments | 4 |
 | Results | 2 |
 
-The four fictional accounts retain the local demonstration password `RaceDayDemo!2026`. Only their hashes are stored in the database. These are development sample accounts. Registration and login are now implemented; the [authentication notes](Part-2-Authentication.md) describe them.
-
-Applying the same migration again does not duplicate the records or reset changes made to them.
+Fixed seeds match the corrected Part 1 data. The four fictional accounts use `RaceDayDemo!2026`; only hashes are stored. Reapplying the migration preserves saved changes (Microsoft, 2026e).
 
 ## 4. Checks
 
-These checks were completed on 18 October 2026.
+The 63 SQL tests check columns, keys, indexes, constraints, defaults, seeds, hashes, persistence and protected history against real SQL Server (Microsoft, 2026f). Tests create their own `RaceDayTests_...` database. `RACEDAY_TEST_CONNECTION` can change the server; the fixture always replaces the database name.
 
-| Check | Result |
-|---|---|
-| Restore and build the solution | Passed with no warnings or errors |
-| Create RaceDayPart2 using the EF migration | Passed |
-| Apply the migration again | Already up to date; data kept |
-| Compare the model with its migration snapshot | No pending model changes |
-| Compare every seeded column value with the corrected Part 1 database | All seven tables match |
-| Compare SQL check and default definitions with Part 1 | Match after equivalent numeric-cast formatting |
-| Tests at the database revision | 70 passed, 0 failed, 0 skipped |
+Metadata queries allow 120 seconds on a busy LocalDB instance; assertions and API timeouts are unchanged (Microsoft, 2026h).
 
-Seven tests cover the API host and Swagger. The other 63 use real SQL Server LocalDB. They check columns, keys, foreign keys, indexes, defaults, all CHECK constraints, sample relationships, password hashes, persistence, duplicate values, cross-event categories and protected history (Microsoft, 2026f).
-
-Each test run creates a new `RaceDayTests_...` database. It is removed after the tests. The fixture does not use the Part 1 or Part 2 application database. A supplied `RACEDAY_TEST_CONNECTION` changes the server and authentication settings; the database name is always replaced.
-
-Schema-inspection queries allow up to 120 seconds for cold LocalDB metadata on a busy machine. They still compare every expected column, relationship and constraint. Application command timeouts are unchanged (Microsoft, 2026h).
-
-The updated GitHub workflow uses the Windows 2025 runner with LocalDB and checks for missing migrations. The [build for e31e512](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39102096043) passed all 70 tests with none skipped, no build warnings or errors and no missing migrations. The [authentication build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed 121 tests. The [profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests without a database change. Event browsing passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The route revision passed 532 tests locally and on GitHub. The [enrolment work](Part-2-Enrolments.md) keeps the schema unchanged and passes all 645 tests locally.
+Current test/build results and the local execution issue are in the [rubric review](Part-2-Rubric-Review.md).
 
 ## References
 

@@ -1,6 +1,9 @@
 namespace RaceDay.Api.Contracts.Authentication;
 
 // Response fields follow docs/API-Endpoint-Plan.md, section 5.
+// Response DTOs: Microsoft (2026).
+// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api#prevent-over-posting
+// Accessed: 19 October 2026.
 /// <summary>Safe account details and the server-side session expiry.</summary>
 public sealed class LoginResponse
 {

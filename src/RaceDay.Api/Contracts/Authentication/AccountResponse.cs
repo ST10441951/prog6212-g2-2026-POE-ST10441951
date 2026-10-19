@@ -1,6 +1,9 @@
 namespace RaceDay.Api.Contracts.Authentication;
 
 // Safe response projections follow docs/API-Endpoint-Plan.md, section 5.
+// Response DTOs: Microsoft (2026).
+// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api#prevent-over-posting
+// Accessed: 19 October 2026.
 /// <summary>Public account summary without credentials.</summary>
 public sealed class AccountResponse
 {

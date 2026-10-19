@@ -1,108 +1,52 @@
 # RaceDay Part 1 Requirements Checklist
 
-This records the original Part 1 submission. Corrections for Part 2 are tracked in the [Part 2 checklist](Part-2-Requirements-Checklist.md).
-
-The ERD and SQL were corrected on 17 October 2026. See the [database correction notes](Part-1-Database-Corrections.md) for the changes, 21 local database checks and fresh SSMS screenshots. The original SSMS screenshot has been kept. The C# planning checker passes locally and on GitHub.
-
-## Scope
-
-- [x] Produce planning and database artefacts only.
-- [x] Do not include C# API implementation, MVC, Azure Blob Storage, or Docker work in Part 1.
+Records the original submission. Later corrections are in the [Part 2 checklist](Part-2-Requirements-Checklist.md) and [database correction notes](Part-1-Database-Corrections.md).
 
 ## Deliverables
 
-- [x] ERD exported as PNG.
-- [x] Editable draw.io ERD source saved in the `/docs` folder.
-- [x] API endpoint plan exported as Markdown or PDF.
-- [x] SQL Server script saved as a `.sql` file.
-- [x] README with a system description, both roles and CI evidence.
-- [x] Add the unlisted video link to the README.
-- [x] GitHub Actions workflow in `.github/workflows/`.
-- [x] At least 20 meaningful commits using the student's GitHub account.
-- [x] Repository link submitted on ARC.
+- [x] Submit planning/SQL only; API, MVC, storage and Docker are later work.
+- [x] Save ERD PNG, editable draw.io, endpoint plan and SQL in `/docs`.
+- [x] Include system/role descriptions, CI screenshot and unlisted video.
+- [x] Keep the workflow in `.github/workflows/`.
+- [x] Maintain at least 20 meaningful Part 1 commits using my account.
+- [x] Submit the repository link on ARC.
 
 ## ERD: 25 marks
 
-- [x] Include at least six entities covering the full RaceDay data model.
-- [x] Show all attributes, primary keys, foreign keys, relationships, and cardinalities.
-- [x] Correctly resolve any many-to-many relationships.
-- [x] Match the SQL schema exactly or explain deliberate differences in the README.
+- [x] Cover the full model with at least six entities.
+- [x] Show attributes, keys, cardinalities and resolved many-to-many links.
+- [x] Match SQL or explain deliberate differences.
 
-## API endpoint plan: 25 marks
+## Endpoint plan: 25 marks
 
-- [x] Cover authentication: registration and login.
-- [x] Cover user profiles.
-- [x] Cover events.
-- [x] Cover categories and routes.
-- [x] Cover enrolments.
-- [x] Cover results.
-- [x] Add all endpoints required by the Part 2 functional requirements.
-- [x] Add the API endpoints needed by the Part 3 MVC, dashboard and image-upload requirements.
-- [x] For every currently planned endpoint, document the method, `/api/` route, description, role, request body, and expected success and failure responses.
-- [x] Complete the plan before Part 2 API implementation begins.
-- [x] Map the lecturer's 25 feedback operations, including enrolment DELETE, to the corrected 40-endpoint plan.
+- [x] Cover authentication, profiles, events, categories/routes, entries and results.
+- [x] Include later dashboard and image requirements.
+- [x] Give method, route, purpose, role, body and success/failure responses.
+- [x] Complete planning before API development.
+- [x] Map all 25 feedback operations to the corrected 40-endpoint plan.
+- [x] Plan Organiser ownership and Participant privacy checks.
 
-## Roles
+## SQL: 20 marks
 
-### Organiser
-
-- [x] Create, edit, and delete events.
-- [x] Manage event categories.
-- [x] Capture participant results.
-- [x] View all event enrolments.
-
-### Participant
-
-- [x] Create an account.
-- [x] Browse events.
-- [x] Enter an event by selecting a category.
-- [x] View personal enrolments.
-- [x] Track personal results.
-
-- [x] Plan role-based access for later enforcement at API level.
-
-## SQL database script: 20 marks
-
-- [x] Use SQL Server-compatible syntax and run through SSMS.
-- [x] Create every entity shown in the ERD.
-- [x] Define primary keys, foreign keys, and suitable `NOT NULL`, `UNIQUE`, `DEFAULT`, and other integrity constraints.
-- [x] Seed at least two Organisers and two Participants.
-- [x] Seed at least three Events, categories for every Event, and realistic Enrolments.
-- [x] Seed every additional entity included in the ERD.
-- [x] Run without errors on a clean SQL Server instance.
+- [x] Create all ERD entities with keys, required/unique fields, defaults and checks.
+- [x] Seed both roles, three events, categories, entries and all other entities.
+- [x] Run the full script successfully in SSMS on a clean instance.
+- [x] Check the 17 October corrections and retain fresh and original evidence.
 
 ## GitHub and CI/CD: 15 marks
 
-- [x] Store the planning artefacts and SQL script in `/docs`.
-- [x] Validate the repository structure with a GitHub Actions workflow.
-- [x] Verify that `/docs` and all required files exist.
-- [x] Obtain a green workflow run and include a screenshot in the README.
-- [x] Maintain at least 20 meaningful commits.
+- [x] Validate required planning files and repository structure.
+- [x] Confirm a green workflow and include its screenshot.
 
-## Video presentation: 10 marks
+## Video: 10 marks
 
-- [x] Prepare the video walkthrough plan and SSMS demonstration order.
-- [x] Upload an unlisted YouTube walkthrough.
-- [x] Explain the ERD decisions and endpoint-plan choices.
-- [x] Explain the SQL design and run the script in SSMS.
-- [x] Add the video link to the README.
+- [x] Explain ERD decisions, endpoint choices and SQL design.
+- [x] Execute SQL in SSMS and upload the unlisted walkthrough.
+- [x] Keep its working link in the Part 1 README.
 
-## Correct submission: 5 marks
+## Submission: 5 marks
 
-- [x] Use a clear folder structure and detailed README.
-- [x] Include all required `/docs` files, CI evidence, and video link.
-- [x] Submit the correct repository link through ARC.
-
-## Academic requirements
-
-- [x] Review and understand every design decision as individual work.
-- [x] Do not copy source material except clearly marked direct quotations.
-- [x] Keep quotations below 10% and use one consistent citation style if external sources are used.
-- [x] Preserve a backup and follow the PoE cover-sheet instructions.
-
-## Final confirmations
-
-- [x] Lecturer-provided GitHub repository URL: `https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951.git`.
-- [x] Part 2 functional-requirements pages referenced by the Part 1 endpoint-plan instructions.
-- [x] Part 3 MVC, Azure Blob Storage, Docker, UI and CI requirements pages.
-- [x] Complete all additional PoE cover-sheet requirements.
+- [x] Include required files, clear documentation, CI and video evidence.
+- [x] Submit the correct lecturer-provided repository through ARC.
+- [x] Review individual work, cite sources consistently, keep quotations below 10% and complete cover-sheet requirements.
+- [x] Keep a backup and check supplied Part 2/3 requirements before planning.

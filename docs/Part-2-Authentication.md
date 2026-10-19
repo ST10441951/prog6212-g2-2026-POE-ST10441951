@@ -2,72 +2,42 @@
 
 ## 1. Endpoints
 
-The three authentication endpoints follow the Part 1 plan.
-
 | Method | Route | Access | Response |
 |---|---|---|---|
-| POST | `/api/auth/register` | Public | 201 with a safe account summary |
+| POST | `/api/auth/register` | Public | 201 with account summary and profile Location |
 | POST | `/api/auth/login` | Public | 200 with account details and session expiry |
-| POST | `/api/auth/logout` | Signed-in user | 204 without a response body |
+| POST | `/api/auth/logout` | Signed-in user | 204 |
 
-Registration does not sign in the account. Its Location header points to `/api/profile`, which returns the new user's own profile after login. The [profile notes](Part-2-Profiles.md) cover profile updates and password changes.
+Register first, then log in to read `/api/profile`. Registration does not sign in automatically.
 
-## 2. Account validation
+## 2. Validation
 
-- First name, surname, email, password and role are required.
-- Email addresses are trimmed, converted to lower case and stored uniquely. Duplicate accounts return 409.
-- Only Organiser and Participant role names are accepted.
-- User IDs, role IDs, password hashes and account status cannot be supplied in the request.
-- Phone number and date of birth are optional. A supplied date of birth must be earlier than today's UTC date.
-- Passwords need 8 to 128 characters, including an upper-case letter, lower-case letter, digit and symbol.
-
-Request classes use model validation and reject unexpected JSON fields (Microsoft, 2026a; 2026b). The SQL unique constraint also rejects simultaneous registrations using the same email.
-
-The API uses `PasswordHasher<User>` to create and verify salted password hashes. Login rehashes an older supported hash when needed. Passwords and hashes are excluded from account responses and session data (Microsoft, 2026c).
-
-Invalid credentials return 401. Correct credentials for an inactive account return 403.
+- Names, email, password and Organiser/Participant role are required.
+- Emails are trimmed, stored in lower case and unique. Duplicates return 409, including simultaneous registrations.
+- Phone and date of birth are optional. A supplied birth date must be before today in UTC.
+- Passwords require 8-128 characters with an upper-case letter, lower-case letter, digit and symbol.
+- Unknown JSON fields, including IDs and account status, return 400.
+- PasswordHasher saves salted hashes. Credentials and hashes are excluded from responses and sessions.
+- Incorrect credentials return 401; valid credentials for an inactive account return 403 (Microsoft, 2026a; 2026b; 2026c).
 
 ## 3. Sessions and roles
 
-Each login creates a random session ID. The user ID, role and fixed expiry are kept in the server cache. The browser receives only the protected session ID, in the `RaceDay.Session` cookie (Microsoft, 2026d; 2026e).
+Login stores user ID, role and a fixed 20-minute expiry in the server cache. The browser receives a protected random ID in an HttpOnly, SameSite=Strict cookie. HTTPS and non-Development environments use Secure cookies (Microsoft, 2026d; 2026e).
 
-Sessions expire 20 minutes after login. Logout removes the server record and clears the cookie. Another login in the same browser removes the previous session and creates a fresh ID.
+Logout removes the session. Another login replaces that browser's previous session. Inactive accounts return 403 and lose their session; missing accounts or changed roles invalidate it. Wrong roles return 403 (Microsoft, 2026f; 2026g).
 
-The cookie is HttpOnly and SameSite=Strict. HTTPS uses a Secure cookie; the local HTTP development profile can use it without HTTPS. Outside Development, Secure is always enabled.
+Controllers require authentication by default. Public reads stay public; optional sessions allow owners to read hidden event information. Restarting the API clears the in-memory sessions. Multiple instances would need a shared cache.
 
-The authentication handler checks the saved account before accepting a protected request. Disabled accounts return 403 and lose their session. Deleted accounts or changed roles invalidate the session and return 401. Role policies return 403 when a signed-in user has the wrong role (Microsoft, 2026f; 2026g).
+## 4. Checks and evidence
 
-Controllers require authentication by default. Public actions must be marked `AllowAnonymous`. Registration, login, the host check and event browsing are public. Event details also allow public access, but use `OptionalSession` to validate an existing session before showing owner-only information. Invalid sessions grant only the normal public view. The host check still does not resolve the database, even when a cookie is supplied.
+The 51 authentication checks cover registration, hashing, both roles, cookies, expiry, logout, replay and account changes. Business endpoints also test their own role and ownership rules (Microsoft, 2026h). Current results are in the [rubric review](Part-2-Rubric-Review.md).
 
-The cache currently runs in the API process. Restarting the API ends its sessions. Multiple API instances would need a shared cache.
-
-## 4. Swagger checks
-
-These checks were completed on 18 October 2026 using the running API and `RaceDayPart2`.
-
-1. Execute the registration example with a new email. It returns 201 with the saved account summary.
-2. Execute the login example using `naledi.mokoena@example.com` and `RaceDayDemo!2026`. It returns 200 and a UTC expiry.
-3. Execute logout without a body. It returns 204. The browser sends its HttpOnly cookie automatically; nothing needs to be entered in Authorize.
-4. Execute logout again. It returns 401 because the session has ended.
-
-For an Organiser login, use `thabo.ndlovu@example.com` with the same local demonstration password. Both accounts come from the Part 1 seed data.
-
-The extra account created by the browser registration check was removed after testing. The four original sample accounts remain.
+Swagger login returned 200, logout 204 and repeated logout 401 on 18 October. Sample logins: Naledi for Participant, Thabo for Organiser; password `RaceDayDemo!2026`. Temporary registration data was removed.
 
 | Evidence | File |
 |---|---|
-| Successful login and expiry | [Swagger login](evidence/swagger-authentication-login.jpg) |
-| Rejected request after logout | [Swagger logout after sign-out](evidence/swagger-logout-after-signout.jpg) |
-
-## 5. Test results
-
-At the authentication revision, all 121 tests passed locally and in GitHub Actions: seven startup checks, 63 database checks and 51 authentication checks. The solution built with no warnings or errors and no pending migration changes. The profile work added 57 checks, and the [GitHub profile build](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178. Event browsing then passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The route revision passed 532 tests locally and on GitHub. The [enrolment notes](Part-2-Enrolments.md) record the subsequent entry checks.
-
-Authentication checks cover both roles, invalid fields, duplicate and simultaneous registration, password hashing, rehashing, stored session fields, cookie flags, session replacement, logout replay, expiry, separate browsers and account changes.
-
-Role policies are checked through test-only controllers in the test project. Those routes are not included in the running API or Swagger. Event ownership and role checks on the remaining business endpoints will be tested when those endpoints are added (Microsoft, 2026h).
-
-The [authentication build for b1daebb](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39104118046) passed all 121 tests with none skipped. The planning workflow also passed.
+| Login and expiry | [Swagger login](evidence/swagger-authentication-login.jpg) |
+| Access after logout | [Swagger logout](evidence/swagger-logout-after-signout.jpg) |
 
 ## References
 

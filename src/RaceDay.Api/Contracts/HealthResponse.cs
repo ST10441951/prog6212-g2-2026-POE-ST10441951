@@ -1,5 +1,8 @@
 namespace RaceDay.Api.Contracts;
 
+// Typed API responses: Microsoft (2026).
+// https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types?view=aspnetcore-10.0
+// Accessed: 19 October 2026.
 /// <summary>
 /// Confirms that the API process is responding.
 /// </summary>

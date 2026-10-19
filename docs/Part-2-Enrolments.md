@@ -1,66 +1,59 @@
 # RaceDay Part 2 - Enrolments
 
-## 1. Endpoints and access
+## 1. Endpoints
+
+Participant actions use the session identity. Rosters and bib numbers require the event's Organiser. Entry details allow its Participant or event owner. Missing sessions return 401; wrong roles and unrelated users return 403 (Microsoft, 2026a).
 
 | Method | Route | Success |
 |---|---|---|
-| POST | `/api/enrolments` | 201 with the Confirmed entry and its Location |
-| GET | `/api/enrolments/mine` | 200 with a page of personal entries |
-| GET | `/api/enrolments/{enrolmentId}` | 200 with private entry details |
-| PUT | `/api/enrolments/{enrolmentId}/cancel` | 200 with the Cancelled entry |
-| PUT | `/api/enrolments/{enrolmentId}/reactivate` | 200 with the reactivated Confirmed entry |
-| DELETE | `/api/enrolments/{enrolmentId}` | 204 with no body |
-| GET | `/api/events/{eventId}/enrolments` | 200 with the owned event's roster |
-| PUT | `/api/enrolments/{enrolmentId}/bib-number` | 200 with the assigned bib number |
+| POST | `/api/enrolments` | 201 with entry and Location |
+| GET | `/api/enrolments/mine` | 200 with personal entries |
+| GET | `/api/enrolments/{enrolmentId}` | 200 with private details |
+| PUT | `/api/enrolments/{enrolmentId}/cancel` | 200 with Cancelled entry |
+| PUT | `/api/enrolments/{enrolmentId}/reactivate` | 200 with Confirmed entry |
+| DELETE | `/api/enrolments/{enrolmentId}` | 204 |
+| GET | `/api/events/{eventId}/enrolments` | 200 with owned-event roster |
+| PUT | `/api/enrolments/{enrolmentId}/bib-number` | 200 with saved bib |
 
-Participant operations use the signed-in account ID. The roster and bib assignment require the event's Organiser. A single entry can be read only by its Participant or event Organiser. Missing sessions return 401; wrong roles and unrelated users return 403 (Microsoft, 2026a).
-
-The response includes the planned IDs, status, entry time and bib number, plus Participant/event/category names, UTC event and update times, category distance and an optional result summary. Account contact details, birth dates, passwords and storage object names are excluded.
-
-Both lists use page 1 and 10 items by default, with a maximum page size of 100. Newest entry time then highest ID comes first. Counts apply after access and filters, before paging. Personal filters are status and event ID; roster filters are status and category ID. Status ignores case and surrounding spaces. An Organiser's category filter must belong to the event. Invalid filters return 400; empty matches and later pages return 200 (Microsoft, 2026b).
+Lists default to page 1 and size 10, maximum 100, newest entry first. Personal filters: status/event ID. Roster filters: status/category ID. The category must belong to the event. Invalid filters return 400; empty pages return 200 (Microsoft, 2026b).
 
 ## 2. Entry rules
 
-POST takes only `eventId` and `eventCategoryId`. The category must belong to the event. The API assigns the Participant, Confirmed status, ID and UTC entry time. Unknown JSON fields are rejected. Invalid fields return 400, missing or mismatched records return 404, and non-JSON writes return 415 (Microsoft, 2026c).
+POST accepts only `eventId` and `eventCategoryId`. The API assigns identity, status and timestamps. Invalid/unknown fields return 400, missing/mismatched records 404 and non-JSON writes 415 (Microsoft, 2026c).
 
-- The event must be Open and its closing time must be later than now. Equality means entries are closed.
-- The category must be available. Only Confirmed entries use its capacity; null capacity means unlimited places.
-- A Participant has at most one saved entry per event. POST returns 409 for an existing entry, including Cancelled history.
-- Age is measured in completed years on the date part of the stored UTC event date. Minimum and maximum ages are inclusive.
-- Either age limit requires a date of birth. Missing or out-of-range ages return 400; unrestricted categories do not require it.
-- For a 29 February birthday, the completed-year calculation advances on 1 March in a non-leap year.
+- Event must be Open, closing time in the future and category available.
+- Only Confirmed entries use capacity. Null capacity means unlimited.
+- One saved entry per Participant/event; duplicates, including Cancelled history, return 409.
+- Age limits are inclusive, using completed years on the UTC event date. Missing required birth dates or out-of-range ages return 400.
+- A 29 February birthday advances on 1 March in non-leap years (Microsoft, 2026d).
 
-These checks also apply to reactivation. Event dates and birthdays use the .NET date types (Microsoft, 2026d).
+## 3. Status changes and deletion
 
-## 3. Cancellation, reactivation and deletion
+| Action | Rule |
+|---|---|
+| Cancel | Own Confirmed entry, Open event, entries not closed, no result. Keep ID, entry time, category and bib. |
+| Reactivate | Own Cancelled entry without a result; repeat entry checks. Keep the row; changing category clears its bib. |
+| DELETE | Own Confirmed entry while entries are open and no result exists. Remove only the entry; later GET returns 404. |
 
-Cancellation requires an owned Confirmed entry, an Open event, a future entry-closing time and no official result. It changes status and update time, keeping the original ID, entry time, category and bib number. A repeated cancellation returns 409.
+Cancelled and historical entries are retained. State conflicts return 409.
 
-Reactivation requires a Cancelled entry without a result and takes the selected category ID. It repeats the entry checks and updates the same row. The event and Participant cannot change. Changing category clears the old bib number; keeping the same category preserves it.
+## 4. Bib numbers and concurrent writes
 
-DELETE removes only an owned Confirmed entry while entries are open and no result exists. Cancelled entries and closed-event history are retained. A later GET returns 404. The event and category remain. State conflicts return 409.
+Bibs are trimmed and uppercased: 1-20 letters/digits/hyphens, starting with a letter or digit. Numbers are unique within the event, including Cancelled entries. Invalid values return 400 and duplicates 409. Another event may reuse the number; repeated assignment to the same entry returns 200.
 
-## 4. Bib numbers and competing requests
+Serializable transactions and the shared event update lock protect capacity, availability and status checks. SQL unique constraints also reject duplicate entries and bibs (Microsoft, 2026e; 2026f; 2026g).
 
-Bib numbers use one to 20 letters, digits or hyphens, starting with a letter or digit. They are trimmed and stored in uppercase. A number is unique within its event, including Cancelled entries. Another event can reuse it. Repeating the same assignment returns 200. Invalid numbers return 400; duplicates return 409. Historical and Cancelled entries may have their bib corrected.
+## 5. Checks and evidence
 
-Entry writes use a serializable SQL transaction and a parameterised event read with `UPDLOCK, HOLDLOCK`. The same event lock is used by event updates and category updates/deletion. Requests for one event therefore check closing times, availability and capacity in a consistent order before saving. SQL unique constraints remain a second check for duplicate entries and bib numbers. The existing schema and migration are unchanged (Microsoft, 2026e; 2026f; 2026g).
+The 113 checks cover all eight operations, privacy, ages, capacity, statuses, bibs and competing requests (Microsoft, 2026h). See the [rubric review](Part-2-Rubric-Review.md).
 
-## 5. Checks
-
-At the enrolment revision, all 645 tests passed locally and on GitHub with none skipped, including 113 enrolment checks. The build has no warnings or errors, and there are no pending model changes.
-
-The checks cover all eight operations, both roles, ownership, private response fields, invalid JSON and IDs, list filters and paging, SQL persistence, age boundaries and leap-day birthdays, closing-time boundaries, capacity, duplicate entries, cancellation, reactivation, DELETE and bib numbers. Six competing-request checks cover the last place, duplicate entry creation, reactivation, capacity reduction, event closure and duplicate bib assignment. Tests use separate temporary SQL Server databases (Microsoft, 2026h).
-
-Swagger and HTTP checks on 18 October 2026 use a separate temporary Open event and a category with one place. Swagger entry creation returns 201 with its Location. HTTP detail and personal-list reads return 200, Organiser bib assignment saves A1042, and cancellation keeps the row and bib number. Swagger reactivation returns the same ID in Confirmed status, and the owning Organiser's Swagger roster shows it. HTTP DELETE returns 204, followed by 404 from GET. The temporary category and event are removed afterwards. The original four users, three events, six categories, six routes, four enrolments and two results remain.
+Swagger and HTTP checks on 18 October created an entry, assigned a bib, cancelled/reactivated the same row and read the roster. DELETE returned 204, then GET returned 404. Temporary records were removed.
 
 | Evidence | File |
 |---|---|
-| Created entry and Location | [Swagger enrolment creation](evidence/swagger-enrolment-create.jpg) |
-| Reactivated entry | [Swagger enrolment reactivation](evidence/swagger-enrolment-reactivate.jpg) |
-| Owned event roster | [Swagger event enrolments](evidence/swagger-event-enrolments.jpg) |
-
-The [enrolment build for f1c2c60](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751640) passed all 645 tests, with no warnings, errors or pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39142751638) also passed. The subsequent [result notes](Part-2-Results.md) cover result capture and corrections. The [image notes](Part-2-Images.md) cover the four image operations.
+| Entry and Location | [Enrolment creation](evidence/swagger-enrolment-create.jpg) |
+| Same entry reactivated | [Reactivation](evidence/swagger-enrolment-reactivate.jpg) |
+| Owned roster | [Event enrolments](evidence/swagger-event-enrolments.jpg) |
 
 ## References
 

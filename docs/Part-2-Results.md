@@ -1,54 +1,47 @@
 # RaceDay Part 2 - Results
 
-## 1. Endpoints and access
+## 1. Endpoints
+
+Writes and event lists require the owning Organiser. Participants read their own history. Single-result reads allow its Participant or event owner. Missing sessions return 401, unrelated users 403 and missing records 404 (Microsoft, 2026a).
 
 | Method | Route | Success |
 |---|---|---|
-| GET | `/api/results/mine` | 200 with the Participant's result history |
-| GET | `/api/enrolments/{enrolmentId}/result` | 200 for the entry's Participant or event Organiser |
-| GET | `/api/events/{eventId}/results` | 200 with the owning Organiser's event results |
-| POST | `/api/enrolments/{enrolmentId}/result` | 201 with the first result and its Location |
-| PUT | `/api/enrolments/{enrolmentId}/result` | 200 with the corrected result |
-
-The API uses the session identity and checks event ownership. Missing or expired sessions return 401. Wrong roles and unrelated users receive 403. Missing entries or results return 404. Responses exclude passwords, account contact details, dates of birth and storage object names (Microsoft, 2026a).
+| GET | `/api/results/mine` | 200 with personal history |
+| GET | `/api/enrolments/{enrolmentId}/result` | 200 with result |
+| GET | `/api/events/{eventId}/results` | 200 with owned-event results |
+| POST | `/api/enrolments/{enrolmentId}/result` | 201 with result and Location |
+| PUT | `/api/enrolments/{enrolmentId}/result` | 200 with corrected result |
 
 ## 2. Capture and corrections
 
-Capture requires a Confirmed entry and an event that has started and is not Cancelled. POST returns 409 if a result already exists. PUT returns 404 if no result exists. Cancelled entries, Cancelled events and events that have not started return 409. These event checks are explained in the [endpoint plan](API-Endpoint-Plan.md#113-part-2-implementation-notes).
+- Entry must be Confirmed; event must have started and cannot be Cancelled.
+- One result per entry. Duplicate POST returns 409; PUT without an existing result returns 404.
+- Completed requires positive seconds. Optional positions must be positive; ties are allowed.
+- DidNotFinish, Disqualified and DidNotStart require null time and positions.
+- Status ignores case/spaces. Notes are trimmed, maximum 500 characters; blank becomes null.
+- Invalid/unknown fields return 400; non-JSON writes return 415 (Microsoft, 2026b).
 
-Completed requires a positive finish time in seconds. Overall and category positions are optional positive integers; ties are allowed. DidNotFinish, Disqualified and DidNotStart require null time and positions. Status ignores case and surrounding spaces. Notes are trimmed, blank becomes null and the limit is 500 characters. Invalid values and unexpected JSON fields return 400; non-JSON writes return 415 (Microsoft, 2026b).
+PUT replaces editable fields but keeps the original ID, recorder and recording time. It sets the update time. There is no result DELETE.
 
-The API assigns the entry link, recorder and UTC recording time. PUT replaces the editable values, clears omitted optional positions and notes, and sets the UTC update time. It keeps the original result ID, entry link, recorder and recording time. Official results have no DELETE endpoint.
+Serializable transactions and the shared event lock prevent duplicate capture and conflicting cancellation (Microsoft, 2026c; 2026d). See the [endpoint rules](API-Endpoint-Plan.md#113-part-2-implementation-notes).
 
-Writes use a serializable SQL transaction and the shared event update lock. Competing capture requests cannot save two results for one entry, and result capture and event cancellation cannot both succeed. The existing SQL unique constraint remains in place. No migration or table change is needed (Microsoft, 2026c; 2026d).
+## 3. Lists and totals
 
-## 3. Lists and finisher totals
+Lists default to page 1 and size 10, maximum 100. Personal filters: status/event ID. Event filters: status/category ID; category must belong to the event. Personal results use newest event first. Event results use Completed first, then position, time and ID. Missing values sort last (Microsoft, 2026e).
 
-Both lists default to page 1 and 10 items, with a maximum page size of 100. Personal filters are result status and event ID. Event filters are result status and category ID; the category must belong to the event. Invalid filters return 400. Empty matches and later pages return 200.
+`totalFinishers` counts all Completed results in the whole event, regardless of filtering or paging. Corrections update this count. Responses exclude private account fields.
 
-Personal history shows newest event date then highest result ID. Event lists show Completed results first, then overall position, finish time and result ID. Missing positions and times follow supplied values. Paging counts apply after access and filters (Microsoft, 2026e).
+## 4. Checks and evidence
 
-Each result includes its event, category, Participant, bib number and timestamps. `totalFinishers` counts all Completed official results in the whole event. It does not shrink when a list is filtered or paged and is not the highest saved position. Changing a result between Completed and another status changes this total for the other results too.
+The 89 checks cover all operations, access, field rules, persistence, corrections, paging, totals and competing writes (Microsoft, 2026f). Collections run sequentially; explicit concurrent-request tests still run together (xUnit.net, 2026). Current results are in the [rubric review](Part-2-Rubric-Review.md).
 
-## 4. Checks
-
-At the result revision, all 734 tests passed locally and on GitHub with none skipped, including 89 result checks. The solution built with no warnings or errors, the planning checks passed and there were no pending model changes.
-
-The 89 result checks cover all five endpoints, both roles, ownership, missing and expired sessions, SQL persistence, invalid fields, all four statuses, correction history, filters, paging, ordering, finisher totals and duplicate capture. Competing requests check duplicate capture and result capture against event cancellation. Tests use their own temporary SQL Server databases (Microsoft, 2026f).
-
-Test collections run sequentially to reduce LocalDB memory and connection pressure. The explicit concurrent HTTP requests inside the race-condition tests still run together (xUnit.net, 2026).
-
-Swagger checks on 18 October 2026 use a temporary past event, category and Confirmed entry. The unchanged POST example returns 201 and its Location. PUT corrects the finish time to 3500 seconds, keeps the original result and recording time, and sets the update time. The Participant's filtered personal history returns the corrected result.
-
-Separate HTTP checks read the single result and owned-event list, change Completed to DidNotFinish and confirm the finisher total becomes zero, then restore Completed and confirm it becomes one. The enrolment summary reflects the correction. Temporary records are removed afterwards; the original sample records remain.
+Swagger/HTTP checks on 18 October created and corrected a temporary result, read personal history and verified changing Completed to DidNotFinish updated the finisher count. Temporary records were removed.
 
 | Evidence | File |
 |---|---|
-| First result and Location | [Swagger result creation](evidence/swagger-result-create.jpg) |
-| Corrected time and original record | [Swagger result correction](evidence/swagger-result-update.jpg) |
-| Participant history | [Swagger personal results](evidence/swagger-personal-results.jpg) |
-
-The [result build for 480d552](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842878) passed all 734 tests, with none skipped, no warnings or errors and no pending migrations. Its [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39145842900) also passed. The subsequent [image notes](Part-2-Images.md) cover the four image operations.
+| First result | [Result creation](evidence/swagger-result-create.jpg) |
+| Corrected time | [Result correction](evidence/swagger-result-update.jpg) |
+| Participant history | [Personal results](evidence/swagger-personal-results.jpg) |
 
 ## References
 

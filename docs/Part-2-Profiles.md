@@ -2,66 +2,43 @@
 
 ## 1. Endpoints
 
-Both roles can view and update their own account after login.
+Both roles use their session identity to access their own account (Microsoft, 2026a).
 
 | Method | Route | Response |
 |---|---|---|
 | GET | `/api/profile` | 200 with personal details |
-| PUT | `/api/profile` | 200 with the saved profile |
-| PUT | `/api/profile/password` | 204 without a response body |
-
-These routes follow the Part 1 endpoint plan. The user ID comes from the authenticated session, rather than a request field or route value. A query value or invented identity header cannot select another account (Microsoft, 2026a).
-
-Profiles include names, email, phone number, date of birth, role, account status and UTC creation time. Passwords, hashes, storage object names and related private records are excluded. Responses use `Cache-Control: no-store`.
-
-The [image endpoints](Part-2-Images.md) now manage Participant pictures. A saved picture has a one-hour read-only URL, refreshed by GET; an account without a picture returns null.
+| PUT | `/api/profile` | 200 with saved details |
+| PUT | `/api/profile/password` | 204 |
 
 ## 2. Personal details
 
-- First name and surname are required, with a maximum of 50 characters each. Saved names are trimmed.
-- Phone numbers are optional, validated and limited to 20 characters. Blank numbers are cleared.
-- A supplied date of birth must be earlier than today's UTC date.
-- PUT replaces the permitted details. Omitting phone number or date of birth clears that value, as does null.
-- Email, identity, role, account status, password and image fields are rejected.
-- SQL Server saves the changes and `UpdatedAt`. The existing database stores timestamps to whole seconds.
+- Names are required, trimmed and limited to 50 characters each.
+- Phone is optional, validated and limited to 20 characters. Blank clears it.
+- Date of birth must be before today in UTC.
+- PUT clears omitted or null phone and birth-date values.
+- Email, identity, role, account status, password and image fields cannot be changed through profile PUT.
+- Invalid or unknown fields return 400; non-JSON writes return 415 (Microsoft, 2026b; 2026c; 2026d).
 
-Request validation returns 400 with field errors. Unexpected JSON fields are also rejected. Non-JSON writes return 415 (Microsoft, 2026b; 2026c; 2026d).
+Responses exclude hashes and stored blob names, and use no-store. [Image endpoints](Part-2-Images.md) manage Participant pictures; GET provides a fresh one-hour URL or null.
 
-Missing, invalid or expired sessions return 401. Inactive accounts return 403. A deleted account normally returns 401 during authentication. If it disappears between authentication and the action, the action returns 404.
+Missing/expired sessions return 401, inactive accounts 403, and an account removed after authentication returns 404.
 
 ## 3. Password changes
 
-The request requires `currentPassword`, `newPassword` and `confirmPassword`. The current password must be correct. The replacement needs 8 to 128 characters with an upper-case letter, lower-case letter, digit and symbol, and the confirmation must match exactly.
+Send `currentPassword`, `newPassword` and `confirmPassword`. The current password must be correct, confirmation must match, and the replacement follows the registration password rules. Passwords are compared without trimming and saved as salted hashes (Microsoft, 2026e).
 
-Passwords are not trimmed. The API verifies the existing hash and saves a new salted hash using `PasswordHasher<User>`. Neither password is returned. Invalid requests leave the saved hash and session unchanged (Microsoft, 2026e).
+Success ends the current browser's session. Log in again with the new password. Other browsers keep their sessions until logout or expiry. Rejected requests leave the hash and session unchanged.
 
-A successful change ends the current browser's session. The old cookie cannot be replayed, and the old password cannot start another session. Sign in again using the replacement password. Other browsers keep their existing sessions until logout or their normal expiry.
+## 4. Checks and evidence
 
-## 4. Swagger checks
+The 57 checks cover both roles, privacy, field validation, SQL persistence, password hashes and session removal (Microsoft, 2026f). See the [rubric review](Part-2-Rubric-Review.md) for current results.
 
-Profile reads and updates were checked in Swagger on 18 October 2026 using a separate temporary account in `RaceDayPart2`.
-
-1. Log in and execute GET `/api/profile`. It returns 200 with that account's personal details.
-2. Execute PUT `/api/profile` with valid names, phone number and date of birth. It returns 200 with the saved values.
-3. Execute GET again. It returns the updated details.
-4. Log out and execute GET again. It returns 401.
-
-The browser sends the login cookie automatically. The profile request examples also run through the API tests. Password changes are checked against temporary SQL Server test databases, including the Swagger password example.
+Swagger checks on 18 October saved and reread a temporary account's changes, then confirmed 401 after logout. The temporary account was removed.
 
 | Evidence | File |
 |---|---|
-| Saved personal details | [Swagger profile update](evidence/swagger-profile-update.jpg) |
-| Rejected profile access after logout | [Swagger profile after sign-out](evidence/swagger-profile-after-signout.jpg) |
-
-The temporary browser-check account was removed after testing. The original four sample accounts were kept.
-
-## 5. Test results
-
-At the profile revision, all 178 tests passed locally and in GitHub Actions: seven startup, 63 database, 51 authentication and 57 profile and password checks. None were skipped. The build had no warnings or errors, the planning checks passed and the model had no pending migration changes. Event browsing then passed 233 tests locally and on GitHub. Event management then passed 354 tests locally and on GitHub. Category management then passed 447 tests locally and on GitHub. The route revision passed 532 tests locally and on GitHub. The [enrolment notes](Part-2-Enrolments.md) record the subsequent entry checks.
-
-The new checks cover both roles, own-account access, protected fields, optional values, invalid dates and bodies, length limits, SQL persistence, UTC timestamps, password hashing, session removal, replay rejection and working Swagger examples (Microsoft, 2026f).
-
-Tests use separate `RaceDayTests_...` databases and remove them afterwards. They do not change the application or Part 1 database. The [profile build for 0d65a7b](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39108330909) passed all 178 tests. The planning workflow also passed.
+| Saved details | [Profile update](evidence/swagger-profile-update.jpg) |
+| Access after logout | [Profile after sign-out](evidence/swagger-profile-after-signout.jpg) |
 
 ## References
 
