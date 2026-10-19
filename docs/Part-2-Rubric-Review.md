@@ -6,22 +6,22 @@ Checked on 19 October 2026 against the brief, rubric and lecturer's announcement
 
 | Section | Marks | Status |
 |---|---|---|
-| Submission | 5 | Setup, roles, GitHub and Run All screenshots included; video link and ARC submission pending |
-| GitHub and CI/CD | 10 | Both workflows pass; meaningful-commit requirement and final revision still need checking |
+| Submission | 5 | Setup, roles, screenshots and video link included; ARC submission pending |
+| GitHub and CI/CD | 10 | Both workflows pass for d18e1da; meaningful-commit requirement remains a grading risk |
 | Authentication and roles | 20 | Both roles, password hashes, server-side sessions, role and ownership checks implemented |
 | API and database | 25 | All 40 planned operations implemented; seven tables and 71 columns match Part 1 |
-| Swagger | 10 | All operations described and testable; every endpoint still needs showing in the video |
+| Swagger | 10 | All operations described and testable; video coverage confirmed by the student |
 | Unit testing | 15 | All 810 tests passed on GitHub and in Visual Studio Run All; screenshots included |
-| Video | 15 | Recording and unlisted link pending |
+| Video | 15 | Unlisted video available, 9:14 long; required content confirmed by the student |
 
 No missing planned endpoint or functional correction was found. These are checks, not awarded marks. MVC, weather and Docker remain Part 3 work.
 
 ## 2. Results
 
-Revision `67b1489`:
+Revision `d18e1da`:
 
-- [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030480): 810 passed, none failed/skipped, zero build warnings/errors and no pending model changes.
-- [Planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030482): 40 endpoints, all 25 required operations, seven tables, 71 columns and nine relationships passed.
+- [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39222622486): 810 passed, none failed/skipped, zero build warnings/errors and no pending model changes.
+- [Planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39222622517): 40 endpoints, all 25 required operations, seven tables, 71 columns and nine relationships passed.
 - Visual Studio Run All on 19 October: 810 passed, zero failed or skipped. The full run took 4.2 minutes.
 - Release/Debug builds on 19 October: zero warnings/errors. Dependency audit: no known vulnerable packages.
 - Local planning checks passed, EF reports no pending model changes and `RaceDayPart2` is up to date.
@@ -29,13 +29,17 @@ Revision `67b1489`:
 
 Smart App Control initially blocked local execution on 19 October (`0x800711C7`), confirmed by Code Integrity event 3077 (Microsoft, 2026; 2026b). After the Windows setting was changed manually, the checks and Visual Studio Run All passed. No application code changes were needed.
 
+A later local run passed 734 tests but failed the 76 image tests because Azurite was stopped. After restarting storage, all 76 image tests passed with none skipped. Keep Azurite running for uploads and Run All.
+
 Evidence: [green GitHub build](evidence/part2-github-build.jpg), [GitHub test output](evidence/part2-github-tests.jpg) and [Visual Studio Run All](evidence/part2-visual-studio-tests.jpg).
 
 ## 3. Submission
 
-Record the video and add its unlisted link. Open the rubric first, show every endpoint in Swagger, explain the code and show Run All. Use my own voice and keep it within 20 minutes.
+The [Part 2 video](https://youtu.be/M8tMMSOEfVc) opens successfully, is Unlisted and lasts 9:14. The student confirmed that it opens the rubric, demonstrates all 40 endpoints, explains the code and shows passing Run All, GitHub evidence and their own narration. Content coverage is based on that confirmation.
 
-The 20 meaningful Part 2 commits are not yet confirmed. Repository-wide counts and build-result notes alone do not establish that requirement. Check the final approved revision, links and ARC submission before marking the [checklist](Part-2-Requirements-Checklist.md) complete.
+There are 22 commits from Part 2 preparation through d18e1da. Five only update build links or validation notes, and some earlier commits correct Part 1. The history therefore does not establish 20 meaningful Part 2 changes. Full GitHub marks cannot be confirmed from the total alone.
+
+Commit and push the approved final documents, confirm both workflows pass for that revision, then submit the repository link on ARC. These items remain open in the [checklist](Part-2-Requirements-Checklist.md).
 
 ## References
 

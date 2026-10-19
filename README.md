@@ -122,7 +122,7 @@ Outside Development, configure SQL/storage separately. Swagger is disabled and H
 
 GitHub Actions builds and tests the solution on every push, checks migrations and validates the planning files (GitHub, 2026b; 2026c; 2026d; 2026e).
 
-Revision `67b1489`: [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030480) passed all 810 tests with none skipped, zero warnings/errors and no pending model changes. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39218030482) also passed.
+Revision `d18e1da`: [API workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39222622486) passed all 810 tests with none skipped, zero warnings/errors and no pending model changes. The [planning workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39222622517) also passed.
 
 ![Successful Part 2 GitHub build](docs/evidence/part2-github-build.jpg)
 
@@ -172,9 +172,9 @@ The [GitHub test output](docs/evidence/part2-github-tests.jpg) also shows all 81
 
 ## Video
 
-Part 2 YouTube link: to be added.
+Watch the [Part 2 video](https://youtu.be/M8tMMSOEfVc) (Unlisted, 9 minutes 14 seconds).
 
-The video must open the rubric, demonstrate every endpoint in Swagger, explain the core code and show Run All. Use my own voice and keep it within 20 minutes (The Independent Institute of Education, 2026b).
+The walkthrough covers the rubric, Swagger endpoints, core code, roles, database, Run All and GitHub Actions, with my own narration (The Independent Institute of Education, 2026b).
 
 ## References
 

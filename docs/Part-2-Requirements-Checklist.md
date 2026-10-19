@@ -20,7 +20,7 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Give numbered clone, connection-string, database, API, Swagger and test steps.
 - [x] Add the green CI and GitHub test screenshots.
 - [x] Add the passing Visual Studio Run All screenshot.
-- [ ] Add and verify the unlisted video link.
+- [x] Add and verify the unlisted video link.
 - [ ] Submit the repository link on ARC.
 
 ## GitHub and CI/CD: 10 marks
@@ -28,7 +28,7 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 - [x] Use a clearly named Part 2 branch or folder.
 - [x] Build and run tests on every push.
 - [x] Validate planning files and check for pending migrations.
-- [x] Confirm the image revision passes both GitHub workflows.
+- [x] Confirm revision d18e1da passes both GitHub workflows.
 - [ ] Confirm at least 20 meaningful Part 2 commits using my account.
 - [ ] Confirm a green build for the final submitted revision.
 
@@ -81,13 +81,15 @@ Based on the brief, rubric, lecturer's announcement and Part 1 feedback (The Ind
 
 ## Video: 15 marks
 
-- [ ] Open the rubric and show each requirement.
-- [ ] Demonstrate every endpoint working in Swagger.
-- [ ] Explain the core logic, roles, sessions and database relationships.
-- [ ] Select Run All and show passing tests.
-- [ ] Show the green GitHub build and README evidence.
-- [ ] Use my own voice and keep the video within 20 minutes.
-- [ ] Upload as unlisted and check the link.
+The [submitted video](https://youtu.be/M8tMMSOEfVc) is Unlisted and 9:14 long. Content coverage was confirmed by the student on 19 October 2026.
+
+- [x] Open the rubric and show each requirement.
+- [x] Demonstrate every endpoint working in Swagger.
+- [x] Explain the core logic, roles, sessions and database relationships.
+- [x] Select Run All and show passing tests.
+- [x] Show the green GitHub build and README evidence.
+- [x] Use my own voice and keep the video within 20 minutes.
+- [x] Upload as unlisted and check the link.
 
 ## References
 
