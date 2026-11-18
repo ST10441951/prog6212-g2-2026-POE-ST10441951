@@ -98,6 +98,15 @@ public sealed class HttpConnectionTests
             });
         });
         upstream.MapGet("/api/events", () => Results.Content(WebApiFactory.EventJson, "application/json"));
+        upstream.MapGet("/api/profile", (HttpContext context) =>
+        {
+            string token = context.Request.Cookies["RaceDay.Session"] ?? "";
+            int number = token == "upstream-token-1" ? 1 : token == "upstream-token-2" ? 2 : 0;
+            return number == 0 ? Results.Unauthorized() : Results.Json(new
+            {
+                userId = number, firstName = $"Visitor{number}", role = "Participant", isActive = true
+            });
+        });
         await upstream.StartAsync();
         using var factory = new WebApiFactory { Reply = null };
         factory.Settings["Api:BaseUrl"] = Address(upstream);

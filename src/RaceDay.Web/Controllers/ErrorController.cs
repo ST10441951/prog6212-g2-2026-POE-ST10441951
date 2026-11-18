@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using RaceDay.Web.Models;
 
 namespace RaceDay.Web.Controllers;
@@ -9,6 +10,7 @@ namespace RaceDay.Web.Controllers;
 // Accessed: 18 November 2026.
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 [IgnoreAntiforgeryToken]
+[AllowAnonymous]
 public sealed class ErrorController : Controller
 {
     [Route("/error")]
@@ -23,10 +25,18 @@ public sealed class ErrorController : Controller
         return View("~/Views/Shared/Error.cshtml", new ErrorViewModel
         {
             StatusCode = statusCode,
-            Heading = statusCode == 404 ? "Page not found" : "Something went wrong",
-            Message = statusCode == 404
-                ? "This page may have moved or the address may be incorrect."
-                : "We could not complete that request. Please try again.",
+            Heading = statusCode switch
+            {
+                403 => "Access denied", 404 => "Page not found",
+                503 => "Service temporarily unavailable", _ => "Something went wrong"
+            },
+            Message = statusCode switch
+            {
+                403 => "Your account does not have access to this page.",
+                404 => "This page may have moved or the address may be incorrect.",
+                503 => "We could not check your account. Please try again shortly.",
+                _ => "We could not complete that request. Please try again."
+            },
             RequestId = statusCode >= 500 ? Activity.Current?.Id ?? HttpContext.TraceIdentifier : null
         });
     }

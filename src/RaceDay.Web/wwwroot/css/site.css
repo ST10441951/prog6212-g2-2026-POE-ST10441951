@@ -75,6 +75,9 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .login-card { max-width: 480px; }
 .registration-card { max-width: 740px; }
 .account-card h1 { font-size: 1.65rem; line-height: 1.25; font-weight: 700; margin: 0 0 .7rem; }
+.role-home-card { max-width: none; }
+.role-home-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: .7rem; }
+.role-home-card p { color: var(--race-muted); max-width: 42rem; line-height: 1.6; }
 .account-intro { color: var(--race-muted); font-size: .92rem; line-height: 1.6; margin-bottom: 1.8rem; }
 .account-field { margin-bottom: 1.1rem; }
 .registration-card .account-field { margin-bottom: 0; }

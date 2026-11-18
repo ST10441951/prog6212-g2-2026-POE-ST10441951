@@ -31,9 +31,13 @@ public sealed class WebSessionStore(IDistributedCache cache, IDataProtectionProv
     internal async Task<WebLogin?> ReadAsync(HttpContext context)
     {
         string? key = ReadKey(context);
-        if (key is null) return null;
+        if (key is null)
+        {
+            if (context.Request.Cookies.ContainsKey(CookieName)) await RemoveAsync(context);
+            return null;
+        }
         string? value = await cache.GetStringAsync(CachePrefix + key, context.RequestAborted);
-        if (value is null) return null;
+        if (value is null) { await RemoveAsync(context); return null; }
         WebLogin? login;
         try { login = JsonSerializer.Deserialize<WebLogin>(value); }
         catch (JsonException) { login = null; }

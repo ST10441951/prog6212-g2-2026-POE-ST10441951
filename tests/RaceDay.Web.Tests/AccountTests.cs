@@ -142,12 +142,14 @@ public sealed class AccountTests
     public async Task Login_CreatesAnIsolatedServerSessionWithoutExposingTheApiCookie(string role)
     {
         using var factory = new WebApiFactory();
+        factory.ProfileReply = _ => WebApiFactory.Profile(role);
         factory.Reply = request => request.RequestUri!.AbsolutePath == "/api/auth/login"
             ? LoginReply(factory, role, "Naledi", "private-api-cookie") : WebApiFactory.Json(WebApiFactory.EventJson);
         using var client = factory.Client();
         using var response = await PostForm(client, "/account/login", LoginFields());
 
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Equal(role == "Organiser" ? "/organiser" : "/participant", response.Headers.Location?.OriginalString);
         string cookie = response.Headers.GetValues("Set-Cookie").Single(value => value.StartsWith("RaceDay.Web.Session="));
         Assert.Contains("httponly", cookie.ToLowerInvariant());
         Assert.Contains("samesite=strict", cookie.ToLowerInvariant());
@@ -248,6 +250,7 @@ public sealed class AccountTests
         using var factory = new WebApiFactory();
         var receivedCookies = new List<string>();
         int logins = 0;
+        factory.ProfileReply = _ => WebApiFactory.Profile(name: logins == 1 ? "Naledi" : "Sipho");
         factory.Reply = request =>
         {
             if (request.RequestUri!.AbsolutePath != "/api/auth/login") return WebApiFactory.Json(WebApiFactory.EventJson);

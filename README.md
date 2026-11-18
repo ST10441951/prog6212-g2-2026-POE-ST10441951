@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC home page, filters, registration, login and sign-out are working through the API. Role-specific pages and Docker are still to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC home page, filters, accounts and protected role home pages are working through the API. Event management, entries, results, profile editing and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -15,7 +15,7 @@ Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2
 | Organiser | View the dashboard; manage owned events, banners and categories; view enrolments and record results. |
 | Participant | Browse and enter events; view own entries and results; update personal details and upload a profile picture. |
 
-Both roles register and log in through the API. MVC keeps user ID, role and the API cookie on the server; the browser receives a separate protected session identifier. Sign-out clears the session. Distinct role menus and protected pages remain to be added. See the [account notes](docs/Part-3-Accounts.md) (Microsoft, 2026b).
+Both roles register and log in through the API. MVC keeps user ID, role and the API cookie on the server; the browser receives a separate protected session identifier. Each request rechecks the account through the API. The header shows the correct role's home link, guests are redirected to sign-in and the wrong role receives 403. Sign-out clears the session. See the [account notes](docs/Part-3-Accounts.md) (Microsoft, 2026b; 2026g; 2026h).
 
 ## Application
 
@@ -32,7 +32,8 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | API picture and banner endpoints | Implemented; Part 3 Azure demonstration pending |
 | MVC project, API connection and shared layout | Implemented; [MVC notes](docs/Part-3-MVC.md) |
 | Registration, login and sign-out | Working for both roles; [account notes](docs/Part-3-Accounts.md) |
-| Role-specific menus and protected pages | Not started |
+| Role-specific navigation and protected home pages | Implemented; API session rechecked before access |
+| Organiser management and Participant features | Pending; role home pages are the starting pages |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -46,6 +47,8 @@ The [mobile layout](docs/evidence/part3-event-finder-mobile.png) stacks the filt
 Both roles use the same sign-in form. The [registration page](docs/evidence/part3-registration.png) includes account type and optional personal details.
 
 ![RaceDay sign-in page](docs/evidence/part3-login.png)
+
+Protected pages: [Organiser home](docs/evidence/part3-organiser-home.png), [Participant home](docs/evidence/part3-participant-home.png) and [access denied](docs/evidence/part3-access-denied.png). These pages retain the same Event finder style.
 
 ## Setup and run
 
@@ -85,7 +88,7 @@ dotnet run --project src/RaceDay.Web --configuration Release --no-build --launch
 
 6. Open [RaceDay](http://localhost:5180/) or [API Swagger](http://localhost:5120/swagger/index.html). In Visual Studio, open `RaceDay.sln` and configure both API and Web as startup projects using their `http` profiles.
 
-The home page displays up to three upcoming events, with province and event-type filters. Use Create account or Sign in in the header. Registration redirects to sign-in; login returns to the event list. The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Date filters, pagination, event details and role-specific pages remain to be added.
+The home page displays up to three upcoming events, with province and event-type filters. Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Date filters, pagination, event details and management pages remain to be added.
 
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
@@ -113,9 +116,9 @@ The [build job for f60e944](https://github.com/ST10441951/prog6212-g2-2026-POE-S
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 70 checks covering the home page, filters, settings, account forms, validation, cookies, sessions and sign-out (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 99 checks covering events, settings, account forms, validation, cookies, sessions, role restrictions, redirects and sign-out (Microsoft, 2026f).
 
-All 70 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified registration, login and sign-out for both roles using a separate temporary database.
+All 101 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks against a separate database verified both roles, direct URL restrictions and rejection of disabled, deleted or role-changed accounts. See the [account checks](docs/Part-3-Accounts.md#5-checks-and-evidence).
 
 ## Project files
 
@@ -125,7 +128,7 @@ All 70 MVC checks passed locally on 18 November 2026, with none failed or skippe
 | [Part 2 README](README-Part2.md) | API setup, features, tests and evidence |
 | [Part 3 checklist](docs/Part-3-Requirements-Checklist.md) | Requirements and outstanding work |
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
-| [Account notes](docs/Part-3-Accounts.md) | Registration, login, sessions, validation and sign-out |
+| [Account notes](docs/Part-3-Accounts.md) | Registration, login, protected pages, sessions and sign-out |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
 | `tests/RaceDay.Web.Tests/` | MVC and HTTP connection checks |
@@ -153,6 +156,12 @@ Microsoft (2026d) 'Run an ASP.NET Core app in Docker containers', *Microsoft Lea
 Microsoft (2026e) 'Make HTTP requests using IHttpClientFactory in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-10.0 (Accessed: 18 November 2026).
 
 Microsoft (2026f) 'Integration tests in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026g) 'Overview of ASP.NET Core authentication', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026h) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026i) 'Prevent open redirect attacks in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects?view=aspnetcore-10.0 (Accessed: 18 November 2026).
 
 Bootstrap (2026) 'Download', *Bootstrap v5.3*. Available at: https://getbootstrap.com/docs/5.3/getting-started/download/ (Accessed: 18 November 2026).
 

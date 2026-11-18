@@ -1,0 +1,21 @@
+@* Razor identity and Bootstrap layout: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/layout/grid/
+   Accessed: 18 November 2026. *@
+@{
+    ViewData["Title"] = "Organiser home";
+}
+<section class="events-section">
+    <div class="container">
+        <div class="page-intro">
+            <p class="eyebrow">Organiser</p>
+            <h1>Welcome, @User.Identity?.Name</h1>
+            <p>Your RaceDay organiser account.</p>
+        </div>
+        <div class="account-card role-home-card">
+            <h2>Explore RaceDay</h2>
+            <p>See the upcoming running, walking and cycling events listed on RaceDay.</p>
+            <a class="btn btn-race" asp-controller="Home" asp-action="Index">View upcoming events</a>
+        </div>
+    </div>
+</section>

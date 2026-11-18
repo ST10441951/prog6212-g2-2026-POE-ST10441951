@@ -38,10 +38,10 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 - [x] Register as Organiser or Participant through MVC and the API.
 - [x] Log in with both roles and keep user ID and role in a server-side session.
-- [ ] Maintain authentication across pages and handle expired API sessions.
-- [ ] Provide distinct menus and landing pages for both roles.
-- [ ] Redirect unauthenticated users away from protected pages.
-- [ ] Block the wrong role and retain API ownership checks.
+- [x] Maintain authentication across pages and handle expired API sessions.
+- [x] Provide distinct menus and landing pages for both roles.
+- [x] Redirect unauthenticated users away from protected pages.
+- [x] Block the wrong role and retain API ownership checks.
 - [x] Log out through the API, clear the MVC session and redirect appropriately.
 - [x] Protect forms against cross-site request forgery.
 
@@ -106,13 +106,15 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 70 MVC checks, including account forms and sessions.
+- [x] Pass all 101 MVC checks, including accounts, protected pages and sessions.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
 - [x] Pass all 810 API regression tests locally with none failed or skipped.
 - [ ] Test both complete user journeys and saved changes.
-- [ ] Test role restrictions, session expiry and isolation between users.
+- [x] Test role restrictions, session expiry and isolation between users.
+- [x] Verify disabled, deleted and role-changed accounts lose MVC access.
+- [x] Check protected role pages on desktop/mobile and capture access-denied evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

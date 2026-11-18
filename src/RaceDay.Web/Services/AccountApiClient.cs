@@ -69,6 +69,27 @@ public sealed class AccountApiClient(HttpClient client, TimeProvider clock)
             throw new ApiUnavailableException("The API could not confirm logout.");
     }
 
+    // Recheck the current API session; identity never comes from a submitted user ID.
+    // https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0
+    internal async Task<SessionAccount> GetSessionAccountAsync(string cookie, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, "api/profile");
+        request.Headers.Add("Cookie", cookie);
+        using var response = await SendAsync(request, cancellationToken);
+        if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden or HttpStatusCode.NotFound)
+            throw new ApiSessionEndedException();
+        if (response.StatusCode != HttpStatusCode.OK)
+            throw new ApiUnavailableException("The API session could not be checked.");
+        try
+        {
+            var account = await response.Content.ReadFromJsonAsync<SessionAccount>(cancellationToken);
+            if (account is null || string.IsNullOrWhiteSpace(account.FirstName))
+                throw new ApiUnavailableException("The API returned an incomplete account.");
+            return account;
+        }
+        catch (JsonException error) { throw new ApiUnavailableException("The account response was unreadable.", error); }
+    }
+
     private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         try { return await client.SendAsync(request, cancellationToken); }
@@ -118,6 +139,16 @@ public sealed class AccountApiClient(HttpClient client, TimeProvider clock)
         public Dictionary<string, string[]>? Errors { get; init; }
     }
 }
+
+internal sealed class SessionAccount
+{
+    public required int UserId { get; init; }
+    public required string FirstName { get; init; }
+    public required string Role { get; init; }
+    public required bool IsActive { get; init; }
+}
+
+internal sealed class ApiSessionEndedException : Exception;
 
 internal sealed class AccountFormException : Exception
 {

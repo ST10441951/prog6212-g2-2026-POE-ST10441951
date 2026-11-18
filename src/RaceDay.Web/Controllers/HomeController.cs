@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using RaceDay.Web.Models;
 using RaceDay.Web.Services;
 
@@ -9,6 +10,7 @@ namespace RaceDay.Web.Controllers;
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-10.0
 // Accessed: 18 November 2026.
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+[AllowAnonymous]
 public sealed class HomeController(RaceDayApiClient api, ILogger<HomeController> logger) : Controller
 {
     [HttpGet]

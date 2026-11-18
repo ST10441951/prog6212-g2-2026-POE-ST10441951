@@ -4,7 +4,7 @@
 
 `src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers use `RaceDayApiClient` for events and `AccountApiClient` for accounts (Microsoft, 2026a; 2026b).
 
-The home page reads the first three upcoming events from `GET /api/events?page=1&pageSize=3`. Province and event-type filters are passed to the API. It shows the API's names, dates, locations, distances and statuses, with dates in South African time. Registration, login and sign-out are covered in the [account notes](Part-3-Accounts.md). Date filters, pagination, event details and management pages remain to be added.
+The home page reads the first three upcoming events from `GET /api/events?page=1&pageSize=3`. Province and event-type filters are passed to the API. It shows the API's names, dates, locations, distances and statuses, with dates in South African time. Accounts, protected role pages and session rechecks are covered in the [account notes](Part-3-Accounts.md). Date filters, pagination, event details and management pages remain to be added.
 
 ## 2. Settings
 
@@ -28,15 +28,15 @@ The search form uses the API's supported province and event-type choices. QueryH
 
 ## 4. Layout
 
-Razor pages share a header, navigation and footer. Bootstrap 5.3.9 is served locally, with its MIT licence in `wwwroot/lib/bootstrap`. The selected Event finder design uses blue accents, a light background, compact navigation, a search panel and white event cards. Keyboard focus styles, a skip link and responsive layouts are included (Microsoft, 2026f; Bootstrap, 2026; MDN, 2026).
+Razor pages share a header, navigation and footer. Signed-in users see their verified name and their role's home link. Bootstrap 5.3.9 is served locally, with its MIT licence in `wwwroot/lib/bootstrap`. The selected Event finder design uses blue accents, a light background, compact navigation, a search panel and white event cards. Keyboard focus styles, a skip link and responsive layouts are included (Microsoft, 2026f; Bootstrap, 2026; MDN, 2026).
 
 Razor encodes event text. The shared error page handles missing pages and unexpected errors without exposing exception details (Microsoft, 2026e; 2026g).
 
 ## 5. Checks
 
-The 70 MVC checks cover events, filters, settings, account forms, error handling, cookie isolation, expiry and sign-out. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 101 MVC checks cover events, filters, settings, accounts, protected pages, role restrictions, safe redirects, error handling, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 70 MVC checks passed, with none failed or skipped. The unchanged 810 API tests passed earlier on the same date. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 18 November 2026, all 101 MVC checks passed, with none failed or skipped. The unchanged 810 API tests passed earlier on the same date. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The live MVC home page returned 200 and displayed Cape Peninsula Cycle Challenge and Soweto Heritage Walk. Browser checks at 320, 390, 768 and 1280 pixels found no horizontal overflow. Province/type filtering and clearing filters worked against the live API. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) screenshots show the actual application without a cursor overlay. Visual checks for later pages remain open.
 

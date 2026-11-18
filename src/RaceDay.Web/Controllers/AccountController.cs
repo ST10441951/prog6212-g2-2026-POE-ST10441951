@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Authorization;
 using RaceDay.Web.Models.Accounts;
 using RaceDay.Web.Services;
 
@@ -11,6 +12,7 @@ namespace RaceDay.Web.Controllers;
 // https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
 // Accessed: 18 November 2026.
 [Route("account")]
+[AllowAnonymous]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public sealed class AccountController(AccountApiClient api, WebSessionStore sessions, ILogger<AccountController> logger) : Controller
 {
@@ -39,11 +41,18 @@ public sealed class AccountController(AccountApiClient api, WebSessionStore sess
     }
 
     [HttpGet("login")]
-    public IActionResult Login() => View(new LoginViewModel());
+    public IActionResult Login([FromQuery] string? returnUrl)
+    {
+        ViewData["ReturnUrl"] = Url.IsLocalUrl(returnUrl) ? returnUrl : null;
+        return View(new LoginViewModel());
+    }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(LoginViewModel model, [FromForm] string? returnUrl, CancellationToken cancellationToken)
     {
+        // Validate the destination again on POST; hidden form fields can be changed.
+        // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects?view=aspnetcore-10.0
+        ViewData["ReturnUrl"] = Url.IsLocalUrl(returnUrl) ? returnUrl : null;
         if (ModelState.IsValid)
         {
             try
@@ -51,7 +60,8 @@ public sealed class AccountController(AccountApiClient api, WebSessionStore sess
                 var previous = await sessions.ReadAsync(HttpContext);
                 var login = await api.LoginAsync(model, previous?.ApiCookie, cancellationToken);
                 await sessions.CreateAsync(HttpContext, login);
-                return RedirectToAction("Index", "Home");
+                if (Url.IsLocalUrl(returnUrl)) return LocalRedirect(returnUrl!);
+                return RedirectToAction("Index", login.Role == "Organiser" ? "Organiser" : "Participant");
             }
             catch (AccountFormException error) { AddErrors(error); }
             catch (ApiUnavailableException error) { Unavailable(error); }

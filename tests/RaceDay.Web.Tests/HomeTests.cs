@@ -253,6 +253,7 @@ public sealed class HomeTests
 
 // This controller is registered by the test factory only.
 [ApiController]
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public sealed class FailureController : ControllerBase
 {
     [HttpGet("/__tests/failure")]

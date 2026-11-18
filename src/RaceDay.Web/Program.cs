@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Options;
+using RaceDay.Web.Authentication;
 using RaceDay.Web.Services;
 
 // MVC, layouts and error pages: Microsoft (2026).
@@ -16,8 +19,17 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddDataProtection();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<WebSessionStore>();
+// Authentication schemes and role checks: Microsoft (2026).
+// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0
+// https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0
+builder.Services.AddAuthentication(WebSessionHandler.SchemeName)
+    .AddScheme<AuthenticationSchemeOptions, WebSessionHandler>(WebSessionHandler.SchemeName, _ => { });
+builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews(options =>
-    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+{
+    options.Filters.Add(new AuthorizeFilter());
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 builder.Services.AddOptions<ApiOptions>()
     .Bind(builder.Configuration.GetSection("Api"))
     .ValidateDataAnnotations()
@@ -66,6 +78,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy" }));
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 app.Run();

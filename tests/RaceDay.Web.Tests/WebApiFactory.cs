@@ -29,6 +29,7 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
         ["Api:TimeoutSeconds"] = "15"
     };
     internal Func<HttpRequestMessage, HttpResponseMessage>? Reply { get; set; } = _ => Json(EventJson);
+    internal Func<HttpRequestMessage, HttpResponseMessage> ProfileReply { get; set; } = _ => Profile();
     internal WebTestClock Clock { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -44,7 +45,8 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
             if (Reply is not null)
             {
                 services.AddHttpClient<RaceDayApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
-                services.AddHttpClient<AccountApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
+                services.AddHttpClient<AccountApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(request =>
+                    request.RequestUri!.AbsolutePath.EndsWith("/api/profile") ? ProfileReply(request) : Reply(request)));
             }
         });
     }
@@ -58,6 +60,9 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
     {
         Content = new StringContent(json, Encoding.UTF8, "application/json")
     };
+
+    internal static HttpResponseMessage Profile(string role = "Participant", string name = "Naledi", int userId = 3, bool active = true) =>
+        Json(System.Text.Json.JsonSerializer.Serialize(new { userId, firstName = name, role, isActive = active }));
 
     private sealed class ApiHandler(Func<HttpRequestMessage, HttpResponseMessage> reply) : HttpMessageHandler
     {
