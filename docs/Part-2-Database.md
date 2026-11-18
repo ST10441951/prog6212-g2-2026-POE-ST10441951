@@ -2,7 +2,7 @@
 
 ## 1. Setup
 
-EF Core 10.0.13 uses SQL Server Code First migrations. Development uses `RaceDayPart2` on `(localdb)\MSSQLLocalDB`, separate from Part 1 `RaceDay`. Follow the [README setup](../README.md#setup-and-run) (Microsoft, 2026a; 2026b).
+EF Core 10.0.13 uses SQL Server Code First migrations. Development uses `RaceDayPart2` on `(localdb)\MSSQLLocalDB`, separate from Part 1 `RaceDay`. Follow the [Part 2 README setup](../README-Part2.md#setup-and-run) (Microsoft, 2026a; 2026b).
 
 The initial migration is `20261018053845_InitialCreate`. EF adds `__EFMigrationsHistory` alongside the seven business tables. Migrations are applied by command, not on API startup. Private connection strings belong in environment settings or user secrets.
 

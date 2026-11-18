@@ -14,7 +14,7 @@ Checked on 19 October 2026 against the brief, rubric and lecturer's announcement
 | Unit testing | 15 | All 810 tests passed on GitHub and in Visual Studio Run All; screenshots included |
 | Video | 15 | Unlisted video available, 9:14 long; required content confirmed by the student |
 
-No missing planned endpoint or functional correction was found. These are checks, not awarded marks. MVC, weather and Docker remain Part 3 work.
+No missing planned endpoint or functional correction was found. These are checks, not awarded marks. MVC, Azure image-upload pages and Docker remain Part 3 work.
 
 ## 2. Results
 
@@ -51,4 +51,4 @@ Microsoft (2026) 'Understanding App Control event IDs', *Microsoft Learn*. Avail
 
 Microsoft (2026b) 'Smart App Control Frequently Asked Questions', *Microsoft Support*. Available at: https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions (Accessed: 19 October 2026).
 
-Implementation sources are recorded alongside the code and in the [main README references](../README.md#references) and feature notes.
+Implementation sources are recorded alongside the code and in the [Part 2 README references](../README-Part2.md#references) and feature notes.

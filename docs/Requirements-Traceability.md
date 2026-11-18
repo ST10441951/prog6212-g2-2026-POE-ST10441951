@@ -4,7 +4,7 @@
 
 This links the brief and lecturer's feedback to the database and endpoint plan (The Independent Institute of Education, 2026; 2026b). All 40 business endpoints are implemented; the [mapping](API-Endpoint-Plan.md#141-required-operations) covers all 25 required operations.
 
-The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub and local runs, screenshots and outstanding submission tasks. [Feature notes](../README.md#project-files) contain detailed rules and screenshots.
+The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub and local runs, screenshots and outstanding submission tasks. [Part 2 feature notes](../README-Part2.md#project-files) contain detailed rules and screenshots.
 
 ## 2. Functional requirement traceability
 
@@ -56,7 +56,7 @@ The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub
 | SUB-05 | Required documents stored in `/docs` | Repository structure | Complete |
 | SUB-06 | At least 20 meaningful commits | Git history | Complete |
 | SUB-07 | Successful GitHub Actions validation | Original screenshot and [C# run for 4560c17](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/39063690485) | C# planning checker passed locally and on GitHub |
-| SUB-08 | README describes system and roles | `/README-Part1.md` | Original Part 1 README preserved; root README now covers Part 2 |
+| SUB-08 | README describes system and roles | `/README-Part1.md` | Original Part 1 README preserved; Part 2 is in README-Part2.md |
 | SUB-09 | Unlisted video explains planning and SQL execution | [Part 1 README](../README-Part1.md#video-presentation) | Original walkthrough link present |
 | SUB-10 | GitHub repository link submitted on ARC | Part 1 requirements checklist | Recorded as submitted in the original checklist |
 
@@ -64,7 +64,7 @@ The [rubric review](Part-2-Rubric-Review.md) records the passing 810-test GitHub
 
 Part 2 implements authentication, sessions/roles, profiles, events, categories, routes, enrolments, results and image endpoints. Swagger and tests check the plan. See the [Part 2 checklist](Part-2-Requirements-Checklist.md).
 
-Part 3 adds MVC, role-based navigation, live weather, image-upload pages and Docker. MVC uses the API for data and uploads; it has no direct database or storage access. Its workflow will build MVC, API and tests.
+Part 3 adds MVC, role-based navigation, Azure image-upload pages and Docker. See the [Part 3 checklist](Part-3-Requirements-Checklist.md). MVC uses the API for data and uploads; it has no direct database or storage access. Its workflow will build MVC, API and tests.
 
 The [data dictionary](RaceDay-Data-Dictionary.md) and [ERD notes](RaceDay-ERD-Notes.md) record keys, relationships, locations, route storage and NO ACTION deletion rules.
 

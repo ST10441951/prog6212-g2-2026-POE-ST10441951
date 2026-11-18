@@ -10,7 +10,7 @@ RaceDay manages South African running, walking and cycling events. These rules s
 |---|---|
 | 1 | ERD, endpoint plan, SQL/seed script, validation workflow and planning video |
 | 2 | C# API, SQL Server/EF Core, sessions/roles, all 40 endpoints, Swagger, tests and CI |
-| 3 | MVC consuming the API, live weather, image-upload pages and Docker |
+| 3 | MVC consuming the API, role-based pages, Azure image uploads and Docker |
 
 Payments and timing-hardware integration are outside scope.
 
@@ -102,7 +102,7 @@ Organisers manage their own events, categories, routes, banners, rosters, bibs a
 - API validation checks roles, ownership and cross-record business rules; foreign keys alone cannot verify roles.
 - Validate input and set UpdatedAt on changes. Never expose another user's private profile, entries or results.
 - Keep real credentials out of Git. MVC uses the API rather than accessing SQL/storage directly.
-- Live weather is obtained in Part 3, using saved event locations; it is not stored in the Part 1 schema.
+- Part 3 requirements and progress are recorded in the [checklist](Part-3-Requirements-Checklist.md).
 
 The seven tables are Roles, Users, Events, EventCategories, EventRoutes, Enrolments and Results. See the [data dictionary](RaceDay-Data-Dictionary.md) for exact fields and constraints and the [endpoint plan](API-Endpoint-Plan.md) for implemented API rules.
 
