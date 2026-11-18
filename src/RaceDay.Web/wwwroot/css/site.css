@@ -1,0 +1,87 @@
+/* Shared RaceDay layout and Event finder design.
+   Bootstrap (2026), https://getbootstrap.com/docs/5.3/layout/grid/
+   Bootstrap (2026), https://getbootstrap.com/docs/5.3/forms/select/
+   MDN (2026), https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
+   Accessed: 18 November 2026. */
+:root {
+    --race-ink: #182536;
+    --race-blue: #1e65b8;
+    --race-paper: #f5f6f7;
+    --race-muted: #596574;
+    --race-line: #dbe0e5;
+}
+html { scroll-behavior: smooth; }
+body { min-height: 100vh; display: flex; flex-direction: column; margin: 0; color: var(--race-ink); background: var(--race-paper); font-family: Arial, Helvetica, sans-serif; }
+main { flex: 1; }
+a { color: var(--race-blue); text-underline-offset: .2rem; }
+a:hover { color: #164c8a; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); outline-offset: 4px; }
+.skip-link { position: absolute; top: -5rem; left: 1rem; padding: .75rem 1rem; z-index: 10; background: white; }
+.skip-link:focus { top: 1rem; }
+.site-header { background: white; border-bottom: 1px solid var(--race-line); }
+.header-inner { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { color: var(--race-ink); font-size: 1.6rem; font-weight: 800; letter-spacing: -.06rem; text-decoration: none; white-space: nowrap; }
+.brand > span { color: var(--race-blue); }
+.nav-link { color: var(--race-ink); font-size: .9rem; font-weight: 600; text-decoration: none; padding: .6rem 0; }
+.nav-link.active { color: var(--race-blue); }
+.events-section { padding: 2.75rem 0 4rem; }
+.page-intro { margin-bottom: 1.65rem; }
+.page-intro h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.045rem; line-height: 1.25; margin: 0 0 .7rem; }
+.page-intro p { color: var(--race-muted); font-size: .98rem; margin: 0; }
+.event-search { background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.35rem; margin-bottom: 1.8rem; }
+.form-label { font-size: .83rem; font-weight: 500; color: var(--race-muted); margin-bottom: .45rem; }
+.form-select { min-height: 44px; border-color: #cbd2db; border-radius: 6px; color: var(--race-ink); font-size: .9rem; }
+.btn-race { border-radius: 6px; color: white; background: var(--race-blue); border: 1px solid var(--race-blue); font-weight: 600; font-size: .88rem; min-height: 44px; padding: .65rem 1rem; }
+.btn-race:hover, .btn-race:focus { color: white; background: #174f92; border-color: #174f92; }
+.search-button { width: 100%; white-space: nowrap; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; }
+.section-heading h2 { font-size: 1.35rem; font-weight: 700; margin: 0; }
+.section-heading > p { color: var(--race-muted); font-size: .8rem; margin: 0; }
+.event-list { display: grid; gap: 1rem; }
+.event-row { display: flex; align-items: center; gap: 1.4rem; background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.45rem; box-shadow: 0 2px 3px #172c450a; }
+.event-date { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; min-width: 72px; min-height: 76px; padding: .65rem .4rem; border-radius: 6px; background: #f0f3f7; color: var(--race-muted); font-size: .67rem; text-transform: uppercase; }
+.event-date > span { color: var(--race-ink); font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+.event-info { flex: 1; min-width: 0; }
+.event-type { color: var(--race-blue); font-size: .73rem; font-weight: 600; margin-bottom: .3rem; }
+.event-info h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: .4rem; overflow-wrap: anywhere; }
+.event-location { color: var(--race-muted); font-size: .86rem; margin: 0; }
+.event-meta { min-width: 90px; text-align: right; }
+.event-distance { display: block; font-size: 1.15rem; font-weight: 700; }
+.event-distance small { font-size: .8rem; font-weight: 400; }
+.event-status { display: inline-block; border-radius: 4px; padding: .25rem .6rem; font-size: .73rem; font-weight: 500; margin-top: .6rem; }
+.status-open { color: #176238; background: #e8f4ec; }
+.status-closed { color: #795200; background: #fff3cd; }
+.notice { background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.6rem; }
+.notice h3 { font-size: 1.1rem; font-weight: 700; }
+.notice p { color: var(--race-muted); margin: .5rem 0 0; }
+.notice a { display: inline-block; margin-top: 1rem; font-weight: 600; }
+.clear-filters { display: inline-block; font-size: .85rem; margin-top: 1.25rem; }
+.site-footer { border-top: 1px solid var(--race-line); background: white; }
+.footer-inner { padding-top: 1.5rem; padding-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--race-muted); font-size: .78rem; }
+.footer-brand { font-weight: 700; color: var(--race-ink); }
+.error-page { padding-top: 4rem; padding-bottom: 6rem; }
+.eyebrow { color: var(--race-blue); font-size: .85rem; font-weight: 600; margin-bottom: .8rem; }
+.error-page h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -.04rem; }
+.error-page > p:not(.eyebrow) { color: var(--race-muted); margin: 1.25rem 0; }
+.request-reference { font-size: .8rem; overflow-wrap: anywhere; }
+@media (max-width: 767.98px) {
+    .events-section { padding: 2rem 0 3rem; }
+    .event-search { padding: 1.1rem; }
+    .event-row { gap: 1rem; flex-wrap: wrap; padding: 1.1rem; }
+    .event-date { min-width: 62px; }
+    .event-info { min-width: 155px; }
+    .event-info h3 { font-size: 1rem; }
+    .event-meta { display: flex; align-items: center; gap: 1rem; width: 100%; padding-left: 78px; text-align: left; }
+    .event-status { margin: 0; }
+    .event-distance { font-size: 1rem; }
+}
+@media (max-width: 575.98px) {
+    .header-inner { min-height: 68px; }
+    .brand { font-size: 1.4rem; }
+    .nav-link { font-size: .82rem; }
+    .section-heading { align-items: start; flex-direction: column; gap: .5rem; }
+    .footer-inner { align-items: start; flex-direction: column; gap: .5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}

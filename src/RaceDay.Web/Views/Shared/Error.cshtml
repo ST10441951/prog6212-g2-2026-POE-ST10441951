@@ -1,0 +1,17 @@
+@* Shared error view: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = Model.Heading;
+}
+<section class="container error-page">
+    <p class="eyebrow">@Model.StatusCode</p>
+    <h1>@Model.Heading</h1>
+    <p>@Model.Message</p>
+    <a class="btn btn-race" asp-controller="Home" asp-action="Index">Back to home</a>
+    @if (Model.RequestId is not null)
+    {
+        <p class="request-reference">Request reference: <code>@Model.RequestId</code></p>
+    }
+</section>

@@ -1,4 +1,4 @@
-name: Build and Test RaceDay API
+name: Build and Test RaceDay
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build-and-test:
-    name: Build and test API
+    name: Build and test API and MVC
     runs-on: windows-2025
     steps:
       - name: Check out repository
@@ -39,10 +39,10 @@ jobs:
       - name: Restore migration tool
         run: dotnet tool restore
 
-      - name: Build solution
+      - name: Build API, MVC and tests
         run: dotnet build RaceDay.sln --configuration Release --no-restore
 
-      - name: Run tests
+      - name: Run API and MVC tests
         run: dotnet test RaceDay.sln --configuration Release --no-build
 
       - name: Check for missing migrations

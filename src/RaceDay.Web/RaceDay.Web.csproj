@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- MVC project setup: Microsoft (2026), https://learn.microsoft.com/en-us/aspnet/core/mvc/overview?view=aspnetcore-10.0 -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>RaceDay-Part3-ST10441951</UserSecretsId>
+  </PropertyGroup>
+</Project>

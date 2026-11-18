@@ -8,14 +8,18 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Preserve the Part 2 README separately.
 - [x] Create the Part 3 README with an overview, roles and references.
 - [x] Add the Part 3 requirements checklist.
-- [ ] Keep MVC, API, tests, documents and evidence clearly organised.
+- [x] Keep MVC, API, tests, documents and evidence clearly organised.
 - [ ] Add complete local setup steps, settings and application URLs.
 - [ ] Include a tested Docker run command, green CI screenshot and video link.
 - [ ] Submit the correct GitHub repository link on ARC.
 
 ## MVC application
 
-- [ ] Add a clearly named ASP.NET Core MVC project for Part 3.
+- [x] Add a clearly named ASP.NET Core MVC project for Part 3.
+- [x] Connect the home page to the API and handle unavailable or unreadable responses.
+- [x] Add a shared layout with locally served Bootstrap styles.
+- [x] Apply the selected Event finder design and connect province/type filters to the API.
+- [x] Disable shared HTTP cookies and automatic redirects in the API client.
 - [ ] Use the Part 2 API for every data operation.
 - [ ] Keep database access and business rules in the API.
 - [ ] Keep each signed-in user's API session separate from other users.
@@ -25,7 +29,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [ ] Build MVC and the API in GitHub Actions.
-- [ ] Retain the API tests and repository-structure checks.
+- [x] Retain the API tests and repository-structure checks.
 - [ ] Run the relevant MVC and integration tests in CI.
 - [ ] Confirm a green build for the final submitted revision.
 - [ ] Add its screenshot and working build link to the README.
@@ -92,7 +96,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 ## UI design: 10 marks
 
 - [ ] Use a consistent sporting RaceDay theme, colours and typography.
-- [ ] Use Bootstrap or a similar framework for responsive layouts.
+- [x] Use Bootstrap or a similar framework for responsive layouts.
+- [x] Check the home page on desktop and mobile and save screenshots.
 - [ ] Make every page accessible through the correct role's navigation.
 - [ ] Use distinct status colours and text that match the API statuses.
 - [ ] Keep forms, buttons, tables, spacing and images consistent.
@@ -101,7 +106,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [ ] Retain the passing Part 2 tests and add relevant MVC checks.
+- [x] Pass the 33 MVC foundation and filter checks locally.
+- [x] Retain the passing Part 2 tests and add relevant MVC checks.
+- [x] Pass all 810 API regression tests locally with none failed or skipped.
 - [ ] Test both complete user journeys and saved changes.
 - [ ] Test role restrictions, session expiry and isolation between users.
 - [ ] Test invalid input, API failures and rejected business operations.

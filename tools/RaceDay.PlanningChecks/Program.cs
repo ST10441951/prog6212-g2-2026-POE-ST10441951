@@ -82,7 +82,7 @@ internal static class Program
     {
         string[] files =
         [
-            "RaceDay.sln", "README.md", "README-Part1.md",
+            "RaceDay.sln", "README.md", "README-Part1.md", "README-Part2.md",
             "docs/RaceDay-ERD.drawio", "docs/RaceDay-ERD.png", "docs/RaceDay-ERD.svg",
             "docs/RaceDay-ERD-Notes.md", "docs/API-Endpoint-Plan.md",
             "docs/RaceDay-Data-Dictionary.md", "docs/RaceDay.sql",
@@ -90,7 +90,13 @@ internal static class Program
             "docs/evidence/ssms-corrected-database-counts.png",
             "docs/evidence/ssms-corrected-database-success.png",
             "tools/RaceDay.PlanningChecks/RaceDay.PlanningChecks.csproj",
-            "tools/RaceDay.PlanningChecks/Program.cs"
+            "tools/RaceDay.PlanningChecks/Program.cs",
+            "docs/Part-3-Requirements-Checklist.md", "docs/Part-3-MVC.md",
+            "src/RaceDay.Web/RaceDay.Web.csproj", "src/RaceDay.Web/Program.cs",
+            "src/RaceDay.Web/Controllers/HomeController.cs", "src/RaceDay.Web/Services/RaceDayApiClient.cs",
+            "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
+            "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
+            "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"
         ];
         foreach (string file in files)
         {
@@ -214,7 +220,10 @@ internal static class Program
     {
         string readme = Read(root, "README.md");
         Check(readme.Contains("Organiser") && readme.Contains("Participant"), "README role descriptions are missing.");
-        var files = new List<string> { Path.Combine(root, "README.md"), Path.Combine(root, "README-Part1.md") };
+        var files = new List<string>
+        {
+            Path.Combine(root, "README.md"), Path.Combine(root, "README-Part1.md"), Path.Combine(root, "README-Part2.md")
+        };
         foreach (string folder in new[] { "docs", ".github" })
             files.AddRange(Directory.EnumerateFiles(Path.Combine(root, folder), "*", SearchOption.AllDirectories)
                 .Where(file => Path.GetExtension(file) is ".md" or ".yml" or ".sql" or ".svg" or ".drawio"));
