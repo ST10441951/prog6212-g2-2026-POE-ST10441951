@@ -22,9 +22,20 @@ jobs:
           persist-credentials: false
 
       - name: Set up .NET
+        if: vars.RACEDAY_USE_LOCAL_RUNNER != 'true'
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
+
+      - name: Verify local .NET SDK
+        if: vars.RACEDAY_USE_LOCAL_RUNNER == 'true'
+        shell: pwsh
+        run: |
+          $installed = dotnet --list-sdks
+          if ($LASTEXITCODE -ne 0 -or -not ($installed -match '^10\.0\.')) {
+            throw 'Install the .NET 10 SDK before starting this local runner.'
+          }
+          dotnet --version
 
       - name: Start local blob storage
         shell: pwsh
