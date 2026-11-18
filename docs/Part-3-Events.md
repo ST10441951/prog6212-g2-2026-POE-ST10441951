@@ -14,7 +14,7 @@ Details show the description, date, venue, address, distance, entry deadline, st
 
 Razor encodes event text. Banner and map URLs must be absolute HTTP/HTTPS addresses without credentials. Map links use `noopener noreferrer`. Existing API banner URLs can be displayed; MVC uploads and the Azure demonstration remain outstanding (Microsoft, 2026d).
 
-Event entry and personal entries are not connected yet.
+Participants can now enter an event and read their private entry history. See the [entry notes](Part-3-Entries.md). Entry changes remain outstanding.
 
 ## 3. Checks and evidence
 

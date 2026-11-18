@@ -45,6 +45,7 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
             if (Reply is not null)
             {
                 services.AddHttpClient<RaceDayApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
+                services.AddHttpClient<EntryApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
                 services.AddHttpClient<AccountApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(request =>
                     request.RequestUri!.AbsolutePath.EndsWith("/api/profile") ? ProfileReply(request) : Reply(request)));
             }

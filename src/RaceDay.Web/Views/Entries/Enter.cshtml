@@ -1,0 +1,53 @@
+@* Form Tag Helpers, validation and Bootstrap layout: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/forms/select/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.EntryForm
+@{
+    ViewData["Title"] = "Enter event";
+    var item = Model.Event!;
+    var categories = item.Categories.Where(category => category.IsAvailable).ToArray();
+    var rand = CultureInfo.GetCultureInfo("en-ZA");
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Events" asp-action="Details" asp-route-eventId="@item.EventId">Back to event details</a>
+        <div class="page-intro">
+            <p class="eyebrow">Participant entry</p>
+            <h1>Enter @item.EventName</h1>
+            <p>@item.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST · @item.City</p>
+        </div>
+        <div class="detail-panel entry-form-panel">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            @if (item.Status != "Open")
+            {
+                <p>This event is @item.Status.ToLowerInvariant() and is not accepting new entries.</p>
+            }
+            else if (categories.Length == 0)
+            {
+                <p>No categories are currently available for entry.</p>
+            }
+            else
+            {
+                <h2>Choose your category</h2>
+                <p>Check the age limits and route on the event page before submitting your entry.</p>
+                <form asp-controller="Entries" asp-action="Enter" asp-route-eventId="@item.EventId" method="post">
+                    <div class="account-field">
+                        <label asp-for="EventCategoryId" class="form-label"></label>
+                        <select asp-for="EventCategoryId" class="form-select" required aria-describedby="category-error">
+                            <option value="">Select a category</option>
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.EventCategoryId">@category.CategoryName · R @category.EntryFee.ToString("N2", rand)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EventCategoryId" class="field-error" id="category-error"></span>
+                    </div>
+                    <button class="btn btn-race" type="submit">Confirm entry</button>
+                </form>
+            }
+            <p class="mt-3 mb-0"><a asp-controller="Entries" asp-action="Index">View my entries</a></p>
+        </div>
+    </div>
+</section>

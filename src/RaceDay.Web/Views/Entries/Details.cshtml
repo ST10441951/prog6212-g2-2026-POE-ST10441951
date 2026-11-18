@@ -1,0 +1,34 @@
+@* Encoded private detail view and status display: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/components/alerts/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.EntryDetails
+@{
+    ViewData["Title"] = "My entry";
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Entries" asp-action="Index">Back to my entries</a>
+        @if (TempData["EntrySaved"] is true)
+        {
+            <div class="alert alert-success" role="status">Your entry has been saved.</div>
+        }
+        <div class="page-intro">
+            <p class="eyebrow">Entry #@Model.EnrolmentId</p>
+            <h1>@Model.EventName</h1>
+            <span class="event-status @(Model.Status == "Confirmed" ? "status-open" : "status-cancelled")">@Model.Status</span>
+        </div>
+        <div class="detail-panel">
+            <h2>Entry details</h2>
+            <dl class="event-facts">
+                <div><dt>Participant</dt><dd>@Model.ParticipantName</dd></div>
+                <div><dt>Category</dt><dd>@Model.CategoryName</dd></div>
+                <div><dt>Distance</dt><dd>@Model.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+                <div><dt>Event date</dt><dd>@Model.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+                <div><dt>Entry saved</dt><dd>@Model.EnrolmentDate.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+                <div><dt>Bib number</dt><dd>@(Model.BibNumber ?? "Not assigned yet")</dd></div>
+            </dl>
+            <a class="mt-4 d-inline-block" asp-controller="Events" asp-action="Details" asp-route-eventId="@Model.EventId">View event information and route</a>
+        </div>
+    </div>
+</section>

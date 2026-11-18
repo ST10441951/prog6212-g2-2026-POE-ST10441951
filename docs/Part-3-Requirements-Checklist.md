@@ -29,11 +29,11 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 ## GitHub and CI/CD: 10 marks
 
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
-- [ ] Build MVC and the API in GitHub Actions.
+- [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [ ] Run the relevant MVC and integration tests in CI.
+- [x] Run the committed API and MVC tests in CI; 810 API and 138 MVC tests passed for `4391f63`.
 - [ ] Confirm a green build for the final submitted revision.
-- [ ] Add its screenshot and working build link to the README.
+- [x] Add current green CI screenshots and working build links to the README.
 
 ## Authentication and role-based navigation: 10 marks
 
@@ -64,9 +64,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 - [x] Show upcoming events with filtering and pagination on the home page.
 - [x] Display full event details, available categories and route information.
-- [ ] Enter an event by selecting a category while signed in.
-- [ ] Save the enrolment immediately through the API and show confirmation.
-- [ ] Show personal event entries and enrolment statuses.
+- [x] Enter an event by selecting a category while signed in.
+- [x] Save the enrolment immediately through the API and show confirmation.
+- [x] Show personal event entries and enrolment statuses.
 - [ ] Connect permitted cancellation, reactivation and deletion actions.
 - [ ] Show My Results with event name, date, category and finish time.
 - [ ] Show finishing position and total finishers, including non-finishing outcomes.
@@ -107,7 +107,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 138 MVC checks, including event browsing, accounts and protected pages.
+- [x] Pass all 173 MVC checks, including event browsing, entries, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -118,6 +118,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Check protected role pages on desktop/mobile and capture access-denied evidence.
 - [x] Verify filters, paging, event/category/route details and hidden events against an isolated API/database.
 - [x] Capture genuine desktop/mobile event pages and pagination evidence.
+- [x] Verify entry saves in SQL and reject duplicates, age, capacity and deadline failures through the API.
+- [x] Verify private entries cannot be read by another Participant or an Organiser.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

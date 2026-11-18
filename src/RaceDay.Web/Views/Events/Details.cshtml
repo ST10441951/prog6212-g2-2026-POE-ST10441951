@@ -101,5 +101,9 @@
         {
             <p class="mt-4"><a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Events", new { eventId = Model.EventId })">Sign in to your Participant account</a> or <a asp-controller="Account" asp-action="Register">create an account</a>.</p>
         }
+        else if (User.IsInRole("Participant") && Model.Status == "Open")
+        {
+            <a class="btn btn-race mt-4" asp-controller="Entries" asp-action="Enter" asp-route-eventId="@Model.EventId">Enter event</a>
+        }
     </div>
 </section>

@@ -107,6 +107,19 @@ public sealed class HttpConnectionTests
                 userId = number, firstName = $"Visitor{number}", role = "Participant", isActive = true
             });
         });
+        upstream.MapGet("/api/enrolments/{id:int}", (int id, HttpContext context) =>
+        {
+            string token = context.Request.Cookies["RaceDay.Session"] ?? "";
+            int number = token == "upstream-token-1" ? 1 : token == "upstream-token-2" ? 2 : 0;
+            if (number == 0 || number != id) return Results.StatusCode(403);
+            return Results.Json(new
+            {
+                enrolmentId = id, participantUserId = number, participantName = $"Visitor{number}",
+                eventId = 2, eventName = "Private test entry", eventDateTime = "2027-03-14T04:00:00Z",
+                eventCategoryId = 3, categoryName = "40 km Cycle", categoryDistanceKm = 40,
+                enrolmentDate = "2026-11-18T12:00:00Z", status = "Confirmed"
+            });
+        });
         await upstream.StartAsync();
         using var factory = new WebApiFactory { Reply = null };
         factory.Settings["Api:BaseUrl"] = Address(upstream);
@@ -125,5 +138,9 @@ public sealed class HttpConnectionTests
         Assert.DoesNotContain("Visitor2", firstPage);
         Assert.Contains("Visitor2", secondPage);
         Assert.DoesNotContain("Visitor1", secondPage);
+        Assert.Contains("Visitor1", await first.GetStringAsync("/entries/1"));
+        Assert.Contains("Visitor2", await second.GetStringAsync("/entries/2"));
+        using var unrelated = await first.GetAsync("/entries/2");
+        Assert.Equal(HttpStatusCode.Forbidden, unrelated.StatusCode);
     }
 }

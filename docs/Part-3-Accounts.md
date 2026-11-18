@@ -16,7 +16,7 @@ The API checks password strength, roles, duplicate emails and birth dates. MVC d
 
 ## 2. Login state
 
-The API verifies the credentials. MVC stores the returned user ID, first name, role, expiry and API cookie in its server cache. The browser gets only a protected random identifier in `RaceDay.Web.Session`. The API cookie is not sent to the browser. Both HTTP clients have automatic cookies and redirects disabled (Microsoft, 2026c; 2026d; 2026e).
+The API verifies the credentials. MVC stores the returned user ID, first name, role, expiry and API cookie in its server cache. The browser gets only a protected random identifier in `RaceDay.Web.Session`. The API cookie is not sent to the browser. All HTTP clients have automatic cookies and redirects disabled (Microsoft, 2026c; 2026d; 2026e).
 
 The MVC expiry follows the API's fixed 20-minute expiry. Another login rotates the MVC identifier and sends only that browser's previous API cookie to the login endpoint, allowing the API to end its old session. Unrelated visitors do not share it.
 
@@ -32,7 +32,7 @@ The saved ID and role must match an active API account. API 401, 403 or 404, exp
 
 An unavailable or unreadable API response blocks protected access with 503. The cached session stays available for a retry until its original expiry; requests do not extend it. Public pages hide the unverified identity and show an account-service warning.
 
-Organisers see an Organiser home link; Participants see My account. These are protected starting pages. The dashboard, event management, entries, results and profile editing are still outstanding. API ownership rules remain unchanged.
+Organisers see an Organiser home link; Participants see My account and My entries. Participants can submit and read their entries. The dashboard, event management, entry changes, results and profile editing are still outstanding. API ownership rules remain unchanged.
 
 ## 4. Sign-out and form protection
 
@@ -42,7 +42,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 18 November 2026, all 138 MVC checks passed. Account checks cover forms, direct URL restrictions, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and role/antiforgery checks on a test-only write action. Real HTTP tests verify that two browsers do not share an upstream login (Microsoft, 2026g). Search and detail checks are recorded in the [event notes](Part-3-Events.md).
+On 18 November 2026, all 173 MVC checks passed locally. Account checks cover forms, direct URL restrictions, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and role/antiforgery checks. Real HTTP tests verify that two browsers do not share an upstream login or private entries (Microsoft, 2026g). See the [event notes](Part-3-Events.md) and [entry notes](Part-3-Entries.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 
@@ -58,7 +58,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed earlier on the same date; API source and database mappings are unchanged. GitHub jobs for `f60e944` did not start because GitHub reported an account billing lock. This is separate from the local results.
+The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `4391f63` passed using temporary Windows runners after earlier hosted jobs were blocked by billing. The new entry changes are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
 
 ## References
 

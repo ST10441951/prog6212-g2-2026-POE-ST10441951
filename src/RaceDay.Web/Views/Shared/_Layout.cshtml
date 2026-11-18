@@ -34,6 +34,11 @@
                 else
                 {
                     <a class="nav-link @(roleHome ? "active" : "")" asp-controller="@(organiser ? "Organiser" : "Participant")" asp-action="Index" aria-current="@(roleHome ? "page" : null)">@(organiser ? "Organiser home" : "My account")</a>
+                    @if (!organiser)
+                    {
+                        bool entriesPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Entries", StringComparison.OrdinalIgnoreCase);
+                        <a class="nav-link @(entriesPage ? "active" : "")" asp-controller="Entries" asp-action="Index" aria-current="@(entriesPage ? "page" : null)">My entries</a>
+                    }
                     <span class="signed-in-user">@User.Identity?.Name <span>(@(organiser ? "Organiser" : "Participant"))</span></span>
                     <form asp-controller="Account" asp-action="Logout" method="post">
                         <button class="nav-signout" type="submit">Sign out</button>

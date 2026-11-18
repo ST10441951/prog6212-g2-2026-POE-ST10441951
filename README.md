@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC event search, pagination, event details, accounts and protected role home pages are working through the API. Event management, entries, results, profile editing and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC event search, details, accounts, protected pages, event entry and private entry history are working through the API. Event management, entry changes, results, profile editing and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -32,9 +32,10 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | API picture and banner endpoints | Implemented; Part 3 Azure demonstration pending |
 | MVC project, API connection and shared layout | Implemented; [MVC notes](docs/Part-3-MVC.md) |
 | Public event search, paging, categories and routes | Implemented; [event notes](docs/Part-3-Events.md) |
+| Participant entry, confirmation and My entries | Implemented; [entry notes](docs/Part-3-Entries.md) |
 | Registration, login and sign-out | Working for both roles; [account notes](docs/Part-3-Accounts.md) |
 | Role-specific navigation and protected home pages | Implemented; API session rechecked before access |
-| Organiser management, entries, results and profiles | Pending; role home pages are the starting pages |
+| Organiser management, entry changes, results and profiles | Pending |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -52,6 +53,8 @@ Both roles use the same sign-in form. The [registration page](docs/evidence/part
 ![RaceDay sign-in page](docs/evidence/part3-login.png)
 
 Protected pages: [Organiser home](docs/evidence/part3-organiser-home.png), [Participant home](docs/evidence/part3-participant-home.png) and [access denied](docs/evidence/part3-access-denied.png). These pages retain the same Event finder style.
+
+Participant entry: [select category](docs/evidence/part3-enter-event.png), [saved entry](docs/evidence/part3-entry-confirmation.png) and [My entries](docs/evidence/part3-my-entries.png). The screenshots use fictional review accounts.
 
 ## Setup and run
 
@@ -93,7 +96,9 @@ dotnet run --project src/RaceDay.Web --configuration Release --no-build --launch
 
 The home page displays three upcoming events per page. Filter by province, event type or inclusive UTC dates, then open an event for its details, categories and routes. Times are displayed in SAST. Search starts on page 1, page links retain filters and Clear filters resets the search.
 
-Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Management pages, entry actions and personal records remain to be added.
+Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC.
+
+Participants can open an Open event, choose Enter event, select a category and confirm. My entries lists their saved records and statuses. Age-restricted categories require a date of birth on the account; include it when registering. Event management, cancellation/reactivation/deletion, results and profile editing remain to be added.
 
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
@@ -117,15 +122,19 @@ The MVC Dockerfile, container checks and tested build/run commands are still to 
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-The [build job for f60e944](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444572) and [planning job](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444548) did not start. GitHub reported that the account is locked due to a billing issue. No job steps ran, so a green Part 3 build and screenshot remain outstanding.
+Both workflows passed for `4391f63` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44322635352) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44322635323). The build ran 810 API tests and 138 MVC tests, with none failed or skipped. The migration check also passed.
 
-Both workflows now support a temporary Windows runner on my PC. `RACEDAY_USE_LOCAL_RUNNER` selects it for owner-triggered main-branch runs. The complete build, tests and planning checks remain enabled. Local-runner verification is pending; see the [CI notes](docs/Part-3-CI.md).
+![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
+
+The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
+
+The newer entry changes have passed locally and are not yet included in the recorded GitHub revision.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 138 checks covering event search, paging, details, settings, accounts, validation, cookies, role restrictions, redirects and sign-out (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 173 checks covering browsing, event entry, private history, settings, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 138 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified role restrictions, changed accounts, combined filters, paging and event details against isolated databases. See the [account checks](docs/Part-3-Accounts.md#5-checks-and-evidence) and [event checks](docs/Part-3-Events.md#3-checks-and-evidence).
+All 173 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified account access, event browsing, entry saves, rejected entries and private history against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence) and [entry checks](docs/Part-3-Entries.md#4-checks-and-evidence).
 
 ## Project files
 
@@ -137,6 +146,7 @@ All 138 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
 | [Account notes](docs/Part-3-Accounts.md) | Registration, login, protected pages, sessions and sign-out |
 | [Event notes](docs/Part-3-Events.md) | Search, paging, public details, categories, routes and checks |
+| [Entry notes](docs/Part-3-Entries.md) | Category selection, saved entries, private history and checks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |

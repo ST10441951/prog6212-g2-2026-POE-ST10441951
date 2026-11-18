@@ -1,0 +1,82 @@
+@* Private lists, query forms and paging: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/components/pagination/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.EntryListViewModel
+@{
+    ViewData["Title"] = "My entries";
+}
+<section class="events-section">
+    <div class="container">
+        <div class="page-intro"><h1>My entries</h1><p>Your event entries and their current status.</p></div>
+        <form class="event-search" asp-controller="Entries" asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label" for="entry-status">Entry status</label>
+                    <select class="form-select" id="entry-status" name="status">
+                        <option value="">All entries</option>
+                        @foreach (string status in new[] { "Confirmed", "Cancelled" })
+                        {
+                            <option value="@status" selected="@(string.Equals(Model.Search.Status, status, StringComparison.OrdinalIgnoreCase))">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3"><button class="btn btn-race" type="submit">Filter entries</button></div>
+            </div>
+        </form>
+        @if (Model.Error is not null)
+        {
+            <div class="notice" role="alert"><h2>Check the filters</h2><p>@Model.Error</p><a asp-controller="Entries" asp-action="Index">Clear filters</a></div>
+        }
+        else if (Model.Entries is { } page)
+        {
+            @if (page.Items.Count == 0)
+            {
+                <div class="notice">
+                    <h2>@(page.Page > 1 ? "No entries on this page" : Model.Search.Status is not null ? "No entries match this status" : "No event entries yet")</h2>
+                    @if (page.Page > 1)
+                    {
+                        <a asp-controller="Entries" asp-action="Index" asp-route-page="1" asp-route-status="@Model.Search.Status">First page</a>
+                    }
+                    else
+                    {
+                        <p>Browse upcoming events to find your next race.</p>
+                        <a asp-controller="Home" asp-action="Index">Find events</a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="entry-list">
+                    @foreach (var entry in page.Items)
+                    {
+                        <article class="detail-panel">
+                            <div class="category-heading">
+                                <h2><a asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@entry.EnrolmentId">@entry.EventName</a></h2>
+                                <span class="event-status @(entry.Status == "Confirmed" ? "status-open" : "status-cancelled")">@entry.Status</span>
+                            </div>
+                            <p>@entry.CategoryName · @entry.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</p>
+                            <p class="mb-0">@entry.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
+                        </article>
+                    }
+                </div>
+            }
+            @if (page.TotalPages > 1)
+            {
+                <nav class="event-pagination" aria-label="My entry pages">
+                    <ul class="pagination flex-wrap mb-0">
+                        @if (page.Page > 1)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Entries" asp-action="Index" asp-route-page="@Math.Min(page.Page - 1, page.TotalPages)" asp-route-status="@Model.Search.Status">Previous</a></li>
+                        }
+                        @if (page.Page < page.TotalPages)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Entries" asp-action="Index" asp-route-page="@(page.Page + 1)" asp-route-status="@Model.Search.Status">Next</a></li>
+                        }
+                    </ul>
+                    <p>@(page.TotalCount) entries · Page @(page.Page) of @(page.TotalPages)</p>
+                </nav>
+            }
+        }
+    </div>
+</section>

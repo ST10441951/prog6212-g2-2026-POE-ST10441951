@@ -1,0 +1,19 @@
+@* Friendly MVC service error: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{
+    ViewData["Title"] = "Entry service unavailable";
+}
+<section class="container error-page">
+    <p class="eyebrow">503</p>
+    <h1>Entry service temporarily unavailable</h1>
+    @if (ViewData["UnconfirmedEntry"] is true)
+    {
+        <p>We could not confirm whether your entry was saved. Check My entries before submitting again.</p>
+    }
+    else
+    {
+        <p>Your entries could not be loaded. Please try again shortly.</p>
+    }
+    <a class="btn btn-race" asp-controller="Entries" asp-action="Index">My entries</a>
+</section>

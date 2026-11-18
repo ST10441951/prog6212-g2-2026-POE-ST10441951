@@ -78,6 +78,10 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .route-summary > a { display: inline-block; margin-top: 1rem; font-size: .88rem; }
 .route-missing { color: var(--race-muted); font-size: .88rem; margin: 1rem 0 0; }
 .status-completed { color: #305988; background: #eaf0f8; }
+.status-cancelled { color: #8b3131; background: #f9e9e9; }
+.entry-form-panel { max-width: 680px; }
+.entry-list { display: grid; gap: 1rem; }
+.entry-list h2 { margin-bottom: .5rem; }
 .event-location { color: var(--race-muted); font-size: .86rem; margin: 0; }
 .event-meta { min-width: 90px; text-align: right; }
 .event-distance { display: block; font-size: 1.15rem; font-weight: 700; }

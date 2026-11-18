@@ -104,6 +104,11 @@ internal static class Program
             "src/RaceDay.Web/Models/Events/EventSearch.cs", "src/RaceDay.Web/Services/WebLinks.cs",
             "src/RaceDay.Web/Views/Events/Details.cshtml", "src/RaceDay.Web/Views/Events/Unavailable.cshtml",
             "docs/Part-3-Events.md",
+            "docs/Part-3-Entries.md", "docs/Part-3-CI.md",
+            "src/RaceDay.Web/Controllers/EntriesController.cs", "src/RaceDay.Web/Services/EntryApiClient.cs",
+            "src/RaceDay.Web/Models/Entries/EntryModels.cs", "src/RaceDay.Web/Views/Entries/Enter.cshtml",
+            "src/RaceDay.Web/Views/Entries/Index.cshtml", "src/RaceDay.Web/Views/Entries/Details.cshtml",
+            "src/RaceDay.Web/Views/Entries/Unavailable.cshtml",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"
