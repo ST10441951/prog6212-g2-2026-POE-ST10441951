@@ -4,7 +4,7 @@
 
 `src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers use `RaceDayApiClient` for events and `AccountApiClient` for accounts (Microsoft, 2026a; 2026b).
 
-The home page reads the first three upcoming events from `GET /api/events?page=1&pageSize=3`. Province and event-type filters are passed to the API. It shows the API's names, dates, locations, distances and statuses, with dates in South African time. Accounts, protected role pages and session rechecks are covered in the [account notes](Part-3-Accounts.md). Date filters, pagination, event details and management pages remain to be added.
+The home page reads upcoming events from `GET /api/events` with three per page. Province, type, date filters and the page number are passed to the API. Event names open public details with categories and routes. See the [event notes](Part-3-Events.md). Accounts, protected role pages and session rechecks are covered in the [account notes](Part-3-Accounts.md). Management pages and personal records remain to be added.
 
 ## 2. Settings
 
@@ -24,7 +24,7 @@ Both typed HTTP clients have automatic cookies and redirects disabled. API login
 
 An API error, timeout, connection failure or unreadable response shows a friendly message and returns 503. An empty successful list shows that no events are available. Exceptions and raw API errors are not displayed. `/health` checks the MVC host only (Microsoft, 2026b; 2026e).
 
-The search form uses the API's supported province and event-type choices. QueryHelpers encodes the query values. A rejected filter returns a friendly 400 message; MVC does not repeat the API's business validation (Microsoft, 2026i).
+The search form uses the API's province/type choices and optional inclusive UTC dates. QueryHelpers encodes the values, and paging links retain them. Invalid typed inputs and rejected filters return a friendly 400. MVC does not repeat the API's filtering or business rules (Microsoft, 2026i).
 
 ## 4. Layout
 
@@ -34,11 +34,11 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 101 MVC checks cover events, filters, settings, accounts, protected pages, role restrictions, safe redirects, error handling, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 138 MVC checks cover search, dates, paging, event details, routes, settings, accounts, protected pages, role restrictions, safe redirects, error handling, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 101 MVC checks passed, with none failed or skipped. The unchanged 810 API tests passed earlier on the same date. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 18 November 2026, all 138 MVC checks passed, with none failed or skipped. The unchanged 810 API tests passed earlier on the same date. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
-The live MVC home page returned 200 and displayed Cape Peninsula Cycle Challenge and Soweto Heritage Walk. Browser checks at 320, 390, 768 and 1280 pixels found no horizontal overflow. Province/type filtering and clearing filters worked against the live API. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) screenshots show the actual application without a cursor overlay. Visual checks for later pages remain open.
+The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
 The build workflow includes MVC and its tests through `RaceDay.sln`. GitHub jobs for `f60e944` did not start because the account is locked due to a billing issue. Local results and the GitHub status are recorded separately in the [README](../README.md#cicd).
 

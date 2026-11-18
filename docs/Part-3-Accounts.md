@@ -42,7 +42,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 18 November 2026, all 101 MVC checks passed. They cover the earlier event/account checks plus direct URL restrictions, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and role/antiforgery checks on a test-only write action. Real HTTP tests verify that two browsers do not share an upstream login (Microsoft, 2026g).
+On 18 November 2026, all 138 MVC checks passed. Account checks cover forms, direct URL restrictions, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and role/antiforgery checks on a test-only write action. Real HTTP tests verify that two browsers do not share an upstream login (Microsoft, 2026g). Search and detail checks are recorded in the [event notes](Part-3-Events.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 

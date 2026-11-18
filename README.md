@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC home page, filters, accounts and protected role home pages are working through the API. Event management, entries, results, profile editing and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC event search, pagination, event details, accounts and protected role home pages are working through the API. Event management, entries, results, profile editing and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -31,18 +31,21 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Part 2 API, sessions and tests | Complete |
 | API picture and banner endpoints | Implemented; Part 3 Azure demonstration pending |
 | MVC project, API connection and shared layout | Implemented; [MVC notes](docs/Part-3-MVC.md) |
+| Public event search, paging, categories and routes | Implemented; [event notes](docs/Part-3-Events.md) |
 | Registration, login and sign-out | Working for both roles; [account notes](docs/Part-3-Accounts.md) |
 | Role-specific navigation and protected home pages | Implemented; API session rechecked before access |
-| Organiser management and Participant features | Pending; role home pages are the starting pages |
+| Organiser management, entries, results and profiles | Pending; role home pages are the starting pages |
 | Docker | Not started |
 
 ## MVC screenshots
 
-The home page displays live API events and supports province and event-type filters.
+The home page displays live API events and supports province, event type and date filters. Pagination keeps the selected filters. The search screenshots use temporary review fixtures to show multiple pages.
 
 ![RaceDay Event finder home page](docs/evidence/part3-event-finder-desktop.png)
 
 The [mobile layout](docs/evidence/part3-event-finder-mobile.png) stacks the filters and event details on smaller screens.
+
+Event names open full details with categories and routes. See [event details](docs/evidence/part3-event-details-desktop.png), the [mobile detail page](docs/evidence/part3-event-details-mobile.png) and [filtered pagination](docs/evidence/part3-event-pagination.png).
 
 Both roles use the same sign-in form. The [registration page](docs/evidence/part3-registration.png) includes account type and optional personal details.
 
@@ -88,7 +91,9 @@ dotnet run --project src/RaceDay.Web --configuration Release --no-build --launch
 
 6. Open [RaceDay](http://localhost:5180/) or [API Swagger](http://localhost:5120/swagger/index.html). In Visual Studio, open `RaceDay.sln` and configure both API and Web as startup projects using their `http` profiles.
 
-The home page displays up to three upcoming events, with province and event-type filters. Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Date filters, pagination, event details and management pages remain to be added.
+The home page displays three upcoming events per page. Filter by province, event type or inclusive UTC dates, then open an event for its details, categories and routes. Times are displayed in SAST. Search starts on page 1, page links retain filters and Clear filters resets the search.
+
+Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Management pages, entry actions and personal records remain to be added.
 
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
@@ -116,9 +121,9 @@ The [build job for f60e944](https://github.com/ST10441951/prog6212-g2-2026-POE-S
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 99 checks covering events, settings, account forms, validation, cookies, sessions, role restrictions, redirects and sign-out (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 138 checks covering event search, paging, details, settings, accounts, validation, cookies, role restrictions, redirects and sign-out (Microsoft, 2026f).
 
-All 101 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks against a separate database verified both roles, direct URL restrictions and rejection of disabled, deleted or role-changed accounts. See the [account checks](docs/Part-3-Accounts.md#5-checks-and-evidence).
+All 138 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified role restrictions, changed accounts, combined filters, paging and event details against isolated databases. See the [account checks](docs/Part-3-Accounts.md#5-checks-and-evidence) and [event checks](docs/Part-3-Events.md#3-checks-and-evidence).
 
 ## Project files
 
@@ -129,6 +134,7 @@ All 101 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [Part 3 checklist](docs/Part-3-Requirements-Checklist.md) | Requirements and outstanding work |
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
 | [Account notes](docs/Part-3-Accounts.md) | Registration, login, protected pages, sessions and sign-out |
+| [Event notes](docs/Part-3-Events.md) | Search, paging, public details, categories, routes and checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
 | `tests/RaceDay.Web.Tests/` | MVC and HTTP connection checks |

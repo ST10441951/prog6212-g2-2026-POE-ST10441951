@@ -1,4 +1,5 @@
 using RaceDay.Web.Models.Events;
+using System.Globalization;
 
 namespace RaceDay.Web.Models;
 
@@ -9,9 +10,19 @@ public sealed class HomeViewModel
 {
     public IReadOnlyList<EventSummary> Events { get; init; } = [];
     public int TotalCount { get; init; }
-    public string? EventType { get; init; }
-    public string? Province { get; init; }
+    public int TotalPages { get; init; }
+    public EventSearch Search { get; init; } = new();
     public string? ErrorMessage { get; init; }
+
+    // Anchor route values retain the current filters when moving between pages.
+    // https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper?view=aspnetcore-10.0
+    public Dictionary<string, string> PageRoutes(int page) => new()
+    {
+        ["page"] = page.ToString(CultureInfo.InvariantCulture),
+        ["eventType"] = Search.EventType ?? "", ["province"] = Search.Province ?? "",
+        ["fromDate"] = Search.FromDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "",
+        ["toDate"] = Search.ToDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? ""
+    };
 }
 
 public sealed class ErrorViewModel

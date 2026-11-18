@@ -1,0 +1,105 @@
+@* Typed Razor views, encoded text and links: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/security/cross-site-scripting?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/layout/grid/
+   Fields follow src/RaceDay.Api/Contracts/Events/.
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Events.EventDetails
+@using RaceDay.Web.Services
+@{
+    ViewData["Title"] = Model.EventName;
+    var start = Model.EventDateTime.ToOffset(TimeSpan.FromHours(2));
+    var closing = Model.EntryClosingDateTime.ToOffset(TimeSpan.FromHours(2));
+    string? banner = WebLinks.HttpUrl(Model.BannerImageUrl);
+    var rand = CultureInfo.GetCultureInfo("en-ZA");
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Home" asp-action="Index">Back to events</a>
+        <div class="page-intro event-detail-heading">
+            <p class="eyebrow">@Model.EventType</p>
+            <h1>@Model.EventName</h1>
+            <p>@Model.City, @Model.Province</p>
+            <span class="event-status @(Model.Status == "Open" ? "status-open" : Model.Status == "Completed" ? "status-completed" : "status-closed")">@Model.Status</span>
+        </div>
+        @if (banner is not null)
+        {
+            <img class="event-banner" src="@banner" alt="Banner for @Model.EventName" referrerpolicy="no-referrer" />
+        }
+        <div class="detail-panel">
+            <h2>Event information</h2>
+            <p class="event-description">@Model.Description</p>
+            <dl class="event-facts">
+                <div><dt>Date and start time</dt><dd><time datetime="@Model.EventDateTime.ToString("O", CultureInfo.InvariantCulture)">@start.ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</time></dd></div>
+                <div><dt>Distance</dt><dd>@Model.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+                <div><dt>Venue</dt><dd>@Model.VenueName</dd></div>
+                <div><dt>Address</dt><dd>@Model.AddressLine1, @Model.City, @Model.Province</dd></div>
+                <div><dt>Entries close</dt><dd><time datetime="@Model.EntryClosingDateTime.ToString("O", CultureInfo.InvariantCulture)">@closing.ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</time></dd></div>
+                @if (Model.Latitude is not null && Model.Longitude is not null)
+                {
+                    <div><dt>Coordinates</dt><dd>@Model.Latitude.Value.ToString(CultureInfo.InvariantCulture), @Model.Longitude.Value.ToString(CultureInfo.InvariantCulture)</dd></div>
+                }
+            </dl>
+        </div>
+        <div class="section-heading mt-4"><h2>Categories and routes</h2></div>
+        @if (Model.Categories.Count == 0)
+        {
+            <div class="notice"><h3>No categories available</h3><p>No available categories have been listed for this event.</p></div>
+        }
+        else
+        {
+            <div class="category-list">
+                @foreach (var category in Model.Categories)
+                {
+                    <article class="detail-panel" aria-labelledby="category-@category.EventCategoryId">
+                        <div class="category-heading">
+                            <h3 id="category-@category.EventCategoryId">@category.CategoryName</h3>
+                            <span class="category-fee">R @category.EntryFee.ToString("N2", rand)</span>
+                        </div>
+                        <dl class="event-facts">
+                            <div><dt>Distance</dt><dd>@category.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+                            <div>
+                                <dt>Age group</dt>
+                                <dd>
+                                    @if (category.MinimumAge is not null && category.MaximumAge is not null) { <text>@category.MinimumAge–@category.MaximumAge years</text> }
+                                    else if (category.MinimumAge is not null) { <text>@category.MinimumAge years and older</text> }
+                                    else if (category.MaximumAge is not null) { <text>Up to @category.MaximumAge years</text> }
+                                    else { <text>All ages</text> }
+                                </dd>
+                            </div>
+                            <div><dt>Maximum entries</dt><dd>@(category.Capacity?.ToString(CultureInfo.InvariantCulture) ?? "No limit listed")</dd></div>
+                        </dl>
+                        @if (category.Route is { } route)
+                        {
+                            string? map = WebLinks.HttpUrl(route.RouteMapUrl);
+                            <div class="route-summary">
+                                <h4>@route.RouteName</h4>
+                                <p class="event-description">@route.RouteDescription</p>
+                                <dl class="event-facts">
+                                    <div><dt>Start</dt><dd>@route.StartLocation</dd></div>
+                                    <div><dt>Finish</dt><dd>@route.FinishLocation</dd></div>
+                                    @if (route.ElevationGainMetres is not null)
+                                    {
+                                        <div><dt>Elevation gain</dt><dd>@route.ElevationGainMetres m</dd></div>
+                                    }
+                                </dl>
+                                @if (map is not null)
+                                {
+                                    <a href="@map" target="_blank" rel="noopener noreferrer">View route map <span class="visually-hidden">(opens in a new tab)</span></a>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="route-missing">Route information has not been added.</p>
+                        }
+                    </article>
+                }
+            </div>
+        }
+        @if (User.Identity?.IsAuthenticated is not true)
+        {
+            <p class="mt-4"><a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Events", new { eventId = Model.EventId })">Sign in to your Participant account</a> or <a asp-controller="Account" asp-action="Register">create an account</a>.</p>
+        }
+    </div>
+</section>

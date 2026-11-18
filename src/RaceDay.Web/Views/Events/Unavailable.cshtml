@@ -1,0 +1,13 @@
+@* Friendly MVC error view: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{
+    ViewData["Title"] = "Event unavailable";
+}
+<section class="container error-page">
+    <p class="eyebrow">503</p>
+    <h1>Event details are temporarily unavailable</h1>
+    <p>Please try again shortly.</p>
+    <a class="btn btn-race" asp-controller="Events" asp-action="Details" asp-route-eventId="@ViewData["EventId"]">Try again</a>
+    <a class="back-link ms-3" asp-controller="Home" asp-action="Index">Back to events</a>
+</section>

@@ -14,7 +14,7 @@ public sealed class EventPage
     public required IReadOnlyList<EventSummary> Items { get; init; }
 }
 
-public sealed class EventSummary
+public class EventSummary
 {
     public required int EventId { get; init; }
     public required string EventName { get; init; }

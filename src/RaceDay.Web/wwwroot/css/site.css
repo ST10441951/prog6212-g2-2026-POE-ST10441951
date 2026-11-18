@@ -1,6 +1,7 @@
 /* Shared RaceDay layout and Event finder design.
    Bootstrap (2026), https://getbootstrap.com/docs/5.3/layout/grid/
    Bootstrap (2026), https://getbootstrap.com/docs/5.3/forms/select/
+   Bootstrap (2026), https://getbootstrap.com/docs/5.3/components/pagination/
    MDN (2026), https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
    Accessed: 18 November 2026. */
 :root {
@@ -50,6 +51,33 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .event-info { flex: 1; min-width: 0; }
 .event-type { color: var(--race-blue); font-size: .73rem; font-weight: 600; margin-bottom: .3rem; }
 .event-info h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: .4rem; overflow-wrap: anywhere; }
+.event-info h3 a { color: var(--race-ink); text-decoration: none; }
+.event-info h3 a:hover { color: var(--race-blue); text-decoration: underline; }
+.event-search .form-control { min-height: 44px; font-size: .85rem; border-color: #cbd2db; min-width: 0; }
+.event-pagination { margin-top: 1.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.event-pagination p { margin: 0; color: var(--race-muted); font-size: .82rem; }
+.event-pagination .page-link { font-size: .85rem; min-height: 42px; display: flex; align-items: center; }
+.event-pagination .active .page-link { background: var(--race-blue); border-color: var(--race-blue); }
+.back-link { display: inline-block; margin-bottom: 1.5rem; font-size: .88rem; }
+.event-detail-heading { margin-bottom: 1.5rem; }
+.event-detail-heading h1, .detail-panel { overflow-wrap: anywhere; }
+.event-detail-heading .eyebrow { color: var(--race-blue); margin-bottom: .5rem; }
+.event-banner { display: block; width: 100%; max-height: 340px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem; }
+.detail-panel { padding: 1.5rem; border: 1px solid var(--race-line); border-radius: 8px; background: white; }
+.detail-panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+.detail-panel h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+.event-description { white-space: pre-line; line-height: 1.7; }
+.event-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1rem 2rem; margin: 1.2rem 0 0; }
+.event-facts dt { font-size: .82rem; color: var(--race-muted); font-weight: 400; margin-bottom: .25rem; }
+.event-facts dd { font-size: .9rem; margin: 0; }
+.category-list { display: grid; gap: 1rem; }
+.category-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .75rem; }
+.category-fee { font-size: 1rem; font-weight: 700; }
+.route-summary { border-top: 1px solid var(--race-line); margin-top: 1.5rem; padding-top: 1.3rem; }
+.route-summary h4 { font-size: 1rem; font-weight: 700; }
+.route-summary > a { display: inline-block; margin-top: 1rem; font-size: .88rem; }
+.route-missing { color: var(--race-muted); font-size: .88rem; margin: 1rem 0 0; }
+.status-completed { color: #305988; background: #eaf0f8; }
 .event-location { color: var(--race-muted); font-size: .86rem; margin: 0; }
 .event-meta { min-width: 90px; text-align: right; }
 .event-distance { display: block; font-size: 1.15rem; font-weight: 700; }

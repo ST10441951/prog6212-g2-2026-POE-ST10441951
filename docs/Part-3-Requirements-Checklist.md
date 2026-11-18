@@ -19,6 +19,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Connect the home page to the API and handle unavailable or unreadable responses.
 - [x] Add a shared layout with locally served Bootstrap styles.
 - [x] Apply the selected Event finder design and connect province/type filters to the API.
+- [x] Connect date filters, pagination and public event details to the API.
 - [x] Disable shared HTTP cookies and automatic redirects in the API client.
 - [ ] Use the Part 2 API for every data operation.
 - [ ] Keep database access and business rules in the API.
@@ -61,8 +62,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Participant interface: 15 marks
 
-- [ ] Show upcoming events with filtering and pagination on the home page.
-- [ ] Display full event details, available categories and route information.
+- [x] Show upcoming events with filtering and pagination on the home page.
+- [x] Display full event details, available categories and route information.
 - [ ] Enter an event by selecting a category while signed in.
 - [ ] Save the enrolment immediately through the API and show confirmation.
 - [ ] Show personal event entries and enrolment statuses.
@@ -106,7 +107,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 101 MVC checks, including accounts, protected pages and sessions.
+- [x] Pass all 138 MVC checks, including event browsing, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -115,6 +116,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Test role restrictions, session expiry and isolation between users.
 - [x] Verify disabled, deleted and role-changed accounts lose MVC access.
 - [x] Check protected role pages on desktop/mobile and capture access-denied evidence.
+- [x] Verify filters, paging, event/category/route details and hidden events against an isolated API/database.
+- [x] Capture genuine desktop/mobile event pages and pagination evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

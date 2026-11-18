@@ -3,6 +3,7 @@
    https://learn.microsoft.com/en-us/aspnet/core/security/cross-site-scripting?view=aspnetcore-10.0
    Filter choices follow the existing API contract: src/RaceDay.Api/Contracts/Events/EventBrowseRequest.cs.
    Date offsets: https://learn.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tooffset
+   Pagination: https://getbootstrap.com/docs/5.3/components/pagination/
    Accessed: 18 November 2026. *@
 @model HomeViewModel
 @{
@@ -16,30 +17,39 @@
         </div>
         <form class="event-search" asp-controller="Home" asp-action="Index" method="get" aria-label="Find events">
             <div class="row g-3 align-items-end">
-                <div class="col-md-5">
+                <div class="col-md-6 col-lg-3">
                     <label class="form-label" for="province">Province</label>
                     <select class="form-select" id="province" name="province">
                         <option value="">All provinces</option>
                         @foreach (var province in new[] { "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape" })
                         {
-                            <option value="@province" selected="@(string.Equals(Model.Province, province, StringComparison.OrdinalIgnoreCase))">@province</option>
+                            <option value="@province" selected="@(string.Equals(Model.Search.Province, province, StringComparison.OrdinalIgnoreCase))">@province</option>
                         }
                     </select>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6 col-lg-3">
                     <label class="form-label" for="event-type">Event type</label>
                     <select class="form-select" id="event-type" name="eventType">
                         <option value="">All types</option>
                         @foreach (var eventType in new[] { "Running", "Walking", "Cycling" })
                         {
-                            <option value="@eventType" selected="@(string.Equals(Model.EventType, eventType, StringComparison.OrdinalIgnoreCase))">@eventType</option>
+                            <option value="@eventType" selected="@(string.Equals(Model.Search.EventType, eventType, StringComparison.OrdinalIgnoreCase))">@eventType</option>
                         }
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-6 col-lg-2">
+                    <label class="form-label" for="from-date">From date</label>
+                    <input class="form-control" type="date" id="from-date" name="fromDate" value="@Model.Search.FromDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" aria-describedby="date-help" />
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <label class="form-label" for="to-date">To date</label>
+                    <input class="form-control" type="date" id="to-date" name="toDate" value="@Model.Search.ToDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" aria-describedby="date-help" />
+                </div>
+                <div class="col-lg-2">
                     <button class="btn btn-race search-button" type="submit">Find events</button>
                 </div>
             </div>
+            <p class="field-help mb-0" id="date-help">Date filters use UTC dates. Event times are shown in South African time (SAST).</p>
         </form>
         <div id="upcoming" aria-labelledby="events-heading">
         <div class="section-heading">
@@ -54,16 +64,22 @@
             <div class="notice" role="alert">
                 <h3>We couldn't load the events</h3>
                 <p>@Model.ErrorMessage</p>
-                <a asp-controller="Home" asp-action="Index" asp-fragment="upcoming">Try again</a>
+                <a asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(Model.Search.Page)" asp-fragment="upcoming">Try again</a>
             </div>
         }
         else if (Model.Events.Count == 0)
         {
             <div class="notice">
-                @if (Model.EventType is not null || Model.Province is not null)
+                @if (Model.Search.Page > 1)
+                {
+                    <h3>No events on this page</h3>
+                    <p>Return to the first page for the latest matching events.</p>
+                    <a asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(1)" asp-fragment="upcoming">First page</a>
+                }
+                else if (Model.Search.HasFilters)
                 {
                     <h3>No events match these filters</h3>
-                    <p>Choose another province or event type.</p>
+                    <p>Try another province, event type or date range.</p>
                 }
                 else
                 {
@@ -85,7 +101,7 @@
                         </time>
                         <div class="event-info">
                             <p class="event-type">@item.EventType</p>
-                            <h3 id="event-@item.EventId">@item.EventName</h3>
+                            <h3 id="event-@item.EventId"><a asp-controller="Events" asp-action="Details" asp-route-eventId="@item.EventId">@item.EventName</a></h3>
                             <p class="event-location">@item.City, @item.Province</p>
                         </div>
                         <div class="event-meta">
@@ -96,7 +112,48 @@
                 }
             </div>
         }
-        @if (Model.EventType is not null || Model.Province is not null)
+        @if (Model.ErrorMessage is null && Model.TotalPages > 1)
+        {
+            int first = Math.Max(1, Math.Min(Model.Search.Page, Model.TotalPages) - 2);
+            int last = (int)Math.Min((long)first + 4, Model.TotalPages);
+            <nav class="event-pagination" aria-label="Event pages">
+                <ul class="pagination flex-wrap mb-0">
+                    @if (Model.Search.Page > 1)
+                    {
+                        <li class="page-item"><a class="page-link" asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(Math.Min(Model.Search.Page - 1, Model.TotalPages))" asp-fragment="upcoming">Previous</a></li>
+                    }
+                    @if (first > 1)
+                    {
+                        <li class="page-item"><a class="page-link" asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(1)" asp-fragment="upcoming" aria-label="First page">1</a></li>
+                        <li class="page-item disabled"><span class="page-link" aria-hidden="true">…</span></li>
+                    }
+                    @for (int number = first; number <= last; number++)
+                    {
+                        <li class="page-item @(number == Model.Search.Page ? "active" : "")">
+                            @if (number == Model.Search.Page)
+                            {
+                                <span class="page-link" aria-current="page">@number</span>
+                            }
+                            else
+                            {
+                                <a class="page-link" asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(number)" asp-fragment="upcoming" aria-label="Page @number">@number</a>
+                            }
+                        </li>
+                    }
+                    @if (last < Model.TotalPages)
+                    {
+                        <li class="page-item disabled"><span class="page-link" aria-hidden="true">…</span></li>
+                        <li class="page-item"><a class="page-link" asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(Model.TotalPages)" asp-fragment="upcoming" aria-label="Last page">@Model.TotalPages</a></li>
+                    }
+                    @if (Model.Search.Page < Model.TotalPages)
+                    {
+                        <li class="page-item"><a class="page-link" asp-controller="Home" asp-action="Index" asp-all-route-data="@Model.PageRoutes(Model.Search.Page + 1)" asp-fragment="upcoming">Next</a></li>
+                    }
+                </ul>
+                <p>@Model.TotalCount events · @Model.TotalPages pages</p>
+            </nav>
+        }
+        @if (Model.Search.HasFilters)
         {
             <a class="clear-filters" asp-controller="Home" asp-action="Index">Clear filters</a>
         }
