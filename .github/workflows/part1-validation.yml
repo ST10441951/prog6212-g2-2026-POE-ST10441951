@@ -2,7 +2,6 @@ name: Validate Part 1 Submission
 
 on:
   push:
-  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -13,12 +12,15 @@ permissions:
 jobs:
   validate-part1:
     name: Validate Part 1 files
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner
+    runs-on: ${{ vars.RACEDAY_USE_LOCAL_RUNNER == 'true' && fromJSON('["self-hosted","Windows","X64","raceday"]') || 'ubuntu-latest' }}
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
@@ -41,3 +43,7 @@ jobs:
 # Microsoft (2026) 'dotnet run', Microsoft Learn.
 # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run
 # Accessed: 17 October 2026.
+# Local runner selection and trusted main-branch runs: GitHub (2026).
+# https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners
+# https://docs.github.com/en/actions/concepts/security/compromised-runners
+# Accessed: 18 November 2026.

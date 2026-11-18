@@ -2,7 +2,6 @@ name: Build and Test RaceDay
 
 on:
   push:
-  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -13,10 +12,14 @@ permissions:
 jobs:
   build-and-test:
     name: Build and test API and MVC
-    runs-on: windows-2025
+    if: github.ref == 'refs/heads/main' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner
+    runs-on: ${{ vars.RACEDAY_USE_LOCAL_RUNNER == 'true' && fromJSON('["self-hosted","Windows","X64","raceday"]') || 'windows-2025' }}
+    timeout-minutes: 30
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
@@ -26,12 +29,25 @@ jobs:
       - name: Start local blob storage
         shell: pwsh
         run: |
+          function BlobReady {
+            try {
+              $response = Invoke-WebRequest 'http://127.0.0.1:10000/devstoreaccount1?comp=list' -SkipHttpErrorCheck -TimeoutSec 2
+              return ($response.Headers.Server -like 'Azurite-Blob*')
+            } catch { return $false }
+          }
+          if (BlobReady) { Write-Output 'Using the running local Azurite instance.'; exit 0 }
           $emulatorTools = Join-Path $env:RUNNER_TEMP 'raceday-emulator'
           $emulatorData = Join-Path $env:RUNNER_TEMP 'raceday-blob-data'
           npm install --prefix $emulatorTools --no-audit --no-fund azurite@3.37.0
           if ($LASTEXITCODE -ne 0) { throw 'Azurite installation failed.' }
           $emulatorEntry = Join-Path $emulatorTools 'node_modules/azurite/dist/src/blob/main.js'
-          Start-Process -FilePath (Get-Command node).Source -WindowStyle Hidden -ArgumentList @("`"$emulatorEntry`"", '--silent', '--blobHost', '127.0.0.1', '--location', "`"$emulatorData`"")
+          $emulator = Start-Process -FilePath (Get-Command node).Source -WindowStyle Hidden -PassThru -ArgumentList @("`"$emulatorEntry`"", '--silent', '--blobHost', '127.0.0.1', '--location', "`"$emulatorData`"")
+          "RACEDAY_AZURITE_PID=$($emulator.Id)" >> $env:GITHUB_ENV
+          for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            if (BlobReady) { exit 0 }
+            Start-Sleep -Seconds 1
+          }
+          throw 'Azurite did not become ready.'
 
       - name: Restore packages
         run: dotnet restore RaceDay.sln
@@ -50,6 +66,14 @@ jobs:
         env:
           ASPNETCORE_ENVIRONMENT: Development
 
+      - name: Stop storage started by this job
+        if: always()
+        shell: pwsh
+        run: |
+          if ($env:RACEDAY_AZURITE_PID) {
+            Stop-Process -Id ([int]$env:RACEDAY_AZURITE_PID) -ErrorAction SilentlyContinue
+          }
+
 # References
 # GitHub (2026) 'Building and testing .NET', GitHub Docs.
 # https://docs.github.com/en/actions/tutorials/build-and-test-code/building-and-testing-net
@@ -61,3 +85,7 @@ jobs:
 # Accessed: 18 October 2026.
 # Local blob tests use Azurite: https://github.com/Azure/Azurite#npm
 # Background service: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process
+# Local runner selection and trusted main-branch runs: GitHub (2026).
+# https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners
+# https://docs.github.com/en/actions/concepts/security/compromised-runners
+# Accessed: 18 November 2026.

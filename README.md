@@ -119,6 +119,8 @@ The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC 
 
 The [build job for f60e944](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444572) and [planning job](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444548) did not start. GitHub reported that the account is locked due to a billing issue. No job steps ran, so a green Part 3 build and screenshot remain outstanding.
 
+Both workflows now support a temporary Windows runner on my PC. `RACEDAY_USE_LOCAL_RUNNER` selects it for owner-triggered main-branch runs. The complete build, tests and planning checks remain enabled. Local-runner verification is pending; see the [CI notes](docs/Part-3-CI.md).
+
 ## Unit tests
 
 Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 138 checks covering event search, paging, details, settings, accounts, validation, cookies, role restrictions, redirects and sign-out (Microsoft, 2026f).
@@ -135,6 +137,7 @@ All 138 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
 | [Account notes](docs/Part-3-Accounts.md) | Registration, login, protected pages, sessions and sign-out |
 | [Event notes](docs/Part-3-Events.md) | Search, paging, public details, categories, routes and checks |
+| [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
 | `tests/RaceDay.Web.Tests/` | MVC and HTTP connection checks |
