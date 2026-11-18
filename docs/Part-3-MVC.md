@@ -2,9 +2,9 @@
 
 ## 1. Project
 
-`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers call the API through `RaceDayApiClient` (Microsoft, 2026a; 2026b).
+`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers use `RaceDayApiClient` for events and `AccountApiClient` for accounts (Microsoft, 2026a; 2026b).
 
-The home page reads the first three upcoming events from `GET /api/events?page=1&pageSize=3`. Province and event-type filters are passed to the API. It shows the API's names, dates, locations, distances and statuses, with dates in South African time. Date filters, pagination, event details, login and management pages are still to be added.
+The home page reads the first three upcoming events from `GET /api/events?page=1&pageSize=3`. Province and event-type filters are passed to the API. It shows the API's names, dates, locations, distances and statuses, with dates in South African time. Registration, login and sign-out are covered in the [account notes](Part-3-Accounts.md). Date filters, pagination, event details and management pages remain to be added.
 
 ## 2. Settings
 
@@ -20,7 +20,7 @@ The JSON settings and launch profile follow ASP.NET Core configuration conventio
 
 ## 3. API connection
 
-The typed HTTP client has automatic cookies and redirects disabled. A pooled handler cannot save or share an API login cookie between visitors. Login and per-user session forwarding are not implemented yet (Microsoft, 2026b).
+Both typed HTTP clients have automatic cookies and redirects disabled. API login cookies stay in each user's server-side MVC session. Account requests forward a cookie only for that user; public event reads send none (Microsoft, 2026b).
 
 An API error, timeout, connection failure or unreadable response shows a friendly message and returns 503. An empty successful list shows that no events are available. Exceptions and raw API errors are not displayed. `/health` checks the MVC host only (Microsoft, 2026b; 2026e).
 
@@ -34,13 +34,13 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 33 MVC checks cover API responses, filters, empty/error states, encoded text, South African dates, local styles, error pages, settings, cookie isolation and redirects. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 70 MVC checks cover events, filters, settings, account forms, error handling, cookie isolation, expiry and sign-out. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 810 API tests passed. After the design and filter changes, all 33 MVC checks passed. No tests failed or were skipped. The Release build had zero warnings/errors, planning checks passed and EF reported no pending model changes.
+On 18 November 2026, all 70 MVC checks passed, with none failed or skipped. The unchanged 810 API tests passed earlier on the same date. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The live MVC home page returned 200 and displayed Cape Peninsula Cycle Challenge and Soweto Heritage Walk. Browser checks at 320, 390, 768 and 1280 pixels found no horizontal overflow. Province/type filtering and clearing filters worked against the live API. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) screenshots show the actual application without a cursor overlay. Visual checks for later pages remain open.
 
-The existing build workflow now includes MVC and its tests through `RaceDay.sln`. Planning checks also require the Part 3 files. A GitHub result is pending until these changes are committed and pushed.
+The build workflow includes MVC and its tests through `RaceDay.sln`. GitHub jobs for `f60e944` did not start because the account is locked due to a billing issue. Local results and the GitHub status are recorded separately in the [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

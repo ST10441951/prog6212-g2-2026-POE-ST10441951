@@ -94,6 +94,9 @@ internal static class Program
             "docs/Part-3-Requirements-Checklist.md", "docs/Part-3-MVC.md",
             "src/RaceDay.Web/RaceDay.Web.csproj", "src/RaceDay.Web/Program.cs",
             "src/RaceDay.Web/Controllers/HomeController.cs", "src/RaceDay.Web/Services/RaceDayApiClient.cs",
+            "src/RaceDay.Web/Controllers/AccountController.cs", "src/RaceDay.Web/Services/AccountApiClient.cs",
+            "src/RaceDay.Web/Services/WebSessionStore.cs", "docs/Part-3-Accounts.md",
+            "src/RaceDay.Web/Views/Account/Login.cshtml", "src/RaceDay.Web/Views/Account/Register.cshtml",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

@@ -22,7 +22,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Disable shared HTTP cookies and automatic redirects in the API client.
 - [ ] Use the Part 2 API for every data operation.
 - [ ] Keep database access and business rules in the API.
-- [ ] Keep each signed-in user's API session separate from other users.
+- [x] Keep each signed-in user's API session separate from other users.
 - [ ] Display API validation and service errors without raw exception details.
 
 ## GitHub and CI/CD: 10 marks
@@ -36,14 +36,14 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Authentication and role-based navigation: 10 marks
 
-- [ ] Register as Organiser or Participant through MVC and the API.
-- [ ] Log in with both roles and keep user ID and role in a server-side session.
+- [x] Register as Organiser or Participant through MVC and the API.
+- [x] Log in with both roles and keep user ID and role in a server-side session.
 - [ ] Maintain authentication across pages and handle expired API sessions.
 - [ ] Provide distinct menus and landing pages for both roles.
 - [ ] Redirect unauthenticated users away from protected pages.
 - [ ] Block the wrong role and retain API ownership checks.
-- [ ] Log out through the API, clear the MVC session and redirect appropriately.
-- [ ] Protect forms against cross-site request forgery.
+- [x] Log out through the API, clear the MVC session and redirect appropriately.
+- [x] Protect forms against cross-site request forgery.
 
 ## Organiser interface: 15 marks
 
@@ -106,7 +106,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass the 33 MVC foundation and filter checks locally.
+- [x] Pass all 70 MVC checks, including account forms and sessions.
+- [x] Register, sign in and sign out as both roles against an isolated real API/database.
+- [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
 - [x] Pass all 810 API regression tests locally with none failed or skipped.
 - [ ] Test both complete user journeys and saved changes.

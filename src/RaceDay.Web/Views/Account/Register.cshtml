@@ -1,0 +1,67 @@
+@* Input tag helpers and accessible form labels: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/forms/overview/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Accounts.RegisterViewModel
+@{
+    ViewData["Title"] = "Create an account";
+}
+<section class="container account-section">
+    <div class="account-card registration-card">
+        <h1>Create your account</h1>
+        <p class="account-intro">Join as a Participant to enter events, or an Organiser to manage them.</p>
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            <div class="row g-3">
+                <div class="col-sm-6 account-field">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" autocomplete="given-name" required aria-describedby="first-name-error" />
+                    <span asp-validation-for="FirstName" class="field-error" id="first-name-error"></span>
+                </div>
+                <div class="col-sm-6 account-field">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" autocomplete="family-name" required aria-describedby="last-name-error" />
+                    <span asp-validation-for="LastName" class="field-error" id="last-name-error"></span>
+                </div>
+                <div class="col-12 account-field">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" required aria-describedby="email-error" />
+                    <span asp-validation-for="Email" class="field-error" id="email-error"></span>
+                </div>
+                <div class="col-12 account-field">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" class="form-select" aria-describedby="role-help role-error">
+                        <option value="Participant">Participant</option>
+                        <option value="Organiser">Organiser</option>
+                    </select>
+                    <p class="field-help" id="role-help">Participants enter events. Organisers create events and record results.</p>
+                    <span asp-validation-for="Role" class="field-error" id="role-error"></span>
+                </div>
+                <div class="col-sm-6 account-field">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" value="" autocomplete="new-password" required aria-describedby="password-help password-error" />
+                    <span asp-validation-for="Password" class="field-error" id="password-error"></span>
+                </div>
+                <div class="col-sm-6 account-field">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" value="" autocomplete="new-password" required aria-describedby="confirm-error" />
+                    <span asp-validation-for="ConfirmPassword" class="field-error" id="confirm-error"></span>
+                </div>
+                <div class="col-12"><p class="field-help" id="password-help">Use 8-128 characters with an upper-case letter, lower-case letter, digit and symbol.</p></div>
+                <div class="col-sm-6 account-field">
+                    <label asp-for="PhoneNumber" class="form-label">Phone number <span class="optional-label">(optional)</span></label>
+                    <input asp-for="PhoneNumber" class="form-control" type="tel" autocomplete="tel" aria-describedby="phone-error" />
+                    <span asp-validation-for="PhoneNumber" class="field-error" id="phone-error"></span>
+                </div>
+                <div class="col-sm-6 account-field">
+                    <label asp-for="DateOfBirth" class="form-label">Date of birth <span class="optional-label">(optional)</span></label>
+                    <input asp-for="DateOfBirth" class="form-control" autocomplete="bday" aria-describedby="birth-help birth-error" />
+                    <span asp-validation-for="DateOfBirth" class="field-error" id="birth-error"></span>
+                </div>
+                <div class="col-12"><p class="field-help" id="birth-help">Add your date of birth if you want to enter an age-restricted category.</p></div>
+            </div>
+            <button class="btn btn-race account-submit" type="submit">Create account</button>
+        </form>
+        <p class="account-switch">Already registered? <a asp-controller="Account" asp-action="Login">Sign in</a></p>
+    </div>
+</section>

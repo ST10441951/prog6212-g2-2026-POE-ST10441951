@@ -76,4 +76,45 @@ public sealed class HttpConnectionTests
 
     private static string Address(WebApplication application) => application.Services
         .GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single() + "/";
+
+    [Fact]
+    public async Task AccountClient_DoesNotShareAnUpstreamLoginBetweenBrowsers()
+    {
+        var cookies = new ConcurrentQueue<string>();
+        int accountNumber = 0;
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+        builder.Logging.ClearProviders();
+        await using var upstream = builder.Build();
+        upstream.MapPost("/api/auth/login", (HttpContext context) =>
+        {
+            cookies.Enqueue(context.Request.Headers.Cookie.ToString());
+            int number = Interlocked.Increment(ref accountNumber);
+            context.Response.Cookies.Append("RaceDay.Session", $"upstream-token-{number}");
+            return Results.Json(new
+            {
+                sessionExpiresAt = DateTimeOffset.UtcNow.AddMinutes(20),
+                user = new { userId = number, firstName = $"Visitor{number}", role = "Participant", isActive = true }
+            });
+        });
+        upstream.MapGet("/api/events", () => Results.Content(WebApiFactory.EventJson, "application/json"));
+        await upstream.StartAsync();
+        using var factory = new WebApiFactory { Reply = null };
+        factory.Settings["Api:BaseUrl"] = Address(upstream);
+        using var first = factory.Client();
+        using var second = factory.Client();
+        using var firstLogin = await AccountTests.PostForm(first, "/account/login", AccountTests.LoginFields());
+        using var secondLogin = await AccountTests.PostForm(second, "/account/login", AccountTests.LoginFields());
+
+        Assert.Equal(HttpStatusCode.Redirect, firstLogin.StatusCode);
+        Assert.Equal(HttpStatusCode.Redirect, secondLogin.StatusCode);
+        Assert.Equal(2, cookies.Count);
+        Assert.All(cookies, Assert.Empty);
+        string firstPage = await first.GetStringAsync("/");
+        string secondPage = await second.GetStringAsync("/");
+        Assert.Contains("Visitor1", firstPage);
+        Assert.DoesNotContain("Visitor2", firstPage);
+        Assert.Contains("Visitor2", secondPage);
+        Assert.DoesNotContain("Visitor1", secondPage);
+    }
 }

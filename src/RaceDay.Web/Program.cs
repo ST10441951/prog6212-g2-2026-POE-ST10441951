@@ -9,6 +9,13 @@ using RaceDay.Web.Services;
 // Accessed: 18 November 2026.
 var builder = WebApplication.CreateBuilder(args);
 
+// Server-side MVC sessions: Microsoft (2026).
+// https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-10.0
+// https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/overview?view=aspnetcore-10.0
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddDataProtection();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSingleton<WebSessionStore>();
 builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 builder.Services.AddOptions<ApiOptions>()
@@ -25,6 +32,18 @@ builder.Services.AddOptions<ApiOptions>()
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-10.0
 // Accessed: 18 November 2026.
 builder.Services.AddHttpClient<RaceDayApiClient>((services, client) =>
+{
+    var settings = services.GetRequiredService<IOptions<ApiOptions>>().Value;
+    client.BaseAddress = new Uri(settings.BaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    UseCookies = false,
+    AllowAutoRedirect = false
+});
+
+builder.Services.AddHttpClient<AccountApiClient>((services, client) =>
 {
     var settings = services.GetRequiredService<IOptions<ApiOptions>>().Value;
     client.BaseAddress = new Uri(settings.BaseUrl);

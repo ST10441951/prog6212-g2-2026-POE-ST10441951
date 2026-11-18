@@ -2,6 +2,11 @@
    https://learn.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-10.0
    https://getbootstrap.com/docs/5.3/layout/grid/
    Accessed: 18 November 2026. *@
+@inject RaceDay.Web.Services.WebSessionStore Sessions
+@{
+    var login = await Sessions.ReadAsync(Context);
+    bool homePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase);
+}
 <!DOCTYPE html>
 <html lang="en-ZA">
 <head>
@@ -17,8 +22,20 @@
     <header class="site-header">
         <div class="container header-inner">
             <a class="brand" asp-controller="Home" asp-action="Index" aria-label="RaceDay home">Race<span>Day</span></a>
-            <nav aria-label="Main navigation">
-                <a class="nav-link active" asp-controller="Home" asp-action="Index" aria-current="page">Find events</a>
+            <nav class="header-nav" aria-label="Main navigation">
+                <a class="nav-link @(homePage ? "active" : "")" asp-controller="Home" asp-action="Index" aria-current="@(homePage ? "page" : null)">Find events</a>
+                @if (login is null)
+                {
+                    <a class="nav-link" asp-controller="Account" asp-action="Login">Sign in</a>
+                    <a class="btn btn-race nav-register" asp-controller="Account" asp-action="Register">Create account</a>
+                }
+                else
+                {
+                    <span class="signed-in-user">@login.FirstName <span>(@login.Role)</span></span>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button class="nav-signout" type="submit">Sign out</button>
+                    </form>
+                }
             </nav>
         </div>
     </header>

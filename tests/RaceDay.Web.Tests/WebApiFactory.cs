@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using RaceDay.Web.Services;
 
 namespace RaceDay.Web.Tests;
@@ -28,6 +29,7 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
         ["Api:TimeoutSeconds"] = "15"
     };
     internal Func<HttpRequestMessage, HttpResponseMessage>? Reply { get; set; } = _ => Json(EventJson);
+    internal WebTestClock Clock { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -36,9 +38,14 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
         builder.ConfigureAppConfiguration((_, settings) => settings.AddInMemoryCollection(Settings));
         builder.ConfigureServices(services =>
         {
+            services.RemoveAll<TimeProvider>();
+            services.AddSingleton<TimeProvider>(Clock);
             services.AddControllersWithViews().AddApplicationPart(typeof(FailureController).Assembly);
             if (Reply is not null)
+            {
                 services.AddHttpClient<RaceDayApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
+                services.AddHttpClient<AccountApiClient>().ConfigurePrimaryHttpMessageHandler(() => new ApiHandler(Reply));
+            }
         });
     }
 
@@ -57,4 +64,13 @@ internal sealed class WebApiFactory : WebApplicationFactory<RaceDay.Web.Program>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
             Task.FromResult(reply(request));
     }
+}
+
+// Controllable time for expiry checks: Microsoft (2026).
+// https://learn.microsoft.com/en-us/dotnet/standard/datetime/timeprovider-overview
+internal sealed class WebTestClock : TimeProvider
+{
+    private DateTimeOffset now = DateTimeOffset.UtcNow;
+    public override DateTimeOffset GetUtcNow() => now;
+    internal void Advance(TimeSpan duration) => now += duration;
 }

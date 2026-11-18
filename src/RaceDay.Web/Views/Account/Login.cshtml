@@ -1,0 +1,33 @@
+@* Razor forms, validation messages and antiforgery: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Accounts.LoginViewModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+<section class="container account-section">
+    <div class="account-card login-card">
+        <h1>Sign in to RaceDay</h1>
+        <p class="account-intro">Use your account to manage your events and entries.</p>
+        @if (TempData["AccountCreated"] is true)
+        {
+            <div class="alert alert-success" role="status">Your account has been created. Sign in to continue.</div>
+        }
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            <div class="account-field">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" required aria-describedby="email-error" />
+                <span asp-validation-for="Email" class="field-error" id="email-error"></span>
+            </div>
+            <div class="account-field">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" value="" autocomplete="current-password" required aria-describedby="password-error" />
+                <span asp-validation-for="Password" class="field-error" id="password-error"></span>
+            </div>
+            <button class="btn btn-race account-submit" type="submit">Sign in</button>
+        </form>
+        <p class="account-switch">New to RaceDay? <a asp-controller="Account" asp-action="Register">Create an account</a></p>
+    </div>
+</section>

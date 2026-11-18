@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC project, API connection and shared layout are in place. The home page displays upcoming events from the API. Login, role-specific pages and Docker are still to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC home page, filters, registration, login and sign-out are working through the API. Role-specific pages and Docker are still to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -15,7 +15,7 @@ Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2
 | Organiser | View the dashboard; manage owned events, banners and categories; view enrolments and record results. |
 | Participant | Browse and enter events; view own entries and results; update personal details and upload a profile picture. |
 
-Both roles register and log in through the API. The MVC website must keep user ID and role in a server-side session, provide the correct navigation and clear the session on logout (The Independent Institute of Education, 2026; Microsoft, 2026b).
+Both roles register and log in through the API. MVC keeps user ID, role and the API cookie on the server; the browser receives a separate protected session identifier. Sign-out clears the session. Distinct role menus and protected pages remain to be added. See the [account notes](docs/Part-3-Accounts.md) (Microsoft, 2026b).
 
 ## Application
 
@@ -31,7 +31,8 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Part 2 API, sessions and tests | Complete |
 | API picture and banner endpoints | Implemented; Part 3 Azure demonstration pending |
 | MVC project, API connection and shared layout | Implemented; [MVC notes](docs/Part-3-MVC.md) |
-| Registration, login and role-specific pages | Not started |
+| Registration, login and sign-out | Working for both roles; [account notes](docs/Part-3-Accounts.md) |
+| Role-specific menus and protected pages | Not started |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -41,6 +42,10 @@ The home page displays live API events and supports province and event-type filt
 ![RaceDay Event finder home page](docs/evidence/part3-event-finder-desktop.png)
 
 The [mobile layout](docs/evidence/part3-event-finder-mobile.png) stacks the filters and event details on smaller screens.
+
+Both roles use the same sign-in form. The [registration page](docs/evidence/part3-registration.png) includes account type and optional personal details.
+
+![RaceDay sign-in page](docs/evidence/part3-login.png)
 
 ## Setup and run
 
@@ -80,7 +85,9 @@ dotnet run --project src/RaceDay.Web --configuration Release --no-build --launch
 
 6. Open [RaceDay](http://localhost:5180/) or [API Swagger](http://localhost:5120/swagger/index.html). In Visual Studio, open `RaceDay.sln` and configure both API and Web as startup projects using their `http` profiles.
 
-The home page displays up to three upcoming events, with province and event-type filters. Date filters, pagination, event details and account pages are still to be added. A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
+The home page displays up to three upcoming events, with province and event-type filters. Use Create account or Sign in in the header. Registration redirects to sign-in; login returns to the event list. The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC. Date filters, pagination, event details and role-specific pages remain to be added.
+
+A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
 7. Run tests with the API test database server and Azurite available. The MVC tests do not need the API running (Microsoft, 2026f).
 
@@ -102,13 +109,13 @@ The MVC Dockerfile, container checks and tested build/run commands are still to 
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-A GitHub result and Part 3 build screenshot are pending until the updated workflow is committed, pushed and passes.
+The [build job for f60e944](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444572) and [planning job](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44302444548) did not start. GitHub reported that the account is locked due to a billing issue. No job steps ran, so a green Part 3 build and screenshot remain outstanding.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). Part 3 adds 33 MVC checks for API communication, filters, settings, error handling, encoded content and cookie isolation (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 70 checks covering the home page, filters, settings, account forms, validation, cookies, sessions and sign-out (Microsoft, 2026f).
 
-Local checks on 18 November 2026 passed all 810 API tests and all 33 MVC tests, with none failed or skipped. The Release solution build has zero warnings or errors, planning checks pass and EF reports no pending model changes.
+All 70 MVC checks passed locally on 18 November 2026, with none failed or skipped. The 810 unchanged API tests passed earlier on the same date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified registration, login and sign-out for both roles using a separate temporary database.
 
 ## Project files
 
@@ -118,6 +125,7 @@ Local checks on 18 November 2026 passed all 810 API tests and all 33 MVC tests, 
 | [Part 2 README](README-Part2.md) | API setup, features, tests and evidence |
 | [Part 3 checklist](docs/Part-3-Requirements-Checklist.md) | Requirements and outstanding work |
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
+| [Account notes](docs/Part-3-Accounts.md) | Registration, login, sessions, validation and sign-out |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
 | `tests/RaceDay.Web.Tests/` | MVC and HTTP connection checks |

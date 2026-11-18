@@ -24,6 +24,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .brand > span { color: var(--race-blue); }
 .nav-link { color: var(--race-ink); font-size: .9rem; font-weight: 600; text-decoration: none; padding: .6rem 0; }
 .nav-link.active { color: var(--race-blue); }
+.header-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 1.4rem; }
+.header-nav form { margin: 0; }
+.nav-register { min-height: 38px; padding: .5rem .8rem; font-size: .82rem; }
+.nav-signout { border: 0; background: transparent; padding: .6rem 0; color: var(--race-blue); font-size: .88rem; font-weight: 600; }
+.signed-in-user { font-size: .85rem; font-weight: 600; max-width: 16rem; overflow-wrap: anywhere; }
+.signed-in-user > span { font-weight: 400; color: var(--race-muted); }
 .events-section { padding: 2.75rem 0 4rem; }
 .page-intro { margin-bottom: 1.65rem; }
 .page-intro h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.045rem; line-height: 1.25; margin: 0 0 .7rem; }
@@ -64,6 +70,25 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .error-page h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -.04rem; }
 .error-page > p:not(.eyebrow) { color: var(--race-muted); margin: 1.25rem 0; }
 .request-reference { font-size: .8rem; overflow-wrap: anywhere; }
+.account-section { padding-top: 2.75rem; padding-bottom: 4rem; }
+.account-card { margin: 0 auto; padding: 2rem; border: 1px solid var(--race-line); border-radius: 8px; background: white; }
+.login-card { max-width: 480px; }
+.registration-card { max-width: 740px; }
+.account-card h1 { font-size: 1.65rem; line-height: 1.25; font-weight: 700; margin: 0 0 .7rem; }
+.account-intro { color: var(--race-muted); font-size: .92rem; line-height: 1.6; margin-bottom: 1.8rem; }
+.account-field { margin-bottom: 1.1rem; }
+.registration-card .account-field { margin-bottom: 0; }
+.account-card .form-control { min-height: 44px; font-size: .95rem; border-color: #cbd2db; border-radius: 6px; }
+.account-submit { width: 100%; margin-top: .6rem; }
+.registration-card .account-submit { margin-top: 1.6rem; }
+.account-switch { text-align: center; color: var(--race-muted); font-size: .85rem; margin: 1.5rem 0 0; }
+.field-error { display: block; color: #a62424; font-size: .82rem; margin-top: .35rem; }
+.field-validation-valid, .validation-summary-valid { display: none; }
+.form-errors { padding: .8rem 1rem; border: 1px solid #e8bcbc; border-radius: 6px; background: #fff4f4; color: #8c2020; font-size: .87rem; margin-bottom: 1.3rem; }
+.form-errors ul { padding-left: 1rem; margin: 0; }
+.input-validation-error { border-color: #ba3b3b !important; }
+.field-help { color: var(--race-muted); font-size: .79rem; line-height: 1.55; margin: .5rem 0 0; }
+.optional-label { color: var(--race-muted); font-size: .78rem; font-weight: 400; }
 @media (max-width: 767.98px) {
     .events-section { padding: 2rem 0 3rem; }
     .event-search { padding: 1.1rem; }
@@ -79,6 +104,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
     .header-inner { min-height: 68px; }
     .brand { font-size: 1.4rem; }
     .nav-link { font-size: .82rem; }
+    .header-inner { flex-wrap: wrap; padding-top: 1rem; padding-bottom: 1rem; }
+    .header-nav { gap: .9rem; }
+    .signed-in-user { font-size: .8rem; }
+    .account-section { padding-top: 1.5rem; padding-bottom: 2.5rem; }
+    .account-card { padding: 1.3rem; }
+    .account-card h1 { font-size: 1.4rem; }
     .section-heading { align-items: start; flex-direction: column; gap: .5rem; }
     .footer-inner { align-items: start; flex-direction: column; gap: .5rem; }
 }
