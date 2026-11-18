@@ -101,7 +101,8 @@ public sealed partial class OrganiserApiClient
         var item = await Read<EventDetails>(response, cancellationToken);
         if (item is null || item.EventId <= 0 || (eventId is not null && item.EventId != eventId) ||
             string.IsNullOrWhiteSpace(item.EventName) || string.IsNullOrWhiteSpace(item.Description) ||
-            !Status(item.Status) || item.Categories is null || item.Categories.Any(category => category is null || category.EventId != item.EventId))
+            !Status(item.Status) || item.Categories is null || item.Categories.Any(category => category is null || category.EventId != item.EventId || category.EventCategoryId <= 0) ||
+            item.Categories.Select(category => category.EventCategoryId).Distinct().Count() != item.Categories.Count)
             throw new ApiUnavailableException("The API did not return complete event details.");
         return item;
     }

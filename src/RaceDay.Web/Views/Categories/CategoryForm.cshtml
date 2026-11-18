@@ -1,0 +1,24 @@
+@* Protected forms, field validation and explicit routes: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.CategoryForm
+@{ bool editing = ViewData["Editing"] is true; ViewData["Title"] = editing ? "Edit category" : "Add category"; var eventId = ViewContext.RouteData.Values["eventId"]; var categoryId = ViewContext.RouteData.Values["categoryId"]; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Index" asp-route-eventId="@eventId">Back to categories</a>
+    <div class="page-intro"><h1>@ViewData["Title"]</h1><p>@ViewData["EventName"]</p></div>
+    <div class="detail-panel"><form asp-action="@(editing ? "Edit" : "Create")" asp-route-eventId="@eventId" asp-route-categoryId="@categoryId" method="post">
+        <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+        <div class="row g-3">
+            <div class="col-md-8"><label asp-for="CategoryName" class="form-label"></label><input asp-for="CategoryName" class="form-control" maxlength="80" required /><span asp-validation-for="CategoryName" class="field-error"></span></div>
+            <div class="col-md-4"><label asp-for="DistanceKm" class="form-label"></label><input asp-for="DistanceKm" class="form-control" type="number" step="0.01" min="0.01" max="9999.99" required /><span asp-validation-for="DistanceKm" class="field-error"></span></div>
+            <div class="col-md-6"><label asp-for="MinimumAge" class="form-label"></label><input asp-for="MinimumAge" class="form-control" type="number" min="1" max="120" step="1" /><span asp-validation-for="MinimumAge" class="field-error"></span></div>
+            <div class="col-md-6"><label asp-for="MaximumAge" class="form-label"></label><input asp-for="MaximumAge" class="form-control" type="number" min="1" max="120" step="1" /><span asp-validation-for="MaximumAge" class="field-error"></span></div>
+            <div class="col-md-4"><label asp-for="EntryFee" class="form-label"></label><input asp-for="EntryFee" class="form-control" type="number" min="0" max="99999999.99" step="0.01" required /><span asp-validation-for="EntryFee" class="field-error"></span></div>
+            <div class="col-md-4"><label asp-for="Capacity" class="form-label"></label><input asp-for="Capacity" class="form-control" type="number" min="1" step="1" /><span asp-validation-for="Capacity" class="field-error"></span></div>
+            <div class="col-md-4"><label asp-for="IsAvailable" class="form-label"></label><select asp-for="IsAvailable" class="form-select" required><option value="true">Available</option><option value="false">Unavailable</option></select><span asp-validation-for="IsAvailable" class="field-error"></span></div>
+        </div>
+        <p class="field-help mt-3">Age limits and capacity are optional. Blank capacity means no limit. Unavailable categories are hidden from new entries.</p>
+        @if (editing) { <p class="field-help">Saved entries can restrict distance, age and fee changes. An Open event must keep an available category.</p> }
+        <div class="entry-actions mt-4"><button class="btn btn-race" type="submit">@(editing ? "Save category" : "Add category")</button><a class="btn btn-outline-secondary" asp-action="Index" asp-route-eventId="@eventId">Cancel</a></div>
+    </form></div>
+</div></section>

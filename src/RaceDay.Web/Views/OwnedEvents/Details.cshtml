@@ -28,6 +28,7 @@
         </div>
     </div>
     <div class="detail-panel mt-4"><h2>Categories</h2>
+        <a class="btn btn-outline-secondary mb-3" asp-controller="Categories" asp-action="Index" asp-route-eventId="@Model.EventId">Manage categories and routes</a>
         @if (Model.Categories.Count == 0) { <p class="mb-0">No categories have been added.</p> }
         else { @foreach (var category in Model.Categories) { <p>@category.CategoryName · @category.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km · @(category.IsAvailable ? "Available" : "Unavailable")</p> } }
     </div>

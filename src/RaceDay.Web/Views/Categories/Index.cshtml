@@ -1,0 +1,35 @@
+@* Encoded lists and responsive cards: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/layout/grid/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.CategoryListPage
+@{ ViewData["Title"] = "Event categories"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@Model.Event.EventId">Back to event</a>
+    <div class="page-intro"><h1>Event categories</h1><p>@Model.Event.EventName</p></div>
+    @if (TempData["CategorySaved"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+    <a class="btn btn-race mb-4" asp-action="Create" asp-route-eventId="@Model.Event.EventId">Add category</a>
+    @if (Model.Categories.Count == 0) { <div class="notice"><h2>No categories yet</h2><p>Add a distance or age category before opening entries.</p></div> }
+    else
+    {
+        <div class="entry-list">@foreach (var item in Model.Categories)
+        {
+            <article class="detail-panel">
+                <div class="category-heading"><h2>@item.CategoryName</h2><span class="event-status @(item.IsAvailable ? "status-open" : "status-closed")">@(item.IsAvailable ? "Available" : "Unavailable")</span></div>
+                <dl class="event-facts">
+                    <div><dt>Distance</dt><dd>@item.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+                    <div><dt>Entry fee</dt><dd>R@(item.EntryFee.ToString("0.00", CultureInfo.InvariantCulture))</dd></div>
+                    <div><dt>Capacity</dt><dd>@(item.Capacity?.ToString(CultureInfo.InvariantCulture) ?? "No limit")</dd></div>
+                    <div><dt>Minimum age</dt><dd>@(item.MinimumAge?.ToString(CultureInfo.InvariantCulture) ?? "No minimum")</dd></div>
+                    <div><dt>Maximum age</dt><dd>@(item.MaximumAge?.ToString(CultureInfo.InvariantCulture) ?? "No maximum")</dd></div>
+                    <div><dt>Route</dt><dd>@(item.Route?.RouteName ?? "Not added")</dd></div>
+                </dl>
+                <div class="entry-actions mt-4">
+                    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@item.EventCategoryId">Edit category</a>
+                    <a class="btn btn-outline-secondary" asp-action="RouteDetails" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@item.EventCategoryId">View route</a>
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@item.EventCategoryId">Delete category</a>
+                </div>
+            </article>
+        }</div>
+    }
+</div></section>

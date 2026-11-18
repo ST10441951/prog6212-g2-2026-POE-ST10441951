@@ -1,0 +1,9 @@
+@* Friendly failed/uncertain request page: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{ ViewData["Title"] = "Categories unavailable"; var eventId = ViewContext.RouteData.Values["eventId"]; }
+<section class="events-section"><div class="container"><div class="notice" role="alert"><h1>We could not complete the category request</h1>
+    @if (ViewData["UnconfirmedCategory"] is true) { <p>The change could not be confirmed. Check the saved categories and routes before trying again.</p> }
+    else { <p>Categories and routes are temporarily unavailable. Please try again shortly.</p> }
+    <a asp-action="Index" asp-route-eventId="@eventId">Check categories and routes</a>
+</div></div></section>

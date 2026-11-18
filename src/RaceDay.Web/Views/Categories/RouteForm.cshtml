@@ -1,0 +1,22 @@
+@* Form Tag Helpers and field errors: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.RouteForm
+@{ bool editing = ViewData["RouteEditing"] is true; ViewData["Title"] = editing ? "Edit route" : "Add route"; var eventId = ViewContext.RouteData.Values["eventId"]; var categoryId = ViewContext.RouteData.Values["categoryId"]; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="RouteDetails" asp-route-eventId="@eventId" asp-route-categoryId="@categoryId">Back to route</a>
+    <div class="page-intro"><h1>@ViewData["Title"]</h1><p>@ViewData["EventName"] · @ViewData["CategoryName"]</p></div>
+    <div class="detail-panel"><form asp-action="@(editing ? "RouteEdit" : "RouteCreate")" asp-route-eventId="@eventId" asp-route-categoryId="@categoryId" method="post">
+        <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+        <div class="row g-3">
+            <div class="col-12"><label asp-for="RouteName" class="form-label"></label><input asp-for="RouteName" class="form-control" maxlength="120" required /><span asp-validation-for="RouteName" class="field-error"></span></div>
+            <div class="col-md-6"><label asp-for="StartLocation" class="form-label"></label><input asp-for="StartLocation" class="form-control" maxlength="200" required /><span asp-validation-for="StartLocation" class="field-error"></span></div>
+            <div class="col-md-6"><label asp-for="FinishLocation" class="form-label"></label><input asp-for="FinishLocation" class="form-control" maxlength="200" required /><span asp-validation-for="FinishLocation" class="field-error"></span></div>
+            <div class="col-12"><label asp-for="RouteDescription" class="form-label"></label><textarea asp-for="RouteDescription" class="form-control" rows="4" maxlength="1000" required></textarea><span asp-validation-for="RouteDescription" class="field-error"></span></div>
+            <div class="col-md-8"><label asp-for="RouteMapUrl" class="form-label"></label><input asp-for="RouteMapUrl" class="form-control" type="url" maxlength="500" /><span asp-validation-for="RouteMapUrl" class="field-error"></span></div>
+            <div class="col-md-4"><label asp-for="ElevationGainMetres" class="form-label"></label><input asp-for="ElevationGainMetres" class="form-control" type="number" min="0" step="1" /><span asp-validation-for="ElevationGainMetres" class="field-error"></span></div>
+        </div>
+        <p class="field-help mt-3">Map and elevation are optional. Use a full HTTP or HTTPS map link without login details.</p>
+        <div class="entry-actions mt-4"><button class="btn btn-race" type="submit">@(editing ? "Save route" : "Add route")</button><a class="btn btn-outline-secondary" asp-action="RouteDetails" asp-route-eventId="@eventId" asp-route-categoryId="@categoryId">Cancel</a></div>
+    </form></div>
+</div></section>

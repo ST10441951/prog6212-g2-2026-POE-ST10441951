@@ -129,6 +129,12 @@ internal static class Program
             "src/RaceDay.Web/Views/OwnedEvents/Details.cshtml", "src/RaceDay.Web/Views/OwnedEvents/Delete.cshtml",
             "src/RaceDay.Web/Views/OwnedEvents/_Fields.cshtml", "src/RaceDay.Web/Views/OwnedEvents/Unavailable.cshtml",
             "tests/RaceDay.Web.Tests/EventManagementTests.cs",
+            "docs/Part-3-Categories.md", "src/RaceDay.Web/Models/Organiser/CategoryForms.cs",
+            "src/RaceDay.Web/Controllers/CategoriesController.cs", "src/RaceDay.Web/Services/OrganiserCategoryWrites.cs",
+            "src/RaceDay.Web/Views/Categories/Index.cshtml", "src/RaceDay.Web/Views/Categories/CategoryForm.cshtml",
+            "src/RaceDay.Web/Views/Categories/RouteDetails.cshtml", "src/RaceDay.Web/Views/Categories/RouteForm.cshtml",
+            "src/RaceDay.Web/Views/Categories/Confirm.cshtml", "src/RaceDay.Web/Views/Categories/Unavailable.cshtml",
+            "tests/RaceDay.Web.Tests/CategoryManagementTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

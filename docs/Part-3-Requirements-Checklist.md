@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 326 MVC tests passed for `ddff471`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 355 MVC tests passed for `348fd77`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -54,8 +54,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Include name, description, date, location, distance and event type.
 - [x] Show API status and history restrictions when a change is rejected.
 - [ ] Upload and display event banners when creating or editing events.
-- [ ] Add, edit and delete age or distance categories for owned events.
-- [ ] Display and manage the existing category route information.
+- [x] Add, edit and delete age or distance categories for owned events.
+- [x] Display and manage the existing category route information.
 - [ ] View event enrolments with Participants, selected categories and statuses.
 - [ ] Connect the existing bib-number assignment functionality.
 - [ ] Capture finish times and positions after an event and correct saved results.
@@ -108,7 +108,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 355 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 397 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -134,6 +134,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify Draft creation, SAST/UTC times, edits, protected fields and permitted deletion in SQL.
 - [x] Verify status readiness, saved-history conflicts, confirmation steps and preserved related records.
 - [x] Check event-management forms on desktop/mobile and capture evidence.
+- [x] Verify category/route saves, optional fields, safe links and permitted removal in SQL.
+- [x] Verify age, duplicate-name, capacity, availability and saved-history restrictions through MVC.
+- [x] Check category/route pages on desktop/mobile and preserve entries/results during route changes.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

@@ -1,0 +1,25 @@
+@* Encoded route details and safe external links: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/security/cross-site-scripting?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.CategoryPage
+@using RaceDay.Web.Services
+@{ ViewData["Title"] = "Category route"; var route = Model.Category.Route; string? map = WebLinks.HttpUrl(route?.RouteMapUrl); }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Index" asp-route-eventId="@Model.Event.EventId">Back to categories</a>
+    <div class="page-intro"><h1>Category route</h1><p>@Model.Event.EventName · @Model.Category.CategoryName</p></div>
+    @if (TempData["CategorySaved"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+    @if (route is null)
+    {
+        <div class="notice"><h2>No route yet</h2><p>Add the start, finish and route instructions for this category.</p><a class="btn btn-race" asp-action="RouteCreate" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@Model.Category.EventCategoryId">Add route</a></div>
+    }
+    else
+    {
+        <div class="detail-panel"><h2>@route.RouteName</h2><dl class="event-facts">
+            <div><dt>Start</dt><dd>@route.StartLocation</dd></div><div><dt>Finish</dt><dd>@route.FinishLocation</dd></div>
+            <div><dt>Elevation gain</dt><dd>@(route.ElevationGainMetres is { } metres ? metres.ToString(CultureInfo.InvariantCulture) + " m" : "Not provided")</dd></div>
+        </dl><p class="event-description">@route.RouteDescription</p>
+        @if (map is not null) { <a href="@map" target="_blank" rel="noopener noreferrer">Open route map</a> }
+        <div class="entry-actions mt-4"><a class="btn btn-race" asp-action="RouteEdit" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@Model.Category.EventCategoryId">Edit route</a><a class="btn btn-outline-danger" asp-action="RouteDelete" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@Model.Category.EventCategoryId">Remove route</a></div>
+        </div>
+    }
+</div></section>

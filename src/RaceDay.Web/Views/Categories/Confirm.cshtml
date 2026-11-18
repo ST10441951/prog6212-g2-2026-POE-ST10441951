@@ -1,0 +1,17 @@
+@* Read-only confirmation and protected removal: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.CategoryPage
+@{ bool routeOnly = ViewData["DeletingRoute"] is true; ViewData["Title"] = routeOnly ? "Remove route" : "Delete category"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Index" asp-route-eventId="@Model.Event.EventId">Back to categories</a>
+    <div class="page-intro"><h1>@ViewData["Title"]</h1><p>@Model.Event.EventName · @Model.Category.CategoryName</p></div>
+    <div class="detail-panel">
+        @if (routeOnly) { <h2>@Model.Category.Route?.RouteName</h2><p>Remove only this route. The category, saved entries and results will remain.</p> }
+        else { <h2>@Model.Category.CategoryName</h2><p>Delete this unused category and its optional route. Saved entries prevent deletion, and an Open event must keep an available category.</p> }
+        <form asp-action="@(routeOnly ? "RouteDeleteConfirmed" : "DeleteConfirmed")" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@Model.Category.EventCategoryId" method="post">
+            <div asp-validation-summary="All" class="form-errors" role="alert"></div>
+            <div class="entry-actions mt-4"><button class="btn btn-danger" type="submit">@(routeOnly ? "Remove route" : "Delete category")</button><a class="btn btn-outline-secondary" asp-action="@(routeOnly ? "RouteDetails" : "Index")" asp-route-eventId="@Model.Event.EventId" asp-route-categoryId="@(routeOnly ? Model.Category.EventCategoryId : (int?)null)">@(routeOnly ? "Keep route" : "Keep category")</a></div>
+        </form>
+    </div>
+</div></section>
