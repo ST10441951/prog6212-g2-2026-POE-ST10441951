@@ -115,6 +115,10 @@ internal static class Program
             "src/RaceDay.Web/Views/Profile/Index.cshtml", "src/RaceDay.Web/Views/Profile/Edit.cshtml",
             "src/RaceDay.Web/Views/Profile/Password.cshtml", "src/RaceDay.Web/Views/Profile/Unavailable.cshtml",
             "src/RaceDay.Web/Views/Profile/PasswordUnconfirmed.cshtml", "tests/RaceDay.Web.Tests/ProfileTests.cs",
+            "docs/Part-3-Results.md", "src/RaceDay.Web/Models/Results/ResultModels.cs",
+            "src/RaceDay.Web/Controllers/ResultsController.cs", "src/RaceDay.Web/Services/ResultApiClient.cs",
+            "src/RaceDay.Web/Views/Results/Index.cshtml", "src/RaceDay.Web/Views/Results/Details.cshtml",
+            "src/RaceDay.Web/Views/Results/Unavailable.cshtml", "tests/RaceDay.Web.Tests/ResultTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

@@ -121,6 +121,16 @@ public sealed class HttpConnectionTests
                 enrolmentDate = "2026-11-18T12:00:00Z", status = "Confirmed"
             });
         });
+        upstream.MapGet("/api/results/mine", (HttpContext context) =>
+        {
+            string token = context.Request.Cookies["RaceDay.Session"] ?? "";
+            int number = token == "upstream-token-1" ? 1 : token == "upstream-token-2" ? 2 : 0;
+            if (number == 0) return Results.Unauthorized();
+            var item = System.Text.Json.Nodes.JsonNode.Parse(ResultTests.ResultJson)!;
+            item["participantUserId"] = number;
+            item["eventName"] = $"Private race for Visitor{number}";
+            return Results.Content($$"""{"page":1,"pageSize":10,"totalCount":1,"totalPages":1,"items":[{{item.ToJsonString()}}]}""", "application/json");
+        });
         await upstream.StartAsync();
         using var factory = new WebApiFactory { Reply = null };
         factory.Settings["Api:BaseUrl"] = Address(upstream);
@@ -145,6 +155,12 @@ public sealed class HttpConnectionTests
         Assert.DoesNotContain("visitor2@example.com", firstProfile);
         Assert.Contains("visitor2@example.com", secondProfile);
         Assert.DoesNotContain("visitor1@example.com", secondProfile);
+        string firstResults = await first.GetStringAsync("/results");
+        string secondResults = await second.GetStringAsync("/results");
+        Assert.Contains("Private race for Visitor1", firstResults);
+        Assert.DoesNotContain("Private race for Visitor2", firstResults);
+        Assert.Contains("Private race for Visitor2", secondResults);
+        Assert.DoesNotContain("Private race for Visitor1", secondResults);
         Assert.Contains("Visitor1", await first.GetStringAsync("/entries/1"));
         Assert.Contains("Visitor2", await second.GetStringAsync("/entries/2"));
         using var unrelated = await first.GetAsync("/entries/2");

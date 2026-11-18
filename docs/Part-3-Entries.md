@@ -34,7 +34,7 @@ Rejected changes display the API's reason. Successful changes redirect to the sa
 
 ## 4. Checks and evidence
 
-On 18 November 2026, all 257 MVC tests passed locally, with none failed or skipped. Checks cover field binding, antiforgery, saved records, entry changes, validation, ownership, role restrictions, stale forms, API failures and isolated cookies. A real HTTP test verifies that two browsers read only their own entries (Microsoft, 2026e).
+On 18 November 2026, all 293 MVC tests passed locally, with none failed or skipped. Checks cover field binding, antiforgery, saved records, entry changes, validation, ownership, role restrictions, stale forms, API failures and isolated cookies. A real HTTP test verifies that two browsers read only their own entries (Microsoft, 2026e).
 
 Browser checks used a separate database and fictional accounts. One submitted entry was verified in SQL. Refresh did not submit another entry. Duplicate, missing birth date, age, capacity, closed-deadline and foreign-category requests were rejected. Another Participant could not read the entry and had an empty personal list. Organisers could not access Participant entry pages.
 

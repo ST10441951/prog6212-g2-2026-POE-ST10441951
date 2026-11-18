@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 222 MVC tests passed for `32163b4`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 257 MVC tests passed for `573ce6d`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -58,7 +58,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] View event enrolments with Participants, selected categories and statuses.
 - [ ] Connect the existing bib-number assignment functionality.
 - [ ] Capture finish times and positions after an event and correct saved results.
-- [ ] Show saved results in the Participant's personal history.
+- [x] Show saved results in the Participant's personal history.
 
 ## Participant interface: 15 marks
 
@@ -68,8 +68,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Save the enrolment immediately through the API and show confirmation.
 - [x] Show personal event entries and enrolment statuses.
 - [x] Connect permitted cancellation, reactivation and deletion actions.
-- [ ] Show My Results with event name, date, category and finish time.
-- [ ] Show finishing position and total finishers, including non-finishing outcomes.
+- [x] Show My Results with event name, date, category and finish time.
+- [x] Show finishing position and total finishers, including non-finishing outcomes.
 - [x] View and update personal profile information.
 - [x] Connect password changes and the required sign-in afterwards.
 - [ ] Upload and display a Participant profile picture.
@@ -107,7 +107,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 257 MVC checks, including profiles, password changes, entries, accounts and protected pages.
+- [x] Pass all 293 MVC checks, including results, profiles, entries, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -125,6 +125,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify both roles' profile changes in SQL and reject protected-field changes.
 - [x] Verify password changes, cleared inputs, new sign-in and rejection of old credentials/cookies.
 - [x] Check profile pages on desktop/mobile and capture evidence.
+- [x] Verify private results, filters, paging, times, positions and non-finishing outcomes against the real API.
+- [x] Verify API corrections refresh personal results and event-wide finisher totals.
+- [x] Check result pages on desktop/mobile and capture evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

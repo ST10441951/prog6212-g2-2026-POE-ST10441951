@@ -9,6 +9,7 @@
     bool homePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase);
     bool roleHome = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), organiser ? "Organiser" : "Participant", StringComparison.OrdinalIgnoreCase);
     bool profilePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Profile", StringComparison.OrdinalIgnoreCase);
+    bool resultsPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Results", StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="en-ZA">
@@ -39,6 +40,7 @@
                     {
                         bool entriesPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Entries", StringComparison.OrdinalIgnoreCase);
                         <a class="nav-link @(entriesPage ? "active" : "")" asp-controller="Entries" asp-action="Index" aria-current="@(entriesPage ? "page" : null)">My entries</a>
+                        <a class="nav-link @(resultsPage ? "active" : "")" asp-controller="Results" asp-action="Index" aria-current="@(resultsPage ? "page" : null)">My results</a>
                     }
                     <a class="nav-link @(profilePage ? "active" : "")" asp-controller="Profile" asp-action="Index" aria-current="@(profilePage ? "page" : null)">My profile</a>
                     <span class="signed-in-user">@User.Identity?.Name <span>(@(organiser ? "Organiser" : "Participant"))</span></span>

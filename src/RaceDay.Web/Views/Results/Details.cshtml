@@ -1,0 +1,42 @@
+@* Encoded result details and shared layout: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/layout/grid/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Results.ResultDetails
+@{
+    ViewData["Title"] = "My result";
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Results" asp-action="Index">Back to my results</a>
+        <div class="page-intro"><h1>@Model.EventName</h1><p>Your official result.</p></div>
+        <div class="detail-panel">
+            <div class="category-heading">
+                <h2>@Model.CategoryName</h2>
+                <span class="event-status @(Model.ResultStatus == "Completed" ? "status-open" : Model.ResultStatus == "Disqualified" ? "status-cancelled" : "status-closed")">@Model.StatusLabel</span>
+            </div>
+            <dl class="event-facts">
+                <div><dt>Event date</dt><dd>@Model.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+                <div><dt>Distance</dt><dd>@Model.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+                <div><dt>Bib number</dt><dd>@(Model.BibNumber ?? "Not assigned")</dd></div>
+                <div><dt>Finish time</dt><dd>@Model.FinishTime</dd></div>
+                <div><dt>Overall position</dt><dd>@Model.OverallPlace</dd></div>
+                <div><dt>Category position</dt><dd>@(Model.ResultStatus != "Completed" ? "Not ranked" : Model.CategoryPosition?.ToString(CultureInfo.InvariantCulture) ?? "Not assigned")</dd></div>
+                <div><dt>Event finishers</dt><dd>@Model.TotalFinishers</dd></div>
+                <div><dt>Recorded</dt><dd>@Model.RecordedAt.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+                @if (Model.UpdatedAt is { } updated)
+                {
+                    <div><dt>Last corrected</dt><dd>@updated.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+                }
+            </dl>
+            @if (!string.IsNullOrWhiteSpace(Model.Notes))
+            {
+                <h3 class="h5 mt-4">Organiser notes</h3><p class="event-description">@Model.Notes</p>
+            }
+            <div class="entry-actions mt-4">
+                <a class="btn btn-outline-secondary" asp-controller="Events" asp-action="Details" asp-route-eventId="@Model.EventId">Event details</a>
+                <a class="btn btn-outline-secondary" asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@Model.EnrolmentId">My entry</a>
+            </div>
+        </div>
+    </div>
+</section>

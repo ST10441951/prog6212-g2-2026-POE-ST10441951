@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC event search, details, accounts, protected pages, entries, private history and profile editing are working through the API. Organiser management, results, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC event search, details, accounts, protected pages, entries, personal results and profiles are working through the API. Organiser management, result capture, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -36,7 +36,8 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Registration, login and sign-out | Working for both roles; [account notes](docs/Part-3-Accounts.md) |
 | Role-specific navigation and protected home pages | Implemented; API session rechecked before access |
 | Personal profiles and password changes | Working for both roles; [profile notes](docs/Part-3-Profiles.md) |
-| Organiser management, results and MVC image uploads | Pending |
+| Participant race history and result details | Implemented; [result notes](docs/Part-3-Results.md) |
+| Organiser management, result capture and MVC image uploads | Pending |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -60,6 +61,8 @@ Participant entry: [select category](docs/evidence/part3-enter-event.png), [save
 Entry changes: [cancel confirmation](docs/evidence/part3-entry-cancel-confirmation.png), [reactivation](docs/evidence/part3-entry-reactivate.png) and [delete confirmation](docs/evidence/part3-entry-delete-confirmation.png).
 
 Profiles: [personal details](docs/evidence/part3-profile.png), [edit form](docs/evidence/part3-profile-edit.png) and [password change](docs/evidence/part3-password-change.png). Both roles have a My profile link.
+
+Personal results: [race history](docs/evidence/part3-my-results.png), [result details](docs/evidence/part3-result-details.png) and [non-finishing result](docs/evidence/part3-result-did-not-finish.png). These screenshots use temporary review fixtures.
 
 ## Setup and run
 
@@ -109,6 +112,8 @@ Open a saved entry to cancel, reactivate or delete it. Cancel keeps the history;
 
 Both roles can use My profile to view their account, edit names, phone number and birth date, or change their password. Blank optional fields are cleared. A successful password change signs out the current browser; sign in again with the new password. Email and role cannot be changed here. See the [profile notes](docs/Part-3-Profiles.md).
 
+Participants can open My results to see official race history, filter by outcome and open a saved result. Times appear as hours:minutes:seconds, with positions and event-wide finisher totals from the API. Did not finish, Did not start and Disqualified results have no official time or rank. The Organiser must record a result before it appears here.
+
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
 7. Run tests with the API test database server and Azurite available. The MVC tests do not need the API running (Microsoft, 2026f).
@@ -131,19 +136,19 @@ The MVC Dockerfile, container checks and tested build/run commands are still to 
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `32163b4` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44333422717) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44333422617). The build ran 810 API tests and 222 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `573ce6d` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44367577876) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44367577847). The build ran 810 API tests and 257 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The newer profile pages have 257 passing MVC tests locally and are not yet included in the recorded GitHub revision.
+The newer My results pages have 293 passing MVC tests locally and are not yet included in the recorded GitHub revision.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 257 checks covering browsing, entries, private history, profiles, password changes, settings, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 293 checks covering browsing, entries, personal results, profiles, password changes, settings, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 257 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified accounts, browsing, entries, private history, saved profile details and password changes against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence) and [profile checks](docs/Part-3-Profiles.md#4-checks-and-evidence).
+All 293 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified accounts, browsing, entries, results, profiles and password changes against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence) and [result checks](docs/Part-3-Results.md#4-checks-and-evidence).
 
 ## Project files
 
@@ -157,6 +162,7 @@ All 257 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [Event notes](docs/Part-3-Events.md) | Search, paging, public details, categories, routes and checks |
 | [Entry notes](docs/Part-3-Entries.md) | Category selection, saved entries, private history and checks |
 | [Profile notes](docs/Part-3-Profiles.md) | Personal details, password changes and checks |
+| [Result notes](docs/Part-3-Results.md) | Private race history, finish times, positions and checks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |

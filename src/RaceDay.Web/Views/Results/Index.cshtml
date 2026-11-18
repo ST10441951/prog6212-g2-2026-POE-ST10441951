@@ -1,0 +1,89 @@
+@* Encoded private lists, filters and pagination: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/components/pagination/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Results.ResultListViewModel
+@using RaceDay.Web.Models.Results
+@{
+    ViewData["Title"] = "My results";
+}
+<section class="events-section">
+    <div class="container">
+        <div class="page-intro"><h1>My results</h1><p>Your official race history, recorded by the event Organiser.</p></div>
+        <form class="event-search" asp-controller="Results" asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label" for="result-status">Result status</label>
+                    <select class="form-select" id="result-status" name="resultStatus">
+                        <option value="">All results</option>
+                        @foreach (string status in new[] { "Completed", "DidNotFinish", "Disqualified", "DidNotStart" })
+                        {
+                            <option value="@status" selected="@(string.Equals(Model.Search.ResultStatus, status, StringComparison.OrdinalIgnoreCase))">@ResultDetails.Label(status)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3"><button class="btn btn-race" type="submit">Filter results</button></div>
+                <div class="col-md-3"><a asp-controller="Results" asp-action="Index">Clear filters</a></div>
+            </div>
+        </form>
+        @if (Model.Error is not null)
+        {
+            <div class="notice" role="alert"><h2>Check the filters</h2><p>@Model.Error</p></div>
+        }
+        else if (Model.Results is { } page)
+        {
+            @if (page.Items.Count == 0)
+            {
+                <div class="notice">
+                    <h2>@(page.Page > 1 ? "No results on this page" : Model.Search.ResultStatus is not null ? "No results match this status" : "No official results yet")</h2>
+                    @if (page.Page > 1)
+                    {
+                        <a asp-controller="Results" asp-action="Index" asp-route-page="1" asp-route-resultStatus="@Model.Search.ResultStatus">First page</a>
+                    }
+                    else
+                    {
+                        <p>Results appear here when the Organiser records them. An event entry alone is not an official result.</p>
+                        <a asp-controller="Entries" asp-action="Index">View my entries</a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="entry-list">
+                    @foreach (var result in page.Items)
+                    {
+                        <article class="detail-panel">
+                            <div class="category-heading">
+                                <h2><a asp-controller="Results" asp-action="Details" asp-route-enrolmentId="@result.EnrolmentId">@result.EventName</a></h2>
+                                <span class="event-status @(result.ResultStatus == "Completed" ? "status-open" : result.ResultStatus == "Disqualified" ? "status-cancelled" : "status-closed")">@result.StatusLabel</span>
+                            </div>
+                            <p>@result.CategoryName · @result.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</p>
+                            <p>@result.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
+                            <dl class="event-facts mb-0">
+                                <div><dt>Finish time</dt><dd>@result.FinishTime</dd></div>
+                                <div><dt>Overall position</dt><dd>@result.OverallPlace</dd></div>
+                                <div><dt>Event finishers</dt><dd>@result.TotalFinishers</dd></div>
+                            </dl>
+                        </article>
+                    }
+                </div>
+            }
+            @if (page.TotalPages > 1)
+            {
+                <nav class="event-pagination" aria-label="My result pages">
+                    <ul class="pagination flex-wrap mb-0">
+                        @if (page.Page > 1)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Results" asp-action="Index" asp-route-page="@Math.Min(page.Page - 1, page.TotalPages)" asp-route-resultStatus="@Model.Search.ResultStatus">Previous</a></li>
+                        }
+                        @if (page.Page < page.TotalPages)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Results" asp-action="Index" asp-route-page="@(page.Page + 1)" asp-route-resultStatus="@Model.Search.ResultStatus">Next</a></li>
+                        }
+                    </ul>
+                    <p>@(page.TotalCount) results · Page @(page.Page) of @(page.TotalPages)</p>
+                </nav>
+            }
+        }
+    </div>
+</section>
