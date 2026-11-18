@@ -32,7 +32,7 @@ The saved ID and role must match an active API account. API 401, 403 or 404, exp
 
 An unavailable or unreadable API response blocks protected access with 503. The cached session stays available for a retry until its original expiry; requests do not extend it. Public pages hide the unverified identity and show an account-service warning.
 
-Organisers see an Organiser home link; Participants see My account, My entries and My results. Both roles have My profile for personal details and password changes. Participants can manage permitted entries and read official results. The dashboard, event management, result capture and image uploads are still outstanding. API ownership rules remain unchanged. See the [profile](Part-3-Profiles.md) and [result notes](Part-3-Results.md).
+Organisers have Organiser home and My events; Participants have My account, My entries and My results. Both roles have My profile. The Organiser dashboard and event list now read live API data. Event editing, categories, result capture and image uploads remain outstanding. API ownership rules are unchanged. See the [profile](Part-3-Profiles.md), [result](Part-3-Results.md) and [Organiser notes](Part-3-Organiser.md).
 
 ## 4. Sign-out and form protection
 
@@ -42,7 +42,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 18 November 2026, all 293 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
+On 18 November 2026, all 326 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 
@@ -58,7 +58,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `573ce6d` passed using temporary Windows runners. The newer My results pages are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
+The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `3056667` passed using temporary Windows runners. The newer Organiser pages are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
 
 ## References
 

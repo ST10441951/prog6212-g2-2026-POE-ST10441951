@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 257 MVC tests passed for `573ce6d`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 293 MVC tests passed for `3056667`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -48,7 +48,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Organiser interface: 15 marks
 
-- [ ] Show owned events, enrolment totals per event and upcoming dates on the dashboard.
+- [x] Show owned events, enrolment totals per event and upcoming dates on the dashboard.
+- [x] List owned events in every status with filtering and pagination.
 - [ ] Create, edit and delete owned events through the API.
 - [ ] Include name, description, date, location, distance and event type.
 - [ ] Show API status and history restrictions when a change is rejected.
@@ -107,7 +108,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 293 MVC checks, including results, profiles, entries, accounts and protected pages.
+- [x] Pass all 326 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -128,6 +129,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify private results, filters, paging, times, positions and non-finishing outcomes against the real API.
 - [x] Verify API corrections refresh personal results and event-wide finisher totals.
 - [x] Check result pages on desktop/mobile and capture evidence.
+- [x] Verify Organiser totals against SQL, private ownership, filters, paging and refreshed counts.
+- [x] Check Organiser dashboard/list pages on desktop/mobile and capture evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

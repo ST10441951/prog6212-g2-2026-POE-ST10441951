@@ -2,6 +2,7 @@
    https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0
    https://getbootstrap.com/docs/5.3/layout/grid/
    Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.OrganiserDashboard
 @{
     ViewData["Title"] = "Organiser home";
 }
@@ -10,13 +11,39 @@
         <div class="page-intro">
             <p class="eyebrow">Organiser</p>
             <h1>Welcome, @User.Identity?.Name</h1>
-            <p>Your RaceDay organiser account.</p>
+            <p>Your events, saved entries and upcoming dates.</p>
         </div>
-        <div class="account-card role-home-card">
-            <h2>Explore RaceDay</h2>
-            <p>See the upcoming running, walking and cycling events listed on RaceDay.</p>
-            <a class="btn btn-race" asp-controller="Home" asp-action="Index">View upcoming events</a>
-            <a class="ms-3" asp-controller="Profile" asp-action="Index">My profile</a>
+        <div class="row g-3 mb-4" aria-label="Organiser totals">
+            <div class="col-md-4"><div class="detail-panel h-100"><h2 class="h6">Your events</h2><p class="fs-2 fw-bold mb-0">@Model.TotalEvents</p></div></div>
+            <div class="col-md-4"><div class="detail-panel h-100"><h2 class="h6">Upcoming events</h2><p class="fs-2 fw-bold mb-0">@Model.UpcomingEvents</p><p class="mb-0">Future Open and Closed events.</p></div></div>
+            <div class="col-md-4"><div class="detail-panel h-100"><h2 class="h6">Saved entries</h2><p class="fs-2 fw-bold mb-0">@Model.TotalEnrolments</p><p class="mb-0">@Model.ConfirmedEnrolments Confirmed · @Model.CancelledEnrolments Cancelled</p></div></div>
         </div>
+        <div class="entry-actions mb-4">
+            <a class="btn btn-race" asp-controller="Organiser" asp-action="Events">My events</a>
+            <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">View upcoming events</a>
+            <a class="btn btn-outline-secondary" asp-controller="Profile" asp-action="Index">My profile</a>
+        </div>
+        <h2 class="h4 mb-3">Your events and dates</h2>
+        @if (Model.Events.Count == 0)
+        {
+            <div class="notice"><h3>No events yet</h3><p>Your event summary will appear here once an event is created.</p></div>
+        }
+        else
+        {
+            <div class="entry-list">
+                @foreach (var item in Model.Events)
+                {
+                    <article class="detail-panel">
+                        <div class="category-heading"><h3 class="h5">@item.EventName</h3>@await Html.PartialAsync("_Status", item.Status)</div>
+                        <p>@item.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
+                        <dl class="event-facts mb-0">
+                            <div><dt>Saved entries</dt><dd>@item.TotalEnrolments</dd></div>
+                            <div><dt>Confirmed</dt><dd>@item.ConfirmedEnrolments</dd></div>
+                            <div><dt>Cancelled</dt><dd>@item.CancelledEnrolments</dd></div>
+                        </dl>
+                    </article>
+                }
+            </div>
+        }
     </div>
 </section>

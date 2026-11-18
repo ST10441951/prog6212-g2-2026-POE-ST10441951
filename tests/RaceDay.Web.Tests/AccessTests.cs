@@ -306,6 +306,7 @@ public sealed class AccessTests
         {
             "/api/auth/login" => Login(factory, role),
             "/api/auth/logout" => new HttpResponseMessage(HttpStatusCode.NoContent),
+            "/api/organiser/dashboard" => WebApiFactory.Json("{\"totalEvents\":0,\"totalEnrolments\":0,\"confirmedEnrolments\":0,\"cancelledEnrolments\":0,\"upcomingEvents\":0,\"events\":[]}"),
             _ => WebApiFactory.Json(WebApiFactory.EventJson)
         };
         factory.ProfileReply = _ => WebApiFactory.Profile(role);

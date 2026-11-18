@@ -7,7 +7,10 @@
     bool signedIn = User.Identity?.IsAuthenticated is true;
     bool organiser = User.IsInRole("Organiser");
     bool homePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase);
-    bool roleHome = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), organiser ? "Organiser" : "Participant", StringComparison.OrdinalIgnoreCase);
+    bool roleHome = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), organiser ? "Organiser" : "Participant", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase);
+    bool ownedEventsPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Organiser", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Events", StringComparison.OrdinalIgnoreCase);
     bool profilePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Profile", StringComparison.OrdinalIgnoreCase);
     bool resultsPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Results", StringComparison.OrdinalIgnoreCase);
 }
@@ -36,7 +39,11 @@
                 else
                 {
                     <a class="nav-link @(roleHome ? "active" : "")" asp-controller="@(organiser ? "Organiser" : "Participant")" asp-action="Index" aria-current="@(roleHome ? "page" : null)">@(organiser ? "Organiser home" : "My account")</a>
-                    @if (!organiser)
+                    @if (organiser)
+                    {
+                        <a class="nav-link @(ownedEventsPage ? "active" : "")" asp-controller="Organiser" asp-action="Events" aria-current="@(ownedEventsPage ? "page" : null)">My events</a>
+                    }
+                    else
                     {
                         bool entriesPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Entries", StringComparison.OrdinalIgnoreCase);
                         <a class="nav-link @(entriesPage ? "active" : "")" asp-controller="Entries" asp-action="Index" aria-current="@(entriesPage ? "page" : null)">My entries</a>

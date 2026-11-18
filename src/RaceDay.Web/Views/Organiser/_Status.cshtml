@@ -1,0 +1,8 @@
+@* Text and colour status badges: Bootstrap (2026).
+   https://getbootstrap.com/docs/5.3/components/badge/
+   Accessed: 18 November 2026. *@
+@model string
+@{
+    string colour = Model switch { "Open" => "status-open", "Closed" => "status-closed", "Cancelled" => "status-cancelled", _ => "status-completed" };
+}
+<span class="event-status @colour">@Model</span>

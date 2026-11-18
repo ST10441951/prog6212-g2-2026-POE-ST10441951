@@ -74,6 +74,59 @@ public sealed class HttpConnectionTests
         Assert.Equal(0, redirectedRequests);
     }
 
+    [Fact]
+    public async Task OrganiserClient_KeepsDashboardAndOwnedEventsSeparateBetweenBrowsers()
+    {
+        int logins = 0;
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+        builder.Logging.ClearProviders();
+        await using var upstream = builder.Build();
+        int Owner(HttpContext context) => context.Request.Cookies["RaceDay.Session"] switch
+        { "organiser-1" => 1, "organiser-2" => 2, _ => 0 };
+        upstream.MapPost("/api/auth/login", (HttpContext context) =>
+        {
+            int id = Interlocked.Increment(ref logins);
+            context.Response.Cookies.Append("RaceDay.Session", $"organiser-{id}");
+            return Results.Json(new { sessionExpiresAt = DateTimeOffset.UtcNow.AddMinutes(20), user = new { userId = id, firstName = $"Owner{id}", role = "Organiser", isActive = true } });
+        });
+        upstream.MapGet("/api/profile", (HttpContext context) =>
+        {
+            int id = Owner(context);
+            return id == 0 ? Results.Unauthorized() : Results.Json(new { userId = id, firstName = $"Owner{id}", role = "Organiser", isActive = true });
+        });
+        upstream.MapGet("/api/organiser/dashboard", (HttpContext context) =>
+        {
+            int id = Owner(context);
+            if (id == 0) return Results.Unauthorized();
+            context.Response.Cookies.Append("RaceDay.Session", "unexpected-shared-cookie");
+            var data = System.Text.Json.Nodes.JsonNode.Parse(OrganiserTests.DashboardJson)!;
+            data["events"]![0]!["eventName"] = $"Private event for Owner{id}";
+            return Results.Content(data.ToJsonString(), "application/json");
+        });
+        upstream.MapGet("/api/events/mine", (HttpContext context) =>
+        {
+            int id = Owner(context);
+            if (id == 0) return Results.Unauthorized();
+            var data = System.Text.Json.Nodes.JsonNode.Parse(WebApiFactory.EventJson)!;
+            data["pageSize"] = 10;
+            data["items"]![0]!["eventName"] = $"Private event for Owner{id}";
+            return Results.Content(data.ToJsonString(), "application/json");
+        });
+        await upstream.StartAsync();
+        using var factory = new WebApiFactory { Reply = null };
+        factory.Settings["Api:BaseUrl"] = Address(upstream);
+        using var first = factory.Client(); using var second = factory.Client();
+        using var firstLogin = await AccountTests.PostForm(first, "/account/login", AccountTests.LoginFields());
+        using var secondLogin = await AccountTests.PostForm(second, "/account/login", AccountTests.LoginFields());
+        foreach (string route in new[] { "/organiser", "/organiser/events" })
+        {
+            string firstPage = await first.GetStringAsync(route), secondPage = await second.GetStringAsync(route);
+            Assert.Contains("Private event for Owner1", firstPage); Assert.DoesNotContain("Private event for Owner2", firstPage);
+            Assert.Contains("Private event for Owner2", secondPage); Assert.DoesNotContain("Private event for Owner1", secondPage);
+        }
+    }
+
     private static string Address(WebApplication application) => application.Services
         .GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single() + "/";
 

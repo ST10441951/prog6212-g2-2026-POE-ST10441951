@@ -1,0 +1,13 @@
+@* Friendly service error page: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{
+    ViewData["Title"] = "Organiser service unavailable";
+}
+<section class="events-section">
+    <div class="container"><div class="notice" role="alert">
+        <h1>Your events are temporarily unavailable</h1>
+        <p>We could not load your event information. Please try again shortly.</p>
+        <a asp-controller="Organiser" asp-action="Index">Try Organiser home again</a>
+    </div></div>
+</section>

@@ -1,0 +1,83 @@
+@* Private filters, lists and paging: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/components/pagination/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.OwnedEventListViewModel
+@{
+    ViewData["Title"] = "My events";
+}
+<section class="events-section">
+    <div class="container">
+        <div class="page-intro"><h1>My events</h1><p>All events you have created, including Draft and historical events.</p></div>
+        <form class="event-search" asp-controller="Organiser" asp-action="Events" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label" for="owned-status">Event status</label>
+                    <select class="form-select" id="owned-status" name="status">
+                        <option value="">All events</option>
+                        @foreach (string status in new[] { "Draft", "Open", "Closed", "Cancelled", "Completed" })
+                        {
+                            <option value="@status" selected="@(string.Equals(Model.Search.Status, status, StringComparison.OrdinalIgnoreCase))">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3"><button class="btn btn-race" type="submit">Filter events</button></div>
+                <div class="col-md-3"><a asp-controller="Organiser" asp-action="Events">Clear filters</a></div>
+            </div>
+        </form>
+        @if (Model.Error is not null)
+        {
+            <div class="notice" role="alert"><h2>Check the filters</h2><p>@Model.Error</p></div>
+        }
+        else if (Model.Events is { } page)
+        {
+            @if (page.Items.Count == 0)
+            {
+                <div class="notice">
+                    <h2>@(page.Page > 1 ? "No events on this page" : Model.Search.Status is not null ? "No events match this status" : "No events yet")</h2>
+                    @if (page.Page > 1)
+                    {
+                        <a asp-controller="Organiser" asp-action="Events" asp-route-page="1" asp-route-status="@Model.Search.Status">First page</a>
+                    }
+                    else
+                    {
+                        <p>Your own event records will appear here.</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="entry-list">
+                    @foreach (var item in page.Items)
+                    {
+                        <article class="detail-panel">
+                            <div class="category-heading"><h2>@item.EventName</h2>@await Html.PartialAsync("_Status", item.Status)</div>
+                            <p>@item.EventType · @item.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km · @item.City, @item.Province</p>
+                            <p class="mb-0">@item.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
+                            @if (item.Status is "Open" or "Closed" or "Completed")
+                            {
+                                <a class="d-inline-block mt-3" asp-controller="Events" asp-action="Details" asp-route-eventId="@item.EventId">View public event</a>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+            @if (page.TotalPages > 1)
+            {
+                <nav class="event-pagination" aria-label="My event pages">
+                    <ul class="pagination flex-wrap mb-0">
+                        @if (page.Page > 1)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Organiser" asp-action="Events" asp-route-page="@Math.Min(page.Page - 1, page.TotalPages)" asp-route-status="@Model.Search.Status">Previous</a></li>
+                        }
+                        @if (page.Page < page.TotalPages)
+                        {
+                            <li class="page-item"><a class="page-link" asp-controller="Organiser" asp-action="Events" asp-route-page="@(page.Page + 1)" asp-route-status="@Model.Search.Status">Next</a></li>
+                        }
+                    </ul>
+                    <p>@(page.TotalCount) events · Page @(page.Page) of @(page.TotalPages)</p>
+                </nav>
+            }
+        }
+    </div>
+</section>
