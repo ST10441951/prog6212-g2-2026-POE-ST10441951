@@ -19,6 +19,7 @@
             <div class="col-md-4"><div class="detail-panel h-100"><h2 class="h6">Saved entries</h2><p class="fs-2 fw-bold mb-0">@Model.TotalEnrolments</p><p class="mb-0">@Model.ConfirmedEnrolments Confirmed · @Model.CancelledEnrolments Cancelled</p></div></div>
         </div>
         <div class="entry-actions mb-4">
+            <a class="btn btn-race" asp-controller="OwnedEvents" asp-action="Create">Create event</a>
             <a class="btn btn-race" asp-controller="Organiser" asp-action="Events">My events</a>
             <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">View upcoming events</a>
             <a class="btn btn-outline-secondary" asp-controller="Profile" asp-action="Index">My profile</a>
@@ -34,7 +35,7 @@
                 @foreach (var item in Model.Events)
                 {
                     <article class="detail-panel">
-                        <div class="category-heading"><h3 class="h5">@item.EventName</h3>@await Html.PartialAsync("_Status", item.Status)</div>
+                        <div class="category-heading"><h3 class="h5"><a asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@item.EventId">@item.EventName</a></h3>@await Html.PartialAsync("_Status", item.Status)</div>
                         <p>@item.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
                         <dl class="event-facts mb-0">
                             <div><dt>Saved entries</dt><dd>@item.TotalEnrolments</dd></div>

@@ -1,0 +1,10 @@
+@* Friendly service and uncertain-save responses: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{ ViewData["Title"] = "Event service unavailable"; }
+<section class="events-section"><div class="container"><div class="notice" role="alert">
+    <h1>We could not complete the event request</h1>
+    @if (ViewData["UnconfirmedEvent"] is true) { <p>The change could not be confirmed. Check My events before trying again.</p> }
+    else { <p>The event service is temporarily unavailable. Please try again shortly.</p> }
+    <a asp-controller="Organiser" asp-action="Events">Check my events</a>
+</div></div></section>

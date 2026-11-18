@@ -1,0 +1,16 @@
+@* Read-only confirmation and protected deletion: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Events.EventDetails
+@{ ViewData["Title"] = "Delete event"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@Model.EventId">Back to event</a>
+    <div class="page-intro"><h1>Delete event</h1><p>Confirm before permanently removing this event.</p></div>
+    <div class="detail-panel"><h2>@Model.EventName</h2>
+        <p>Deletion cannot be undone. Events with categories, saved entries or a banner cannot be deleted. Cancel the event through Edit event when its history must be kept.</p>
+        <form asp-controller="OwnedEvents" asp-action="DeleteConfirmed" asp-route-eventId="@Model.EventId" method="post">
+            <div asp-validation-summary="All" class="form-errors" role="alert"></div>
+            <div class="entry-actions mt-4"><button class="btn btn-danger" type="submit">Delete permanently</button><a class="btn btn-outline-secondary" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@Model.EventId">Keep event</a></div>
+        </form>
+    </div>
+</div></section>

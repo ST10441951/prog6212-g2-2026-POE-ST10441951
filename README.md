@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC event search, details, accounts, entries, personal results, profiles and Organiser dashboard are working through the API. Event editing, categories, result capture, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC event search, accounts, entries, results, profiles, Organiser dashboard and event management are working through the API. Category management, result capture, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -38,7 +38,8 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Personal profiles and password changes | Working for both roles; [profile notes](docs/Part-3-Profiles.md) |
 | Participant race history and result details | Implemented; [result notes](docs/Part-3-Results.md) |
 | Organiser dashboard and owned-event list | Implemented; [Organiser notes](docs/Part-3-Organiser.md) |
-| Event editing, categories, result capture and MVC image uploads | Pending |
+| Organiser event creation, editing and deletion | Implemented; [event management](docs/Part-3-Event-Management.md) |
+| Categories, result capture and MVC image uploads | Pending |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -66,6 +67,8 @@ Profiles: [personal details](docs/evidence/part3-profile.png), [edit form](docs/
 Personal results: [race history](docs/evidence/part3-my-results.png), [result details](docs/evidence/part3-result-details.png) and [non-finishing result](docs/evidence/part3-result-did-not-finish.png). These screenshots use temporary review fixtures.
 
 Organisers: [dashboard](docs/evidence/part3-organiser-home.png), [owned events](docs/evidence/part3-owned-events.png) and [Draft filter](docs/evidence/part3-owned-drafts.png). The dashboard shows API totals and dates for every owned event.
+
+Event management: [create form](docs/evidence/part3-event-create.png), [saved Draft](docs/evidence/part3-event-created.png), [edit form](docs/evidence/part3-event-edit.png) and [delete confirmation](docs/evidence/part3-event-delete-confirmation.png). The screenshots use fictional review events.
 
 ## Setup and run
 
@@ -117,7 +120,9 @@ Both roles can use My profile to view their account, edit names, phone number an
 
 Participants can open My results to see official race history, filter by outcome and open a saved result. Times appear as hours:minutes:seconds, with positions and event-wide finisher totals from the API. Did not finish, Did not start and Disqualified results have no official time or rank. The Organiser must record a result before it appears here.
 
-Organiser home shows event totals, upcoming event count and saved Confirmed/Cancelled entries, with dates and counts per event. My events lists all owned records, including Draft and historical events, with status filters and ten events per page. Creation, editing and deletion forms remain to be added.
+Organiser home shows event totals, upcoming event count and saved Confirmed/Cancelled entries, with dates and counts per event. My events lists all owned records, including Draft and historical events, with status filters and ten events per page.
+
+Use Create event to save a Draft. Event names open private details with Edit event and Delete event. Enter times in SAST; the API stores UTC. Status readiness, saved history and dependent records can prevent changes. A rejected form shows the reason and keeps the entered details. Delete requires confirmation. See the [event-management notes](docs/Part-3-Event-Management.md).
 
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
@@ -141,19 +146,19 @@ The MVC Dockerfile, container checks and tested build/run commands are still to 
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `3056667` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44371518721) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44371518995). The build ran 810 API tests and 293 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `ddff471` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44374873451) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44374873591). The build ran 810 API tests and 326 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The newer Organiser pages have 326 passing MVC tests locally and are not yet included in the recorded GitHub revision.
+The newer event-management pages have 355 passing MVC tests locally and are not yet included in the recorded GitHub revision.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 326 checks covering browsing, entries, results, profiles, the Organiser dashboard and list, settings, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 355 checks covering browsing, entries, results, profiles, Organiser reads and event writes, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 326 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence) and [Organiser checks](docs/Part-3-Organiser.md#3-checks-and-evidence).
+All 355 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence) and [Organiser checks](docs/Part-3-Organiser.md#3-checks-and-evidence).
 
 ## Project files
 
@@ -169,6 +174,7 @@ All 326 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [Profile notes](docs/Part-3-Profiles.md) | Personal details, password changes and checks |
 | [Result notes](docs/Part-3-Results.md) | Private race history, finish times, positions and checks |
 | [Organiser notes](docs/Part-3-Organiser.md) | Dashboard totals, owned events, filters and checks |
+| [Event management](docs/Part-3-Event-Management.md) | Draft creation, editing, status changes, deletion and checks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |

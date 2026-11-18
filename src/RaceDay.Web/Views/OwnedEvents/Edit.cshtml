@@ -1,0 +1,16 @@
+@* Protected edit forms and field validation: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.EditEventForm
+@{ ViewData["Title"] = "Edit event"; var eventId = ViewContext.RouteData.Values["eventId"]; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@eventId">Back to event</a>
+    <div class="page-intro"><h1>Edit event</h1><p>Saved entries can limit schedule changes. Status changes depend on categories, dates and recorded results.</p></div>
+    <div class="detail-panel"><form asp-controller="OwnedEvents" asp-action="Edit" asp-route-eventId="@eventId" method="post">
+        <partial name="_Fields" model="Model" />
+        <div class="mt-3"><label asp-for="Status" class="form-label"></label><select asp-for="Status" class="form-select" required>
+            @foreach (string status in new[] { "Draft", "Open", "Closed", "Cancelled", "Completed" }) { <option value="@status">@status</option> }
+        </select><span asp-validation-for="Status" class="field-error"></span></div>
+        <div class="entry-actions mt-4"><button class="btn btn-race" type="submit">Save event</button><a class="btn btn-outline-secondary" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@eventId">Cancel</a></div>
+    </form></div>
+</div></section>

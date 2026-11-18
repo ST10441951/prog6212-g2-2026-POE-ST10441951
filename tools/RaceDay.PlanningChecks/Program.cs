@@ -123,6 +123,12 @@ internal static class Program
             "src/RaceDay.Web/Services/OrganiserApiClient.cs", "src/RaceDay.Web/Views/Organiser/Events.cshtml",
             "src/RaceDay.Web/Views/Organiser/Unavailable.cshtml", "src/RaceDay.Web/Views/Organiser/_Status.cshtml",
             "tests/RaceDay.Web.Tests/OrganiserTests.cs",
+            "docs/Part-3-Event-Management.md", "src/RaceDay.Web/Controllers/OwnedEventsController.cs",
+            "src/RaceDay.Web/Models/Organiser/EventForms.cs", "src/RaceDay.Web/Services/OrganiserEventWrites.cs",
+            "src/RaceDay.Web/Views/OwnedEvents/Create.cshtml", "src/RaceDay.Web/Views/OwnedEvents/Edit.cshtml",
+            "src/RaceDay.Web/Views/OwnedEvents/Details.cshtml", "src/RaceDay.Web/Views/OwnedEvents/Delete.cshtml",
+            "src/RaceDay.Web/Views/OwnedEvents/_Fields.cshtml", "src/RaceDay.Web/Views/OwnedEvents/Unavailable.cshtml",
+            "tests/RaceDay.Web.Tests/EventManagementTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

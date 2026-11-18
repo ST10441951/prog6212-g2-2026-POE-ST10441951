@@ -4,7 +4,7 @@
 
 `src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Typed clients cover public events, accounts, entries, profiles, personal results and Organiser reads (Microsoft, 2026a; 2026b).
 
-The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers view dashboard totals and their event list. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md) and [account notes](Part-3-Accounts.md). Event editing, categories, result capture, MVC image uploads and Docker remain outstanding.
+The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers view dashboard totals and create, edit or delete owned events. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md), [event-management](Part-3-Event-Management.md) and [account notes](Part-3-Accounts.md). Categories, result capture, MVC image uploads and Docker remain outstanding.
 
 ## 2. Settings
 
@@ -34,13 +34,13 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 326 MVC checks cover browsing, entries, results, profiles, Organiser reads, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 355 MVC checks cover browsing, entries, results, profiles, Organiser reads and event writes, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 326 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 18 November 2026, all 355 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `3056667` using temporary Windows runners. That revision ran 810 API and 293 MVC tests. The newer Organiser pages have 326 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `ddff471` using temporary Windows runners. That revision ran 810 API and 326 MVC tests. The newer event-management pages have 355 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

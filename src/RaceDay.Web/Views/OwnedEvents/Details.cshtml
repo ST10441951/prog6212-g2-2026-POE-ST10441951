@@ -1,0 +1,34 @@
+@* Encoded private details and safe image addresses: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/security/cross-site-scripting?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Events.EventDetails
+@using RaceDay.Web.Services
+@{ ViewData["Title"] = "My event"; string? banner = WebLinks.HttpUrl(Model.BannerImageUrl); }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="Organiser" asp-action="Events">Back to my events</a>
+    @if (TempData["EventSaved"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+    <div class="page-intro"><h1>@Model.EventName</h1>@await Html.PartialAsync("~/Views/Organiser/_Status.cshtml", Model.Status)</div>
+    @if (banner is not null) { <img class="event-banner mb-4" src="@banner" alt="Banner for @Model.EventName" referrerpolicy="no-referrer" /> }
+    <div class="detail-panel">
+        <h2>Event details</h2><p class="event-description">@Model.Description</p>
+        <dl class="event-facts">
+            <div><dt>Sport</dt><dd>@Model.EventType</dd></div>
+            <div><dt>Distance</dt><dd>@Model.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+            <div><dt>Event start</dt><dd>@Model.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm:ss", CultureInfo.InvariantCulture) SAST</dd></div>
+            <div><dt>Entries close</dt><dd>@Model.EntryClosingDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm:ss", CultureInfo.InvariantCulture) SAST</dd></div>
+            <div><dt>Venue</dt><dd>@Model.VenueName</dd></div>
+            <div><dt>Address</dt><dd>@Model.AddressLine1, @Model.City, @Model.Province</dd></div>
+            @if (Model.Latitude is { } latitude && Model.Longitude is { } longitude)
+            { <div><dt>Coordinates</dt><dd>@latitude.ToString(CultureInfo.InvariantCulture), @longitude.ToString(CultureInfo.InvariantCulture)</dd></div> }
+        </dl>
+        <div class="entry-actions mt-4">
+            <a class="btn btn-race" asp-controller="OwnedEvents" asp-action="Edit" asp-route-eventId="@Model.EventId">Edit event</a>
+            <a class="btn btn-outline-danger" asp-controller="OwnedEvents" asp-action="Delete" asp-route-eventId="@Model.EventId">Delete event</a>
+        </div>
+    </div>
+    <div class="detail-panel mt-4"><h2>Categories</h2>
+        @if (Model.Categories.Count == 0) { <p class="mb-0">No categories have been added.</p> }
+        else { @foreach (var category in Model.Categories) { <p>@category.CategoryName · @category.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km · @(category.IsAvailable ? "Available" : "Unavailable")</p> } }
+    </div>
+</div></section>

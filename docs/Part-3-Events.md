@@ -18,7 +18,7 @@ Participants can now enter an event and read their private entry history. See th
 
 ## 3. Checks and evidence
 
-On 18 November 2026, all 326 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
+On 18 November 2026, all 355 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
 
 Browser checks used a separate database with five extra cycling fixtures to exercise multiple pages. MVC names and page results matched the real API. Combined filters, inclusive dates, clear filters, invalid ranges, out-of-range pages, Completed events and Draft/Cancelled visibility all passed. The temporary database was removed afterwards; `RaceDayPart2` was not changed.
 

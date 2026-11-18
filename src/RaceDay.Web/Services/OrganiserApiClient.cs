@@ -13,7 +13,7 @@ namespace RaceDay.Web.Services;
 // https://learn.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-10.0
 // Contract: docs/API-Endpoint-Plan.md, section 7.
 // Accessed: 18 November 2026.
-public sealed class OrganiserApiClient(HttpClient client)
+public sealed partial class OrganiserApiClient(HttpClient client)
 {
     internal async Task<OrganiserDashboard> Dashboard(WebLogin login, CancellationToken cancellationToken)
     {

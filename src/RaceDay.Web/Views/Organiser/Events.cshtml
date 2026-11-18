@@ -9,6 +9,8 @@
 <section class="events-section">
     <div class="container">
         <div class="page-intro"><h1>My events</h1><p>All events you have created, including Draft and historical events.</p></div>
+        @if (TempData["EventSaved"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+        <a class="btn btn-race mb-4" asp-controller="OwnedEvents" asp-action="Create">Create event</a>
         <form class="event-search" asp-controller="Organiser" asp-action="Events" method="get">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
@@ -51,7 +53,7 @@
                     @foreach (var item in page.Items)
                     {
                         <article class="detail-panel">
-                            <div class="category-heading"><h2>@item.EventName</h2>@await Html.PartialAsync("_Status", item.Status)</div>
+                            <div class="category-heading"><h2><a asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@item.EventId">@item.EventName</a></h2>@await Html.PartialAsync("_Status", item.Status)</div>
                             <p>@item.EventType · @item.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km · @item.City, @item.Province</p>
                             <p class="mb-0">@item.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</p>
                             @if (item.Status is "Open" or "Closed" or "Completed")
