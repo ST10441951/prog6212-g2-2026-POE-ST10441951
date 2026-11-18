@@ -1,0 +1,43 @@
+@* Encoded private details and Bootstrap layout: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/security/cross-site-scripting?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/layout/grid/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Profiles.ProfileDetails
+@using RaceDay.Web.Services
+@{
+    ViewData["Title"] = "My profile";
+    string? picture = WebLinks.HttpUrl(Model.ProfilePictureUrl);
+}
+<section class="events-section">
+    <div class="container">
+        <div class="page-intro"><h1>My profile</h1><p>Your personal details and account information.</p></div>
+        @if (TempData["ProfileSaved"] is true)
+        {
+            <div class="alert alert-success" role="status">Your profile has been updated.</div>
+        }
+        <div class="detail-panel">
+            <div class="profile-heading">
+                @if (picture is not null)
+                {
+                    <img class="profile-photo" src="@picture" alt="Profile picture for @Model.FirstName" referrerpolicy="no-referrer" />
+                }
+                else
+                {
+                    <div class="profile-initial" aria-hidden="true">@Model.FirstName[0]</div>
+                }
+                <div><h2>@Model.FirstName @Model.LastName</h2><p class="mb-0">@Model.Role</p></div>
+            </div>
+            <dl class="event-facts">
+                <div><dt>Email address</dt><dd>@Model.Email</dd></div>
+                <div><dt>Phone number</dt><dd>@(Model.PhoneNumber ?? "Not provided")</dd></div>
+                <div><dt>Date of birth</dt><dd>@(Model.DateOfBirth?.ToString("dd MMMM yyyy", CultureInfo.InvariantCulture) ?? "Not provided")</dd></div>
+                <div><dt>Joined RaceDay</dt><dd>@Model.CreatedAt.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy", CultureInfo.InvariantCulture)</dd></div>
+            </dl>
+            <div class="entry-actions mt-4">
+                <a class="btn btn-race" asp-controller="Profile" asp-action="Edit">Edit profile</a>
+                <a class="btn btn-outline-secondary" asp-controller="Profile" asp-action="Password">Change password</a>
+            </div>
+        </div>
+    </div>
+</section>

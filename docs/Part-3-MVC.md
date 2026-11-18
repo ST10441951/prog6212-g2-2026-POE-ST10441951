@@ -2,9 +2,9 @@
 
 ## 1. Project
 
-`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers use `RaceDayApiClient` for public events, `AccountApiClient` for accounts and `EntryApiClient` for private entries (Microsoft, 2026a; 2026b).
+`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Controllers use `RaceDayApiClient` for public events, `AccountApiClient` for accounts, `EntryApiClient` for private entries and `ProfileApiClient` for profiles (Microsoft, 2026a; 2026b).
 
-The home page reads upcoming events from `GET /api/events` with three per page. Province, type, date filters and the page number are passed to the API. Event names open public details with categories and routes. Participants can enter an event and read their private entries. See the [event notes](Part-3-Events.md) and [entry notes](Part-3-Entries.md). Accounts, protected pages and session rechecks are covered in the [account notes](Part-3-Accounts.md). Organiser management, results and profile editing remain outstanding.
+The home page reads upcoming events from `GET /api/events` with three per page. Filters and page numbers are passed to the API. Event details include categories and routes. Participants can submit and manage private entries. Both roles can edit their profiles and change passwords. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md) and [account notes](Part-3-Accounts.md). Organiser management, results, MVC image uploads and Docker remain outstanding.
 
 ## 2. Settings
 
@@ -20,7 +20,7 @@ The JSON settings and launch profile follow ASP.NET Core configuration conventio
 
 ## 3. API connection
 
-All three typed HTTP clients have automatic cookies and redirects disabled. API login cookies stay in each user's server-side MVC session. Account and entry requests forward a cookie only for that user; public event reads send none (Microsoft, 2026b).
+All four typed HTTP clients have automatic cookies and redirects disabled. API login cookies stay in each user's server-side MVC session. Private requests forward a cookie only for that user; public event reads send none (Microsoft, 2026b).
 
 An API error, timeout, connection failure or unreadable response shows a friendly message and returns 503. An empty successful list shows that no events are available. Exceptions and raw API errors are not displayed. `/health` checks the MVC host only (Microsoft, 2026b; 2026e).
 
@@ -34,13 +34,13 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 222 MVC checks cover search, dates, paging, event details, entries, settings, accounts, protected pages, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 257 MVC checks cover browsing, entries, profiles, password changes, settings, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 222 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 18 November 2026, all 257 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `1f16d9e` using temporary Windows runners. That revision ran 810 API and 173 MVC tests. The newer entry-change controls have 222 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `32163b4` using temporary Windows runners. That revision ran 810 API and 222 MVC tests. The newer profile pages have 257 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

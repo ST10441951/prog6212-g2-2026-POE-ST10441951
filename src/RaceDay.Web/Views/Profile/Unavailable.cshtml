@@ -1,0 +1,19 @@
+@* Private service error view: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{
+    ViewData["Title"] = "Profile unavailable";
+}
+<section class="container error-page">
+    <p class="eyebrow">503</p>
+    <h1>Profile temporarily unavailable</h1>
+    @if (ViewData["UnconfirmedProfile"] is true)
+    {
+        <p>We could not confirm whether your changes were saved. Check your profile before trying again.</p>
+    }
+    else
+    {
+        <p>Your profile could not be loaded. Please try again shortly.</p>
+    }
+    <a class="btn btn-race" asp-controller="Profile" asp-action="Index">My profile</a>
+</section>

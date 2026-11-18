@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 173 MVC tests passed for `1f16d9e`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 222 MVC tests passed for `32163b4`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -70,8 +70,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Connect permitted cancellation, reactivation and deletion actions.
 - [ ] Show My Results with event name, date, category and finish time.
 - [ ] Show finishing position and total finishers, including non-finishing outcomes.
-- [ ] View and update personal profile information.
-- [ ] Connect password changes and the required sign-in afterwards.
+- [x] View and update personal profile information.
+- [x] Connect password changes and the required sign-in afterwards.
 - [ ] Upload and display a Participant profile picture.
 
 ## Azure Blob Storage: 10 marks
@@ -107,7 +107,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 222 MVC checks, including event browsing, entry changes, accounts and protected pages.
+- [x] Pass all 257 MVC checks, including profiles, password changes, entries, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -122,6 +122,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify private entries cannot be read by another Participant or an Organiser.
 - [x] Verify read-only confirmations, protected changes, retained history/bibs and permitted deletion in SQL.
 - [x] Verify closed/full entry changes and result-bearing history restrictions through MVC.
+- [x] Verify both roles' profile changes in SQL and reject protected-field changes.
+- [x] Verify password changes, cleared inputs, new sign-in and rejection of old credentials/cookies.
+- [x] Check profile pages on desktop/mobile and capture evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

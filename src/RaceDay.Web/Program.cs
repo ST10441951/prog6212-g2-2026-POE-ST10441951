@@ -79,6 +79,18 @@ builder.Services.AddHttpClient<EntryApiClient>((services, client) =>
     AllowAutoRedirect = false
 });
 
+builder.Services.AddHttpClient<ProfileApiClient>((services, client) =>
+{
+    var settings = services.GetRequiredService<IOptions<ApiOptions>>().Value;
+    client.BaseAddress = new Uri(settings.BaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    UseCookies = false,
+    AllowAutoRedirect = false
+});
+
 var app = builder.Build();
 
 app.UseExceptionHandler("/error");

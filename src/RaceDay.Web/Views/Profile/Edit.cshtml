@@ -1,0 +1,46 @@
+@* Form validation and protected posts: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Profiles.EditProfileForm
+@{
+    ViewData["Title"] = "Edit profile";
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Profile" asp-action="Index">Back to my profile</a>
+        <div class="page-intro"><h1>Edit profile</h1><p>Update your name and contact details.</p></div>
+        <div class="detail-panel profile-form-panel">
+            <form asp-controller="Profile" asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" autocomplete="given-name" required aria-describedby="first-name-error" />
+                        <span asp-validation-for="FirstName" class="field-error" id="first-name-error"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" autocomplete="family-name" required aria-describedby="last-name-error" />
+                        <span asp-validation-for="LastName" class="field-error" id="last-name-error"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" autocomplete="tel" aria-describedby="phone-error" />
+                        <span asp-validation-for="PhoneNumber" class="field-error" id="phone-error"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DateOfBirth" class="form-label"></label>
+                        <input asp-for="DateOfBirth" class="form-control" type="date" autocomplete="bday" aria-describedby="birth-error birth-help" />
+                        <span asp-validation-for="DateOfBirth" class="field-error" id="birth-error"></span>
+                        <p class="field-help" id="birth-help">Optional. Needed to enter age-restricted categories. Leave blank to remove it.</p>
+                    </div>
+                </div>
+                <div class="entry-actions mt-4">
+                    <button class="btn btn-race" type="submit">Save profile</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Profile" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

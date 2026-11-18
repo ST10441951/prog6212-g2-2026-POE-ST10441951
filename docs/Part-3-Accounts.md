@@ -32,7 +32,7 @@ The saved ID and role must match an active API account. API 401, 403 or 404, exp
 
 An unavailable or unreadable API response blocks protected access with 503. The cached session stays available for a retry until its original expiry; requests do not extend it. Public pages hide the unverified identity and show an account-service warning.
 
-Organisers see an Organiser home link; Participants see My account and My entries. Participants can submit, read, cancel, reactivate and delete permitted entries. The dashboard, event management, results and profile editing are still outstanding. API ownership rules remain unchanged.
+Organisers see an Organiser home link; Participants see My account and My entries. Both roles have My profile for personal details and password changes. Participants can submit and manage permitted entries. The dashboard, event management, results and image uploads are still outstanding. API ownership rules remain unchanged. See the [profile notes](Part-3-Profiles.md).
 
 ## 4. Sign-out and form protection
 
@@ -42,7 +42,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 18 November 2026, all 222 MVC checks passed locally. Account checks cover forms, direct URL restrictions, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and role/antiforgery checks. Real HTTP tests verify that two browsers do not share an upstream login or private entries (Microsoft, 2026g). See the [event notes](Part-3-Events.md) and [entry notes](Part-3-Entries.md).
+On 18 November 2026, all 257 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 
@@ -58,7 +58,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `1f16d9e` passed using temporary Windows runners. The newer cancellation, reactivation and deletion controls are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
+The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `32163b4` passed using temporary Windows runners. The newer profile pages are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
 
 ## References
 

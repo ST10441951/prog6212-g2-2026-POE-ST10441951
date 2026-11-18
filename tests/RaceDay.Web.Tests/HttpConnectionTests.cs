@@ -104,7 +104,8 @@ public sealed class HttpConnectionTests
             int number = token == "upstream-token-1" ? 1 : token == "upstream-token-2" ? 2 : 0;
             return number == 0 ? Results.Unauthorized() : Results.Json(new
             {
-                userId = number, firstName = $"Visitor{number}", role = "Participant", isActive = true
+                userId = number, firstName = $"Visitor{number}", lastName = "Test", email = $"visitor{number}@example.com",
+                role = "Participant", isActive = true, createdAt = "2026-11-18T12:00:00Z"
             });
         });
         upstream.MapGet("/api/enrolments/{id:int}", (int id, HttpContext context) =>
@@ -138,6 +139,12 @@ public sealed class HttpConnectionTests
         Assert.DoesNotContain("Visitor2", firstPage);
         Assert.Contains("Visitor2", secondPage);
         Assert.DoesNotContain("Visitor1", secondPage);
+        string firstProfile = await first.GetStringAsync("/profile");
+        string secondProfile = await second.GetStringAsync("/profile");
+        Assert.Contains("visitor1@example.com", firstProfile);
+        Assert.DoesNotContain("visitor2@example.com", firstProfile);
+        Assert.Contains("visitor2@example.com", secondProfile);
+        Assert.DoesNotContain("visitor1@example.com", secondProfile);
         Assert.Contains("Visitor1", await first.GetStringAsync("/entries/1"));
         Assert.Contains("Visitor2", await second.GetStringAsync("/entries/2"));
         using var unrelated = await first.GetAsync("/entries/2");
