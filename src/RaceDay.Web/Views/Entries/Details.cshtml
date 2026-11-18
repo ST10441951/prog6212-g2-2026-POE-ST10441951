@@ -9,6 +9,10 @@
 <section class="events-section">
     <div class="container">
         <a class="back-link" asp-controller="Entries" asp-action="Index">Back to my entries</a>
+        @if (TempData["EntryMessage"] is string message)
+        {
+            <div class="alert alert-success" role="status">@message</div>
+        }
         @if (TempData["EntrySaved"] is true)
         {
             <div class="alert alert-success" role="status">Your entry has been saved.</div>
@@ -29,6 +33,21 @@
                 <div><dt>Bib number</dt><dd>@(Model.BibNumber ?? "Not assigned yet")</dd></div>
             </dl>
             <a class="mt-4 d-inline-block" asp-controller="Events" asp-action="Details" asp-route-eventId="@Model.EventId">View event information and route</a>
+        </div>
+        <div class="detail-panel mt-4">
+            <h2>Manage entry</h2>
+            <p>Changes are available before entries close and before a result is recorded.</p>
+            <div class="entry-actions">
+                @if (Model.Status == "Confirmed")
+                {
+                    <a class="btn btn-outline-secondary" asp-controller="Entries" asp-action="Cancel" asp-route-enrolmentId="@Model.EnrolmentId">Cancel entry</a>
+                    <a class="btn btn-outline-danger" asp-controller="Entries" asp-action="Delete" asp-route-enrolmentId="@Model.EnrolmentId">Delete entry</a>
+                }
+                else
+                {
+                    <a class="btn btn-race" asp-controller="Entries" asp-action="Reactivate" asp-route-enrolmentId="@Model.EnrolmentId">Reactivate entry</a>
+                }
+            </div>
         </div>
     </div>
 </section>

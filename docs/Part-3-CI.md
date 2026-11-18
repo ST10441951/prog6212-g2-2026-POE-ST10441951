@@ -10,22 +10,22 @@ Both workflows support a Windows x64 runner labelled `raceday`. Repository varia
 
 Runs are limited to the repository owner's pushes to `main` and manual runs from `main`. Pull requests do not start local jobs. The runner is registered for one job and is removed afterwards; it is not installed as a Windows service. Another job needs a new temporary registration. The PC must be awake and connected while a job runs (GitHub, 2026a; 2026c).
 
-The machine needs Git, Node/npm, PowerShell 7, the .NET 10 SDK and SQL Server LocalDB. Runner registration files stay outside the source repository. Follow GitHub's linked setup instructions and select the `raceday` label.
+The machine needs Git, Node/npm, PowerShell 7, the .NET 10 SDK and SQL Server LocalDB. Local jobs verify the installed SDK instead of downloading another runtime; hosted jobs still use the setup action. Runner registration files stay outside the source repository. Follow GitHub's linked setup instructions and select the `raceday` label.
 
 ## 3. Checks
 
 The build workflow restores packages, builds the API/MVC solution, runs all tests and checks for missing migrations. It reuses an existing Azurite instance or starts one, waits for it to be ready and stops only the process started by that job. The planning workflow runs the C# document/schema checks.
 
-Both checks passed on 18 November 2026 for `4391f63`:
+Both checks passed on 18 November 2026 for `1f16d9e`:
 
 | Check | Result |
 |---|---|
-| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44322635352) | 810 API and 138 MVC tests passed; zero build warnings/errors; no missing migration |
-| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44322635323) | File, endpoint, schema and document checks passed |
+| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44330569920) | 810 API and 173 MVC tests passed; zero build warnings/errors; no missing migration |
+| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44330569727) | File, endpoint, schema and document checks passed |
 
 Evidence: [build success](evidence/part3-ci-build-success.png) and [planning success](evidence/part3-ci-planning-success.png). These are genuine GitHub pages. The temporary runners removed themselves after completing their jobs. Future local runs need new runner registrations and the PC online; the account's hosted-runner billing lock has not been changed.
 
-The later entry changes have 173 passing MVC tests locally and have not yet been pushed or tested in GitHub.
+The later cancellation, reactivation and deletion controls have 222 passing MVC tests locally and have not yet been pushed or tested in GitHub.
 
 ## References
 

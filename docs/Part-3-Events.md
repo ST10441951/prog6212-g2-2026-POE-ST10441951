@@ -14,11 +14,11 @@ Details show the description, date, venue, address, distance, entry deadline, st
 
 Razor encodes event text. Banner and map URLs must be absolute HTTP/HTTPS addresses without credentials. Map links use `noopener noreferrer`. Existing API banner URLs can be displayed; MVC uploads and the Azure demonstration remain outstanding (Microsoft, 2026d).
 
-Participants can now enter an event and read their private entry history. See the [entry notes](Part-3-Entries.md). Entry changes remain outstanding.
+Participants can now enter an event and read their private entry history. See the [entry notes](Part-3-Entries.md). Permitted entry changes are also connected through the API.
 
 ## 3. Checks and evidence
 
-On 18 November 2026, all 138 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
+On 18 November 2026, all 222 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
 
 Browser checks used a separate database with five extra cycling fixtures to exercise multiple pages. MVC names and page results matched the real API. Combined filters, inclusive dates, clear filters, invalid ranges, out-of-range pages, Completed events and Draft/Cancelled visibility all passed. The temporary database was removed afterwards; `RaceDayPart2` was not changed.
 

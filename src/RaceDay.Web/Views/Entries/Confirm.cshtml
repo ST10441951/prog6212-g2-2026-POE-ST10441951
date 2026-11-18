@@ -1,0 +1,42 @@
+@* Read-only confirmation and protected POST forms: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.EntryConfirmation
+@{
+    bool deleting = Model.Action == "Delete";
+    string heading = deleting ? "Delete this entry?" : "Cancel this entry?";
+    ViewData["Title"] = heading;
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@Model.Entry.EnrolmentId">Back to my entry</a>
+        <div class="page-intro"><p class="eyebrow">Entry #@Model.Entry.EnrolmentId</p><h1>@heading</h1></div>
+        <div class="detail-panel entry-form-panel">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            <h2>@Model.Entry.EventName</h2>
+            <p>@Model.Entry.CategoryName</p>
+            <span class="event-status @(Model.Entry.Status == "Confirmed" ? "status-open" : "status-cancelled")">@Model.Entry.Status</span>
+            @if (Model.Entry.Status != "Confirmed")
+            {
+                <p class="mt-3">Only a Confirmed entry can be cancelled or deleted. This entry's history has been kept.</p>
+            }
+            else
+            {
+                @if (deleting)
+                {
+                    <p class="mt-3">This permanently removes your entry. Cancel the entry instead if you want to keep its history.</p>
+                }
+                else
+                {
+                    <p class="mt-3">Your entry will be marked Cancelled and its history will be kept. It will no longer use a category place.</p>
+                }
+                <p>Changes require open entries and no recorded result.</p>
+                <form asp-controller="Entries" asp-action="@(deleting ? "DeleteEntry" : "CancelEntry")" asp-route-enrolmentId="@Model.Entry.EnrolmentId" method="post" class="entry-actions">
+                    <button class="btn @(deleting ? "btn-danger" : "btn-race")" type="submit">@(deleting ? "Delete permanently" : "Cancel entry")</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@Model.Entry.EnrolmentId">Keep my entry</a>
+                </form>
+            }
+        </div>
+    </div>
+</section>

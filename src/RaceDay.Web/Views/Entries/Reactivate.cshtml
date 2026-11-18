@@ -1,0 +1,52 @@
+@* Category selection, binding and validation: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/forms/select/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.ReactivateEntryForm
+@{
+    ViewData["Title"] = "Reactivate entry";
+    var entry = Model.Entry!;
+    var categories = Model.Event?.Categories.Where(category => category.IsAvailable).ToArray() ?? [];
+    var rand = CultureInfo.GetCultureInfo("en-ZA");
+}
+<section class="events-section">
+    <div class="container">
+        <a class="back-link" asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@entry.EnrolmentId">Back to my entry</a>
+        <div class="page-intro"><p class="eyebrow">Entry #@entry.EnrolmentId</p><h1>Reactivate your entry</h1><p>@entry.EventName</p></div>
+        <div class="detail-panel entry-form-panel">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            <h2>Choose your category</h2>
+            <p>Previous category: @entry.CategoryName</p>
+            @if (entry.Status != "Cancelled")
+            {
+                <p>Only a Cancelled entry can be reactivated.</p>
+            }
+            else if (Model.Event?.Status != "Open" || categories.Length == 0)
+            {
+                <p>No categories are currently available for reactivation. Your saved entry has not changed.</p>
+            }
+            else
+            {
+                <p>You can keep the same category or choose another available one. Age limits, available places and the entry deadline still apply.</p>
+                <form asp-controller="Entries" asp-action="Reactivate" asp-route-enrolmentId="@entry.EnrolmentId" method="post">
+                    <div class="account-field">
+                        <label asp-for="EventCategoryId" class="form-label"></label>
+                        <select asp-for="EventCategoryId" class="form-select" required aria-describedby="reactivate-category-error">
+                            <option value="">Select a category</option>
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.EventCategoryId">@category.CategoryName · R @category.EntryFee.ToString("N2", rand)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EventCategoryId" class="field-error" id="reactivate-category-error"></span>
+                    </div>
+                    <div class="entry-actions">
+                        <button class="btn btn-race" type="submit">Reactivate entry</button>
+                        <a class="btn btn-outline-secondary" asp-controller="Entries" asp-action="Details" asp-route-enrolmentId="@entry.EnrolmentId">Keep cancelled</a>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</section>

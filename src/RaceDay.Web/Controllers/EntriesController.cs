@@ -92,6 +92,122 @@ public sealed class EntriesController(EntryApiClient entries, RaceDayApiClient e
         return model.Event is null ? NotFound() : View("Enter", model);
     }
 
+    [HttpGet("{enrolmentId:int:min(1)}/cancel")]
+    public Task<IActionResult> Cancel([FromRoute] int enrolmentId, CancellationToken cancellationToken) =>
+        Confirmation(enrolmentId, "Cancel", cancellationToken);
+
+    [HttpPost("{enrolmentId:int:min(1)}/cancel")]
+    public Task<IActionResult> CancelEntry([FromRoute] int enrolmentId, CancellationToken cancellationToken) =>
+        ChangeEntry(enrolmentId, "Cancel", cancellationToken);
+
+    [HttpGet("{enrolmentId:int:min(1)}/delete")]
+    public Task<IActionResult> Delete([FromRoute] int enrolmentId, CancellationToken cancellationToken) =>
+        Confirmation(enrolmentId, "Delete", cancellationToken);
+
+    [HttpPost("{enrolmentId:int:min(1)}/delete")]
+    public Task<IActionResult> DeleteEntry([FromRoute] int enrolmentId, CancellationToken cancellationToken) =>
+        ChangeEntry(enrolmentId, "Delete", cancellationToken);
+
+    [HttpGet("{enrolmentId:int:min(1)}/reactivate")]
+    public async Task<IActionResult> Reactivate([FromRoute] int enrolmentId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var entry = await entries.Details(enrolmentId, await Login(), cancellationToken);
+            return await ReactivationForm(entry, new ReactivateEntryForm { EventCategoryId = entry.EventCategoryId }, cancellationToken);
+        }
+        catch (Exception error) when (error is ApiSessionEndedException or EntryRequestException or ApiUnavailableException)
+        { return await Failure(error); }
+    }
+
+    [HttpPost("{enrolmentId:int:min(1)}/reactivate")]
+    public async Task<IActionResult> Reactivate([FromRoute] int enrolmentId, [Bind("EventCategoryId")] ReactivateEntryForm model,
+        CancellationToken cancellationToken)
+    {
+        EntryDetails? saved = null;
+        bool submitted = false;
+        try
+        {
+            var login = await Login();
+            saved = await entries.Details(enrolmentId, login, cancellationToken);
+            if (!ModelState.IsValid)
+            {
+                Response.StatusCode = 400;
+                return await ReactivationForm(saved, model, cancellationToken);
+            }
+            submitted = true;
+            await entries.Reactivate(saved, model.EventCategoryId!.Value, login, cancellationToken);
+            TempData["EntryMessage"] = "Your entry has been reactivated.";
+            return RedirectToAction(nameof(Details), new { enrolmentId });
+        }
+        catch (EntryRequestException error) when (saved is not null && error.StatusCode is 400 or 404 or 409)
+        {
+            Response.StatusCode = error.StatusCode;
+            ModelState.AddModelError("", error.Message);
+            try { return await ReactivationForm(saved, model, cancellationToken); }
+            catch (ApiUnavailableException unavailable) { return await Failure(unavailable); }
+        }
+        catch (ApiUnavailableException error) { return submitted ? UnconfirmedChange(error) : await Failure(error); }
+        catch (Exception error) when (error is ApiSessionEndedException or EntryRequestException)
+        { return await Failure(error); }
+    }
+
+    private async Task<IActionResult> Confirmation(int enrolmentId, string action, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var entry = await entries.Details(enrolmentId, await Login(), cancellationToken);
+            return View("Confirm", new EntryConfirmation { Entry = entry, Action = action });
+        }
+        catch (Exception error) when (error is ApiSessionEndedException or EntryRequestException or ApiUnavailableException)
+        { return await Failure(error); }
+    }
+
+    private async Task<IActionResult> ChangeEntry(int enrolmentId, string action, CancellationToken cancellationToken)
+    {
+        EntryDetails? saved = null;
+        bool submitted = false;
+        try
+        {
+            var login = await Login();
+            saved = await entries.Details(enrolmentId, login, cancellationToken);
+            submitted = true;
+            if (action == "Delete")
+            {
+                await entries.Delete(enrolmentId, login, cancellationToken);
+                TempData["EntryMessage"] = "Your entry has been deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+            await entries.Cancel(saved, login, cancellationToken);
+            TempData["EntryMessage"] = "Your entry has been cancelled.";
+            return RedirectToAction(nameof(Details), new { enrolmentId });
+        }
+        catch (EntryRequestException error) when (saved is not null && error.StatusCode is 400 or 404 or 409)
+        {
+            Response.StatusCode = error.StatusCode;
+            ModelState.AddModelError("", error.Message);
+            return View("Confirm", new EntryConfirmation { Entry = saved, Action = action });
+        }
+        catch (ApiUnavailableException error) { return submitted ? UnconfirmedChange(error) : await Failure(error); }
+        catch (Exception error) when (error is ApiSessionEndedException or EntryRequestException)
+        { return await Failure(error); }
+    }
+
+    private async Task<IActionResult> ReactivationForm(EntryDetails entry, ReactivateEntryForm model, CancellationToken cancellationToken)
+    {
+        model.Entry = entry;
+        model.Event = await events.GetEvent(entry.EventId, cancellationToken);
+        return View("Reactivate", model);
+    }
+
+    private IActionResult UnconfirmedChange(ApiUnavailableException error)
+    {
+        logger.LogWarning(error, "The entry change could not be confirmed.");
+        Response.StatusCode = 503;
+        ViewData["UnconfirmedChange"] = true;
+        return View("Unavailable");
+    }
+
     private async Task<WebLogin> Login() => await sessions.ReadAsync(HttpContext) ?? throw new ApiSessionEndedException();
 
     private async Task<IActionResult> Failure(Exception error)

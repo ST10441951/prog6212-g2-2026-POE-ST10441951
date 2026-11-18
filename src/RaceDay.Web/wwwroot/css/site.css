@@ -82,6 +82,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .entry-form-panel { max-width: 680px; }
 .entry-list { display: grid; gap: 1rem; }
 .entry-list h2 { margin-bottom: .5rem; }
+.entry-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; }
 .event-location { color: var(--race-muted); font-size: .86rem; margin: 0; }
 .event-meta { min-width: 90px; text-align: right; }
 .event-distance { display: block; font-size: 1.15rem; font-weight: 700; }
@@ -90,7 +91,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .status-open { color: #176238; background: #e8f4ec; }
 .status-closed { color: #795200; background: #fff3cd; }
 .notice { background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.6rem; }
-.notice h3 { font-size: 1.1rem; font-weight: 700; }
+.notice h2, .notice h3 { font-size: 1.1rem; font-weight: 700; }
 .notice p { color: var(--race-muted); margin: .5rem 0 0; }
 .notice a { display: inline-block; margin-top: 1rem; font-weight: 600; }
 .clear-filters { display: inline-block; font-size: .85rem; margin-top: 1.25rem; }

@@ -7,7 +7,11 @@
 <section class="container error-page">
     <p class="eyebrow">503</p>
     <h1>Entry service temporarily unavailable</h1>
-    @if (ViewData["UnconfirmedEntry"] is true)
+    @if (ViewData["UnconfirmedChange"] is true)
+    {
+        <p>We could not confirm whether your entry changed. Check My entries before trying again.</p>
+    }
+    else if (ViewData["UnconfirmedEntry"] is true)
     {
         <p>We could not confirm whether your entry was saved. Check My entries before submitting again.</p>
     }

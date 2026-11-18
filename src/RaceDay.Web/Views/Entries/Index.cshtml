@@ -9,6 +9,10 @@
 <section class="events-section">
     <div class="container">
         <div class="page-intro"><h1>My entries</h1><p>Your event entries and their current status.</p></div>
+        @if (TempData["EntryMessage"] is string message)
+        {
+            <div class="alert alert-success" role="status">@message</div>
+        }
         <form class="event-search" asp-controller="Entries" asp-action="Index" method="get">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">

@@ -57,6 +57,37 @@ public sealed class EntryApiClient(HttpClient client)
         return page;
     }
 
+    // State changes use PUT/DELETE on the existing entry, never another creation request.
+    // https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/http/httpclient
+    internal Task<EntryDetails> Cancel(EntryDetails entry, WebLogin login, CancellationToken cancellationToken) =>
+        Change(entry, "cancel", null, "Cancelled", login, cancellationToken);
+
+    internal Task<EntryDetails> Reactivate(EntryDetails entry, int categoryId, WebLogin login, CancellationToken cancellationToken) =>
+        Change(entry, "reactivate", categoryId, "Confirmed", login, cancellationToken);
+
+    internal async Task Delete(int enrolmentId, WebLogin login, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Delete,
+            $"api/enrolments/{enrolmentId.ToString(CultureInfo.InvariantCulture)}");
+        using var response = await Send(request, login, cancellationToken);
+        await Check(response, HttpStatusCode.NoContent, cancellationToken);
+    }
+
+    private async Task<EntryDetails> Change(EntryDetails original, string action, int? categoryId, string status,
+        WebLogin login, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Put,
+            $"api/enrolments/{original.EnrolmentId.ToString(CultureInfo.InvariantCulture)}/{action}");
+        if (categoryId is not null) request.Content = JsonContent.Create(new { eventCategoryId = categoryId.Value });
+        using var response = await Send(request, login, cancellationToken);
+        await Check(response, HttpStatusCode.OK, cancellationToken);
+        var entry = await Read<EntryDetails>(response, cancellationToken);
+        if (!Owned(entry, login) || entry!.EnrolmentId != original.EnrolmentId || entry.EventId != original.EventId ||
+            entry.EventCategoryId != (categoryId ?? original.EventCategoryId) || entry.Status != status)
+            throw new ApiUnavailableException("The API did not confirm the requested entry change.");
+        return entry;
+    }
+
     private static bool Owned(EntryDetails? entry, WebLogin login) => entry is { EnrolmentId: > 0, EventId: > 0, EventCategoryId: > 0 } &&
         entry.ParticipantUserId == login.UserId && entry.Status is "Confirmed" or "Cancelled" &&
         !string.IsNullOrWhiteSpace(entry.EventName) && !string.IsNullOrWhiteSpace(entry.CategoryName);

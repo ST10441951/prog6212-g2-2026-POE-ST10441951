@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 138 MVC tests passed for `4391f63`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 173 MVC tests passed for `1f16d9e`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -67,7 +67,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Enter an event by selecting a category while signed in.
 - [x] Save the enrolment immediately through the API and show confirmation.
 - [x] Show personal event entries and enrolment statuses.
-- [ ] Connect permitted cancellation, reactivation and deletion actions.
+- [x] Connect permitted cancellation, reactivation and deletion actions.
 - [ ] Show My Results with event name, date, category and finish time.
 - [ ] Show finishing position and total finishers, including non-finishing outcomes.
 - [ ] View and update personal profile information.
@@ -107,7 +107,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 173 MVC checks, including event browsing, entries, accounts and protected pages.
+- [x] Pass all 222 MVC checks, including event browsing, entry changes, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -120,6 +120,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Capture genuine desktop/mobile event pages and pagination evidence.
 - [x] Verify entry saves in SQL and reject duplicates, age, capacity and deadline failures through the API.
 - [x] Verify private entries cannot be read by another Participant or an Organiser.
+- [x] Verify read-only confirmations, protected changes, retained history/bibs and permitted deletion in SQL.
+- [x] Verify closed/full entry changes and result-bearing history restrictions through MVC.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

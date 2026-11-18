@@ -56,3 +56,21 @@ public sealed class EntryDetails
     public required string Status { get; init; }
     public string? BibNumber { get; init; }
 }
+
+public sealed class EntryConfirmation
+{
+    public required EntryDetails Entry { get; init; }
+    public required string Action { get; init; }
+}
+
+public sealed class ReactivateEntryForm
+{
+    [Required(ErrorMessage = "Choose a category."), Range(1, int.MaxValue), Display(Name = "Category")]
+    public int? EventCategoryId { get; set; }
+
+    [BindNever, ValidateNever]
+    public EntryDetails? Entry { get; set; }
+
+    [BindNever, ValidateNever]
+    public EventDetails? Event { get; set; }
+}

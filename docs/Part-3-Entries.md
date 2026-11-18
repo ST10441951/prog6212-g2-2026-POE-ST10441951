@@ -8,6 +8,9 @@
 | POST | `/events/{eventId}/enter` | POST `/api/enrolments` |
 | GET | `/entries` | GET `/api/enrolments/mine` |
 | GET | `/entries/{enrolmentId}` | GET `/api/enrolments/{enrolmentId}` |
+| GET / POST | `/entries/{enrolmentId}/cancel` | Read confirmation / PUT cancellation |
+| GET / POST | `/entries/{enrolmentId}/reactivate` | Read categories / PUT reactivation |
+| GET / POST | `/entries/{enrolmentId}/delete` | Read confirmation / DELETE entry |
 
 Only Participants can use these pages. My entries is available in their header and account home. Guests are redirected to sign-in; Organisers receive 403 (Microsoft, 2026a).
 
@@ -23,15 +26,21 @@ The list supports Confirmed/Cancelled filters and ten entries per page. Details 
 
 Each API request receives only the current user's server-side API cookie. Responses must belong to that Participant before being displayed. Expired API sessions clear the local session; unrelated entries return 403. Private pages use no-store responses (Microsoft, 2026a; 2026d).
 
-Cancellation, reactivation and deletion controls remain outstanding. The Cancelled screenshot uses an entry cancelled through the existing API as test data.
+Confirmed entries have Cancel entry and Delete entry links. Both open a read-only confirmation page. Cancel keeps history; Delete permanently removes a permitted entry. Keep my entry returns without changing anything. Only the protected POST submits a change (Microsoft, 2026c).
+
+Cancelled entries have a Reactivate entry link. The form loads categories for the saved event and sends only the selected category ID. The API checks the deadline, age, capacity, status and recorded results. Reactivation keeps the original entry ID and date. Keeping the category preserves the bib; changing category clears it. Cancelled entries cannot be deleted.
+
+Rejected changes display the API's reason. Successful changes redirect to the saved entry or list. Uncertain writes return 503 and advise checking My entries before retrying. API ownership checks remain in place for every operation (Microsoft, 2026a; 2026d).
 
 ## 4. Checks and evidence
 
-On 18 November 2026, all 173 MVC tests passed locally, with none failed or skipped. Entry checks cover field binding, antiforgery, saved records, validation, ownership, role restrictions, API failures and isolated cookies. A real HTTP test verifies that two browsers read only their own entries (Microsoft, 2026e).
+On 18 November 2026, all 222 MVC tests passed locally, with none failed or skipped. Checks cover field binding, antiforgery, saved records, entry changes, validation, ownership, role restrictions, stale forms, API failures and isolated cookies. A real HTTP test verifies that two browsers read only their own entries (Microsoft, 2026e).
 
 Browser checks used a separate database and fictional accounts. One submitted entry was verified in SQL. Refresh did not submit another entry. Duplicate, missing birth date, age, capacity, closed-deadline and foreign-category requests were rejected. Another Participant could not read the entry and had an empty personal list. Organisers could not access Participant entry pages.
 
-The form, saved entry and list were checked at 320, 390, 768 and 1280 pixels without horizontal overflow or JavaScript errors. Screenshots are genuine captures without cursor overlays. The temporary database was removed afterwards.
+Further browser checks verified cancellation, same/new-category reactivation and confirmed deletion in SQL. Entry ID/date and bib behaviour matched the API contract. Closed/full entries, Cancelled deletion, missing antiforgery and other users' changes were rejected. Existing result-bearing history remained unchanged. After permitted deletion, the record was absent from SQL and its private URL returned 404.
+
+The form, saved entry, list and change pages were checked at 320, 390, 768 and 1280 pixels without horizontal overflow or JavaScript errors. Screenshots are genuine captures without cursor overlays. The temporary databases were removed afterwards.
 
 | Page | Evidence |
 |---|---|
@@ -40,6 +49,12 @@ The form, saved entry and list were checked at 320, 390, 768 and 1280 pixels wit
 | My entries | [Desktop](evidence/part3-my-entries.png) / [mobile](evidence/part3-my-entries-mobile.png) |
 | Rejected duplicate | [Validation](evidence/part3-entry-duplicate.png) |
 | Cancelled status | [Filtered list](evidence/part3-entry-cancelled.png) |
+| Cancel confirmation | [Desktop](evidence/part3-entry-cancel-confirmation.png) / [mobile](evidence/part3-entry-cancel-confirmation-mobile.png) |
+| Reactivation | [Desktop](evidence/part3-entry-reactivate.png) / [mobile](evidence/part3-entry-reactivate-mobile.png) |
+| Saved category change | [Reactivated entry](evidence/part3-entry-reactivated.png) |
+| Delete confirmation | [Desktop](evidence/part3-entry-delete-confirmation.png) / [mobile](evidence/part3-entry-delete-confirmation-mobile.png) |
+| Deleted entry | [Empty personal history](evidence/part3-entry-deleted.png) |
+| Rejected change | [Closed-entry restriction](evidence/part3-entry-change-rejected.png) |
 
 ## References
 
