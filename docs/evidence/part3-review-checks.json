@@ -147,11 +147,11 @@
     "skipped": 0
   },
   "publishedCi": {
-    "revision": "8316f29",
+    "revision": "81c3cf1",
     "apiPassed": 810,
-    "mvcPassed": 512,
-    "buildRun": "44470243917",
-    "planningRun": "44470243933"
+    "mvcPassed": 518,
+    "buildRun": "44499288535",
+    "planningRun": "44499288543"
   },
   "docker": {
     "imageId": "sha256:cb7af5702d14773a83bb9758c368de3587efba12cca88ac099b3357f5c0f2750",

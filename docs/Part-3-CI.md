@@ -16,18 +16,18 @@ The machine needs Git, Node/npm, PowerShell 7, the .NET 10 SDK and SQL Server Lo
 
 The build workflow restores packages, builds the API/MVC solution, runs all tests and checks for missing migrations. It reuses an existing Azurite instance or starts one, waits for it to be ready and stops only the process started by that job. The planning workflow runs the C# document/schema checks.
 
-Both checks passed on 19 November 2026 for `8316f29`:
+Both checks passed on 19 November 2026 for `81c3cf1`:
 
 | Check | Result |
 |---|---|
-| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243917) | 810 API and 512 MVC tests passed; zero build warnings/errors; no missing migration |
-| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243933) | File, endpoint, schema and document checks passed |
+| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288535) | 810 API and 518 MVC tests passed; zero build warnings/errors; no missing migration |
+| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288543) | File, endpoint, schema and document checks passed |
 
 Evidence: [build success](evidence/part3-ci-build-success.png) and [planning success](evidence/part3-ci-planning-success.png). These are genuine GitHub pages. The temporary runners removed themselves after completing their jobs. Future local runs need new runner registrations and the PC online; the account's hosted-runner billing lock has not been changed.
 
 An earlier build for 80765dd timed out while creating a temporary SQL test database and passed unchanged on retry. The current revision passed on its first attempt, with all tests retained.
 
-The linked runs include the interface changes and 512 MVC tests. The later account-cookie correction passes 518 MVC tests locally and is described in the [rubric review](Part-3-Review.md).
+The account-cookie correction is included in these passing checks and is described in the [rubric review](Part-3-Review.md).
 
 ## References
 

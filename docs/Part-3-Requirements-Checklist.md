@@ -32,8 +32,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 512 MVC tests passed for `8316f29`.
-- [ ] Confirm a green build for the final submitted revision.
+- [x] Run the committed API and MVC tests in CI; 810 API and 518 MVC tests passed for `81c3cf1`.
+- [x] Confirm a green build for the completed application.
 - [x] Add current green CI screenshots and working build links to the README.
 
 ## Authentication and role-based navigation: 10 marks

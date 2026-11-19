@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC accounts, event pages, Participant entries/results, profiles, image uploads and Organiser management pages work through the API. The website also runs in Docker. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC accounts, event pages, Participant entries/results, profiles, image uploads and Organiser management pages work through the API. The website also runs in Docker. Implementation and checks are complete; the video and ARC submission remain. See the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -207,13 +207,13 @@ This is the local HTTP demonstration on Docker Desktop. The container runs MVC a
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `8316f29` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243917) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243933). The build ran 810 API tests and 512 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `81c3cf1` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288535) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288543). The build ran 810 API tests and 518 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The linked build includes the interface changes and 512 MVC tests. The later account-cookie correction passes all 518 MVC tests locally; see the [rubric review](docs/Part-3-Review.md).
+The account-cookie correction is included in these passing checks. See the [rubric review](docs/Part-3-Review.md).
 
 ## Unit tests
 

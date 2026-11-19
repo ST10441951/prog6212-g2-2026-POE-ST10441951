@@ -40,7 +40,7 @@ On 19 November 2026, all 518 MVC checks passed locally, with none failed or skip
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `8316f29` using temporary Windows runners. That revision ran 810 API and 512 MVC tests. The later account-cookie correction passes 518 MVC tests locally. See the [rubric review](Part-3-Review.md), [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `81c3cf1` using temporary Windows runners. That revision ran 810 API and 518 MVC tests. The account-cookie correction is included in that revision. See the [rubric review](Part-3-Review.md), [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 
