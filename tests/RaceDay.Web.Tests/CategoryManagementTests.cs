@@ -55,7 +55,7 @@ public sealed class CategoryManagementTests
         };
         using var client = factory.Client(); using var login = await SignIn(client);
         using var response = await client.GetAsync(Root + "?organiserUserId=999"); string page = await response.Content.ReadAsStringAsync();
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode); Assert.Contains("Unavailable", page); Assert.Contains("40 km Cycle", page); Assert.Contains("R350.00", page); Assert.Contains("1500", page); Assert.Contains("Peninsula Short Route", page); Assert.Contains("no-store", response.Headers.CacheControl!.ToString());
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode); Assert.Contains("Unavailable", page); Assert.Contains("40 km Cycle", page); Assert.Contains("R 350,00", page); Assert.Contains("1500", page); Assert.Contains("Peninsula Short Route", page); Assert.Contains("no-store", response.Headers.CacheControl!.ToString());
     }
 
     [Theory]

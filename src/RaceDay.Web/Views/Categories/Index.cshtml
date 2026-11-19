@@ -3,6 +3,7 @@
    https://getbootstrap.com/docs/5.3/layout/grid/
    Accessed: 18 November 2026. *@
 @model RaceDay.Web.Models.Organiser.CategoryListPage
+@using RaceDay.Web.Services
 @{ ViewData["Title"] = "Event categories"; }
 <section class="events-section"><div class="container">
     <a class="back-link" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@Model.Event.EventId">Back to event</a>
@@ -18,7 +19,7 @@
                 <div class="category-heading"><h2>@item.CategoryName</h2><span class="event-status @(item.IsAvailable ? "status-open" : "status-closed")">@(item.IsAvailable ? "Available" : "Unavailable")</span></div>
                 <dl class="event-facts">
                     <div><dt>Distance</dt><dd>@item.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
-                    <div><dt>Entry fee</dt><dd>R@(item.EntryFee.ToString("0.00", CultureInfo.InvariantCulture))</dd></div>
+                    <div><dt>Entry fee</dt><dd>@DisplayFormats.Rand(item.EntryFee)</dd></div>
                     <div><dt>Capacity</dt><dd>@(item.Capacity?.ToString(CultureInfo.InvariantCulture) ?? "No limit")</dd></div>
                     <div><dt>Minimum age</dt><dd>@(item.MinimumAge?.ToString(CultureInfo.InvariantCulture) ?? "No minimum")</dd></div>
                     <div><dt>Maximum age</dt><dd>@(item.MaximumAge?.ToString(CultureInfo.InvariantCulture) ?? "No maximum")</dd></div>

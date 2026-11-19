@@ -149,6 +149,8 @@ internal static class Program
             "src/RaceDay.Web/Controllers/ImagesController.cs", "src/RaceDay.Web/Services/ImageApiClient.cs",
             "src/RaceDay.Web/Views/Images/Upload.cshtml", "src/RaceDay.Web/Views/Images/Remove.cshtml",
             "src/RaceDay.Web/Views/Images/Unavailable.cshtml", "tests/RaceDay.Web.Tests/ImageManagementTests.cs",
+            "docs/Part-3-Docker.md", "src/RaceDay.Web/Dockerfile", ".dockerignore",
+            "src/RaceDay.Web/Services/DisplayFormats.cs", "tests/RaceDay.Web.Tests/FeeDisplayTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

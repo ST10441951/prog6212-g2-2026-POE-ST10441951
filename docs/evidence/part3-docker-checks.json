@@ -1,0 +1,188 @@
+{
+  "restart": {
+    "restartHealth200": true,
+    "restartRequiresSignIn": true
+  },
+  "runtime": {
+    "apiOutage503": true,
+    "friendlyOutageMessage": true,
+    "hostHealthStill200": true,
+    "runtimeOnly": true,
+    "noSdk": true,
+    "noApiAssemblyOrSourceOrSecrets": true,
+    "nonRootUser": "1654",
+    "architecture": "amd64",
+    "imageSizeBytes": 366579467,
+    "publishedPort": 8080,
+    "imageDefaultsToDevelopment": false
+  },
+  "site": {
+    "image": "raceday-web:part3",
+    "imageId": "sha256:e2e1537cf1b57859d88d4f217767566df38004af532c06294cf44312decdf8f8",
+    "container": "raceday-web-review",
+    "runtimeUser": "1654",
+    "port": "127.0.0.1:5185 -> 8080",
+    "api": "http://host.docker.internal:5121/",
+    "health200": true,
+    "apiConnectivity": true,
+    "homeMatchesLocal": true,
+    "registrationBothRoles": true,
+    "loginBothRoles": true,
+    "roleRestrictions": true,
+    "profileUpdatesMatchLocal": true,
+    "ownedEventAndCategorySaved": true,
+    "publicEventMatchesLocal": true,
+    "entrySavedAndVisibleLocally": true,
+    "bibAssignment": true,
+    "cancelAndReactivate": true,
+    "officialResultMatchesLocal": true,
+    "pictureAndBannerDisplay": true,
+    "imageRemoval": true,
+    "logoutIsolation": true,
+    "noBackendCredentials": true,
+    "imageProvider": "Azurite; Azure verified separately in Part 3 image checks",
+    "layouts": [
+      {
+        "page": "home",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "home",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "home",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "home",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "profile",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "profile",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "profile",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "profile",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "profile-picture",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "profile-picture",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "profile-picture",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "profile-picture",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "owned-event",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "owned-event",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "owned-event",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "owned-event",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "event-details",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "event-details",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "event-details",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "event-details",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "entry-saved",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "entry-saved",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "entry-saved",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "entry-saved",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "result-details",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "result-details",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "result-details",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "result-details",
+        "width": 1280,
+        "overflow": false
+      }
+    ],
+    "javascriptErrors": []
+  }
+}

@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 468 MVC tests passed for `87ed4da`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 496 MVC tests passed for `b8c2ddb`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -87,13 +87,13 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Docker: 10 marks
 
-- [ ] Add a multi-stage MVC Dockerfile using appropriate SDK and runtime images.
-- [ ] Add a .dockerignore and keep credentials out of the image.
-- [ ] Build the image cleanly and run the MVC website in a container.
-- [ ] Configure a reachable API address for the container.
-- [ ] Check login, protected pages, API operations and image display in Docker.
-- [ ] Compare the local and container application behaviour.
-- [ ] Add tested build instructions and a single Docker run command to the README.
+- [x] Add a multi-stage MVC Dockerfile using appropriate SDK and runtime images.
+- [x] Add a .dockerignore and keep credentials out of the image.
+- [x] Build the image cleanly and run the MVC website in a container.
+- [x] Configure a reachable API address for the container.
+- [x] Check login, protected pages, API operations and image display in Docker.
+- [x] Compare the local and container application behaviour.
+- [x] Add tested build instructions and a single Docker run command to the README.
 
 ## UI design: 10 marks
 
@@ -108,7 +108,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 496 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 502 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -146,6 +146,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify picture/banner uploads, replacements and removals against Azure and SQL.
 - [x] Verify private read-only image URLs, old-blob deletion and public event display.
 - [x] Check image pages on desktop/mobile, rejected files, storage failures and account isolation.
+- [x] Verify Docker registration, both roles, saved API operations, images and independent sessions.
+- [x] Compare local/container pages, correct fee formatting and check restart/outage behaviour.
+- [x] Verify a non-root runtime image without the SDK, backend files or credentials.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

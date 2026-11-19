@@ -1,0 +1,22 @@
+# Send only MVC source to the build context.
+# Docker (2026): https://docs.docker.com/build/concepts/context/#dockerignore-files
+# Accessed: 19 November 2026.
+**
+!src/
+!src/RaceDay.Web/
+!src/RaceDay.Web/**
+
+# Keep local output and private settings out of every stage.
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+**/*.suo
+**/secrets.json
+**/.env
+**/.env.*
+**/.secrets
+**/*.pfx
+**/*.p12
+**/*.pem
+**/*.key

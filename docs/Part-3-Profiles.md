@@ -26,7 +26,7 @@ Success ends the current API and MVC session and redirects to sign-in. The old p
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. Profile checks cover both roles, allowed fields, validation, antiforgery, private responses, rejected credentials, uncertain writes and ended sessions. A real HTTP test checks that separate browsers receive only their own profiles (Microsoft, 2026e).
+On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. Profile checks cover both roles, allowed fields, validation, antiforgery, private responses, rejected credentials, uncertain writes and ended sessions. A real HTTP test checks that separate browsers receive only their own profiles (Microsoft, 2026e).
 
 Browser checks against a temporary database verified saved names, phone numbers and birth dates in SQL. Blank optional fields cleared correctly. Future birth dates and attempted identity changes were rejected or ignored as appropriate. Wrong passwords, weak passwords and mismatched confirmation left empty password inputs. Both roles changed passwords and signed in again. The hash changed, the old password failed and the previous MVC cookie could not restore access. Another existing browser and an unrelated account retained access as specified by the API.
 

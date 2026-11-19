@@ -4,7 +4,7 @@
 
 `src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Typed clients cover public events, accounts, entries, profiles, personal results and Organiser operations (Microsoft, 2026a; 2026b).
 
-The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers manage owned events, categories, routes, enrolments and results. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md), [event-management](Part-3-Event-Management.md), [category](Part-3-Categories.md), [enrolment](Part-3-Enrolments.md), [result-management](Part-3-Result-Management.md) and [account notes](Part-3-Accounts.md). Image upload and display use the API; see the [image notes](Part-3-Images.md). Docker remains outstanding.
+The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers manage owned events, categories, routes, enrolments and results. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md), [event-management](Part-3-Event-Management.md), [category](Part-3-Categories.md), [enrolment](Part-3-Enrolments.md), [result-management](Part-3-Result-Management.md) and [account notes](Part-3-Accounts.md). Image upload and display use the API; see the [image notes](Part-3-Images.md). Docker setup and comparisons are in the [Docker notes](Part-3-Docker.md).
 
 ## 2. Settings
 
@@ -34,13 +34,13 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 496 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 502 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `87ed4da` using temporary Windows runners. That revision ran 810 API and 468 MVC tests. The newer image pages have 496 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `b8c2ddb` using temporary Windows runners. That revision ran 810 API and 496 MVC tests. The newer Docker changes have 502 passing MVC tests locally and are not yet included in that revision. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

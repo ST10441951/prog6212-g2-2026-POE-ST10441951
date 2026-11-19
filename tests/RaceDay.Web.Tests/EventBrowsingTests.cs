@@ -154,7 +154,7 @@ public sealed class EventBrowsingTests
             "01 March 2027, 22:00", "Green Point Urban Park", "1 Park Road", "A coastal cycling event.",
             "40 km Cycle", "16 years and older", "1500", "Peninsula Short Route", "Park start", "Park finish", "420 m", status })
             Assert.Contains(value, page);
-        Assert.Contains("R " + 350m.ToString("N2", System.Globalization.CultureInfo.GetCultureInfo("en-ZA")), page);
+        Assert.Contains("R 350,00", page);
         Assert.Contains("rel=\"noopener noreferrer\"", page);
         Assert.Contains("route=3&amp;view=full", page);
         Assert.Contains("returnUrl=%2Fevents%2F2", page);

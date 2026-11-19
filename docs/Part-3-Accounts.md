@@ -42,7 +42,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 19 November 2026, all 496 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
+On 19 November 2026, all 502 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 
@@ -58,7 +58,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `87ed4da` passed using temporary Windows runners. The newer image pages are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
+The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `b8c2ddb` passed using temporary Windows runners. The newer Docker work are verified locally and are not yet pushed. See the [CI notes](Part-3-CI.md).
 
 ## References
 

@@ -11,7 +11,6 @@
     var start = Model.EventDateTime.ToOffset(TimeSpan.FromHours(2));
     var closing = Model.EntryClosingDateTime.ToOffset(TimeSpan.FromHours(2));
     string? banner = WebLinks.HttpUrl(Model.BannerImageUrl);
-    var rand = CultureInfo.GetCultureInfo("en-ZA");
 }
 <section class="events-section">
     <div class="container">
@@ -54,7 +53,7 @@
                     <article class="detail-panel" aria-labelledby="category-@category.EventCategoryId">
                         <div class="category-heading">
                             <h3 id="category-@category.EventCategoryId">@category.CategoryName</h3>
-                            <span class="category-fee">R @category.EntryFee.ToString("N2", rand)</span>
+                            <span class="category-fee">@DisplayFormats.Rand(category.EntryFee)</span>
                         </div>
                         <dl class="event-facts">
                             <div><dt>Distance</dt><dd>@category.DistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
