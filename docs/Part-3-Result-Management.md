@@ -25,7 +25,7 @@ Rejected forms retain the values and show the API's reason. A successful save op
 
 ## 3. Checks and evidence
 
-On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. Result-management checks cover roles, private filters, elapsed-time conversion, allowed fields, antiforgery, validation, encoded messages, response checks, ended sessions and uncertain saves. A real HTTP test checks that Organisers receive separate private event results (Microsoft, 2026d).
+On 19 November 2026, all 518 MVC checks passed locally, with none failed or skipped. Result-management checks cover roles, private filters, elapsed-time conversion, allowed fields, antiforgery, validation, encoded messages, response checks, ended sessions and uncertain saves. A real HTTP test checks that Organisers receive separate private event results (Microsoft, 2026d).
 
 Browser checks used an isolated database with fictional entries. Capture matched SQL, including a time over 24 hours. Corrections covered all four outcomes and refreshed the Participant's history and finisher totals. Result ID, recorder, original recording time, entry history and unrelated results stayed unchanged. Duplicate capture, future events, Cancelled entries, wrong-event links, other users and missing antiforgery tokens were rejected.
 

@@ -25,7 +25,7 @@ Results are read-only here. Organisers use separate [capture and correction page
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. Result checks cover roles, privacy, paging, filters, times over 24 hours, non-finishing outcomes, missing positions, encoding, expired sessions and API failures. The real HTTP-handler test also confirms that two browsers read different private histories (Microsoft, 2026d).
+On 19 November 2026, all 518 MVC checks passed locally, with none failed or skipped. Result checks cover roles, privacy, paging, filters, times over 24 hours, non-finishing outcomes, missing positions, encoding, expired sessions and API failures. The real HTTP-handler test also confirms that two browsers read different private histories (Microsoft, 2026d).
 
 Browser checks used an isolated database with fictional race fixtures. Displayed times and positions matched the API. Paging retained filters, other Participants and Organisers were blocked, missing results returned 404 and a newly registered account had no results. Read-only requests left SQL records unchanged. A real Organiser API correction refreshed the time, position, notes and event-wide finisher count in MVC.
 

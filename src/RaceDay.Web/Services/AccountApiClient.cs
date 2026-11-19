@@ -52,7 +52,7 @@ public sealed class AccountApiClient(HttpClient client, TimeProvider clock)
         LoginReply? login;
         try { login = await response.Content.ReadFromJsonAsync<LoginReply>(cancellationToken); }
         catch (JsonException error) { throw new ApiUnavailableException("The login response was unreadable.", error); }
-        string? cookie = ApiCookie(response);
+        string? cookie = ApiCookie(response, clock.GetUtcNow());
         if (login?.User is not { IsActive: true, UserId: > 0 } account || cookie is null ||
             account.Role is not ("Organiser" or "Participant") || string.IsNullOrWhiteSpace(account.FirstName) ||
             login.SessionExpiresAt <= clock.GetUtcNow() || login.SessionExpiresAt > clock.GetUtcNow().AddMinutes(30))
@@ -98,17 +98,26 @@ public sealed class AccountApiClient(HttpClient client, TimeProvider clock)
         { throw new ApiUnavailableException("The account API did not respond in time.", error); }
     }
 
-    private static string? ApiCookie(HttpResponseMessage response)
+    private static string? ApiCookie(HttpResponseMessage response, DateTimeOffset now)
     {
         if (!response.Headers.TryGetValues("Set-Cookie", out var headers) ||
             !SetCookieHeaderValue.TryParseList(headers.ToList(), out var cookies)) return null;
-        var matching = cookies!.Where(cookie => cookie.Name == "RaceDay.Session").ToArray();
+        // A replacement login expires the old cookie before setting its new value.
+        // Ignore only explicit empty deletion cookies; multiple live values remain invalid.
+        // Microsoft (2026): https://learn.microsoft.com/en-us/dotnet/api/microsoft.net.http.headers.setcookieheadervalue.expires
+        // https://learn.microsoft.com/en-us/dotnet/api/microsoft.net.http.headers.setcookieheadervalue.maxage
+        // Accessed: 19 November 2026.
+        var matching = cookies!.Where(cookie => cookie.Name == "RaceDay.Session" && !DeletedCookie(cookie, now)).ToArray();
         if (matching.Length != 1) return null;
         string value = HeaderUtilities.RemoveQuotes(matching[0].Value).ToString();
         if (string.IsNullOrWhiteSpace(value) || value.Length > 4096 ||
             value.IndexOfAny(['\r', '\n', ';', ',']) >= 0) return null;
         return "RaceDay.Session=" + value;
     }
+
+    private static bool DeletedCookie(SetCookieHeaderValue cookie, DateTimeOffset now) =>
+        HeaderUtilities.RemoveQuotes(cookie.Value).Length == 0 &&
+        (cookie.MaxAge is { } age ? age <= TimeSpan.Zero : cookie.Expires is { } expiry && expiry <= now);
 
     private static async Task<AccountFormException> ValidationError(HttpResponseMessage response, CancellationToken cancellationToken)
     {

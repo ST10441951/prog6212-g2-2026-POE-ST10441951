@@ -30,7 +30,7 @@ Route corrections keep the route ID and category link. Removal requires confirma
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. Checks cover roles, ownership, allowed fields, invalid category links, form errors, safe maps, response validation, confirmation, ended sessions and uncertain writes (Microsoft, 2026e).
+On 19 November 2026, all 518 MVC checks passed locally, with none failed or skipped. Checks cover roles, ownership, allowed fields, invalid category links, form errors, safe maps, response validation, confirmation, ended sessions and uncertain writes (Microsoft, 2026e).
 
 Browser checks used an isolated database. Category and route saves matched SQL, including cleared optional values. Invalid ages, duplicate names, unsafe links, reduced capacity, last-available changes and protected-history changes were rejected. Other users were blocked. Unused category deletion also removed its route; route correction/removal preserved result-bearing history. Confirmation GETs and Keep links changed no data.
 

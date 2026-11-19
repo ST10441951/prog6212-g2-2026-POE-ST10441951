@@ -256,7 +256,9 @@ public sealed class AccountTests
             if (request.RequestUri!.AbsolutePath != "/api/auth/login") return WebApiFactory.Json(WebApiFactory.EventJson);
             receivedCookies.Add(request.Headers.TryGetValues("Cookie", out var values) ? string.Join(";", values) : "");
             logins++;
-            return LoginReply(factory, "Participant", logins == 1 ? "Naledi" : "Sipho", $"api-token-{logins}");
+            var reply = LoginReply(factory, "Participant", logins == 1 ? "Naledi" : "Sipho", $"api-token-{logins}");
+            if (logins > 1) reply.Headers.Add("Set-Cookie", "RaceDay.Session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; httponly");
+            return reply;
         };
         using var client = factory.Client();
         using var first = await PostForm(client, "/account/login", LoginFields());
@@ -270,6 +272,47 @@ public sealed class AccountTests
         using var replay = factory.Client();
         replay.DefaultRequestHeaders.Add("Cookie", oldCookie);
         Assert.DoesNotContain("signed-in-user", await replay.GetStringAsync("/"));
+    }
+
+    // Cookie replacement and lifetime precedence: Microsoft (2026).
+    // https://learn.microsoft.com/en-us/dotnet/api/microsoft.net.http.headers.setcookieheadervalue.maxage
+    // Accessed: 19 November 2026.
+    [Theory]
+    [InlineData("expired-first", true)]
+    [InlineData("expired-last", true)]
+    [InlineData("max-age", true)]
+    [InlineData("expired-only", false)]
+    [InlineData("unexpired-empty", false)]
+    [InlineData("max-age-precedence", false)]
+    public async Task LoginReplacement_UsesOneLiveCookieAndRejectsAmbiguousValues(string kind, bool accepted)
+    {
+        using var factory = new WebApiFactory();
+        factory.Reply = request =>
+        {
+            if (request.RequestUri!.AbsolutePath != "/api/auth/login") return WebApiFactory.Json(WebApiFactory.EventJson);
+            var reply = LoginReply(factory);
+            string live = reply.Headers.GetValues("Set-Cookie").Single();
+            string expired = "RaceDay.Session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+            string extra = kind switch
+            {
+                "max-age" => "RaceDay.Session=; max-age=0; expires=Fri, 01 Jan 2100 00:00:00 GMT; path=/",
+                "unexpired-empty" => "RaceDay.Session=; path=/",
+                "max-age-precedence" => expired + "; max-age=60",
+                _ => expired
+            };
+            reply.Headers.Remove("Set-Cookie");
+            if (kind == "expired-last") reply.Headers.Add("Set-Cookie", live);
+            reply.Headers.Add("Set-Cookie", extra);
+            if (kind is not ("expired-last" or "expired-only")) reply.Headers.Add("Set-Cookie", live);
+            return reply;
+        };
+        using var client = factory.Client();
+        using var response = await PostForm(client, "/account/login", LoginFields());
+        Assert.Equal(accepted ? HttpStatusCode.Redirect : HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        if (accepted)
+            Assert.Contains("Naledi <span>(Participant)</span>", await client.GetStringAsync("/"));
+        else
+            Assert.False(response.Headers.TryGetValues("Set-Cookie", out var values) && values.Any(value => value.StartsWith("RaceDay.Web.Session=")));
     }
 
     [Theory]

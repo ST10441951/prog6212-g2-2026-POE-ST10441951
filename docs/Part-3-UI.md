@@ -26,7 +26,7 @@ Form fields have a consistent minimum height of 44 pixels. Buttons, spacing and 
 
 On 19 November 2026, 61 pages passed checks at 320, 390, 768, 1024 and 1280 pixels locally and in Docker. These covered guest pages, both roles, forms, private details, empty lists, rejected filters and access-denied pages. There was no horizontal overflow or JavaScript error. Visible fields had labels, images had alternative text and each page had one main heading.
 
-Keyboard checks reached the skip link first and moved focus to the content for guests and both roles. A 120-character event name also stayed within the page at all five widths. All 512 MVC tests passed locally, including safe, missing and rejected event-banner URLs.
+Keyboard checks reached the skip link first and moved focus to the content for guests and both roles. A 120-character event name also stayed within the page at all five widths. All 518 MVC tests passed locally, including safe, missing and rejected event-banner URLs.
 
 Screenshots use fictional sample accounts and an uploaded test banner. They contain no cursor overlays. The isolated database and local image container were removed after checking. The [check results](evidence/part3-ui-checks.json) record both local and container verification.
 

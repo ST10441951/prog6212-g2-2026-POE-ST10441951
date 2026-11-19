@@ -88,7 +88,7 @@ Current interface: [desktop event finder](docs/evidence/part3-ui-guest-home.png)
 
 ## Setup and run
 
-Install the .NET 10 SDK, SQL Server LocalDB and Node.js with npm. Visual Studio needs .NET 10 support and the ASP.NET/web workload.
+Install the .NET 10 SDK, SQL Server LocalDB and Node.js with npm. Visual Studio needs .NET 10 support and the ASP.NET/web workload. For the container steps, install Docker Desktop and start its Linux container engine.
 
 1. Clone the repository.
 
@@ -105,9 +105,23 @@ dotnet tool restore
 dotnet build RaceDay.sln --configuration Release --no-restore
 ```
 
-3. Follow [Part 2 setup steps 3-5](README-Part2.md#setup-and-run) to set the SQL connection, apply migrations and start Azurite. Keep storage running for image tests.
+3. Set the API's local database connection and apply migrations. This creates the tables and fictional sample accounts; rerunning preserves saved data (Microsoft, 2026j).
 
-4. Start the API in one PowerShell terminal.
+```powershell
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+$env:ConnectionStrings__RaceDay = 'Server=(localdb)\MSSQLLocalDB;Database=RaceDayPart2;Integrated Security=True;Encrypt=True;TrustServerCertificate=True'
+dotnet ef database update --project src/RaceDay.Api --configuration Release --no-build
+```
+
+Use another SQL Server by changing the connection string. Keep private settings in environment variables or user secrets. Do not apply the Part 1 SQL script to this migration-managed database.
+
+Start the local image emulator in a separate terminal and keep it running for image tests (Microsoft, 2026k).
+
+```text
+npx --yes --package azurite@3.37.0 azurite-blob --blobHost 127.0.0.1 --location .azurite --silent
+```
+
+4. Start the API in the same PowerShell terminal used for the database commands, so it keeps the selected connection string.
 
 ```text
 $env:ASPNETCORE_ENVIRONMENT = 'Development'
@@ -125,6 +139,15 @@ dotnet run --project src/RaceDay.Web --configuration Release --no-build --launch
 6. Open [RaceDay](http://localhost:5180/) or [API Swagger](http://localhost:5120/swagger/index.html). In Visual Studio, open `RaceDay.sln` and configure both API and Web as startup projects using their `http` profiles.
 
 The home page displays three upcoming events per page. Filter by province, event type or inclusive UTC dates, then open an event for its details, categories and routes. Times are displayed in SAST. Search starts on page 1, page links retain filters and Clear filters resets the search.
+
+| Role | Local sample email | Password |
+|---|---|---|
+| Organiser | thabo.ndlovu@example.com | RaceDayDemo!2026 |
+| Organiser | ayesha.khan@example.com | RaceDayDemo!2026 |
+| Participant | naledi.mokoena@example.com | RaceDayDemo!2026 |
+| Participant | sipho.dlamini@example.com | RaceDayDemo!2026 |
+
+These accounts are fictional. Event 1 has past results; events 2 and 3 are upcoming while their dates remain in the future. Register a separate account for password-change checks.
 
 Use Create account or Sign in in the header. Registration redirects to sign-in; login opens `/organiser` or `/participant`. A valid local return address takes the user back to the requested page. External destinations are rejected (Microsoft, 2026i). The fictional [Part 2 sample accounts](README-Part2.md#setup-and-run) also work through MVC.
 
@@ -184,19 +207,19 @@ This is the local HTTP demonstration on Docker Desktop. The container runs MVC a
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `80765dd` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44466458518) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44466458173). The build ran 810 API tests and 502 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `8316f29` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243917) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44470243933). The build ran 810 API tests and 512 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The newer interface changes have 512 passing MVC tests locally and are not yet included in the recorded GitHub revision.
+The linked build includes the interface changes and 512 MVC tests. The later account-cookie correction passes all 518 MVC tests locally; see the [rubric review](docs/Part-3-Review.md).
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 512 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 518 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 512 MVC checks passed locally on 19 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence), [Organiser](docs/Part-3-Organiser.md#3-checks-and-evidence), [enrolment](docs/Part-3-Enrolments.md#3-checks-and-evidence), [result-management](docs/Part-3-Result-Management.md#3-checks-and-evidence) and [image checks](docs/Part-3-Images.md#4-checks-and-evidence).
+All 518 MVC checks passed locally on 19 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence), [Organiser](docs/Part-3-Organiser.md#3-checks-and-evidence), [enrolment](docs/Part-3-Enrolments.md#3-checks-and-evidence), [result-management](docs/Part-3-Result-Management.md#3-checks-and-evidence) and [image checks](docs/Part-3-Images.md#4-checks-and-evidence).
 
 ## Project files
 
@@ -219,6 +242,7 @@ All 512 MVC checks passed locally on 19 November 2026, with none failed or skipp
 | [Image notes](docs/Part-3-Images.md) | Profile pictures, event banners, private storage and checks |
 | [Docker notes](docs/Part-3-Docker.md) | Image build, run command, API address and container checks |
 | [Interface notes](docs/Part-3-UI.md) | Shared styles, status colours, navigation and responsive checks |
+| [Rubric review](docs/Part-3-Review.md) | Requirement mapping, final checks, corrections and outstanding submission tasks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
@@ -253,6 +277,10 @@ Microsoft (2026g) 'Overview of ASP.NET Core authentication', *Microsoft Learn*. 
 Microsoft (2026h) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 November 2026).
 
 Microsoft (2026i) 'Prevent open redirect attacks in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026j) 'Applying Migrations', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying (Accessed: 19 November 2026).
+
+Microsoft (2026k) 'Use the Azurite emulator for local Azure Storage development', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite (Accessed: 19 November 2026).
 
 Bootstrap (2026) 'Download', *Bootstrap v5.3*. Available at: https://getbootstrap.com/docs/5.3/getting-started/download/ (Accessed: 18 November 2026).
 

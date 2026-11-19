@@ -9,8 +9,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Create the Part 3 README with an overview, roles and references.
 - [x] Add the Part 3 requirements checklist.
 - [x] Keep MVC, API, tests, documents and evidence clearly organised.
-- [ ] Add complete local setup steps, settings and application URLs.
-- [ ] Include a tested Docker run command, green CI screenshot and video link.
+- [x] Add complete local setup steps, settings and application URLs.
+- [x] Include a tested Docker run command and green CI screenshot.
+- [ ] Add the Part 3 unlisted video link.
 - [ ] Submit the correct GitHub repository link on ARC.
 
 ## MVC application
@@ -21,17 +22,17 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Apply the selected Event finder design and connect province/type filters to the API.
 - [x] Connect date filters, pagination and public event details to the API.
 - [x] Disable shared HTTP cookies and automatic redirects in the API client.
-- [ ] Use the Part 2 API for every data operation.
-- [ ] Keep database access and business rules in the API.
+- [x] Use the Part 2 API for every data operation.
+- [x] Keep database access and business rules in the API.
 - [x] Keep each signed-in user's API session separate from other users.
-- [ ] Display API validation and service errors without raw exception details.
+- [x] Display API validation and service errors without raw exception details.
 
 ## GitHub and CI/CD: 10 marks
 
-- [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
+- [x] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 502 MVC tests passed for `80765dd`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 512 MVC tests passed for `8316f29`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -108,12 +109,12 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 512 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 518 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
 - [x] Pass all 810 API regression tests locally with none failed or skipped.
-- [ ] Test both complete user journeys and saved changes.
+- [x] Test both complete user journeys and saved changes.
 - [x] Test role restrictions, session expiry and isolation between users.
 - [x] Verify disabled, deleted and role-changed accounts lose MVC access.
 - [x] Check protected role pages on desktop/mobile and capture access-denied evidence.
@@ -151,10 +152,11 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify a non-root runtime image without the SDK, backend files or credentials.
 - [x] Check 61 pages at five widths locally and in Docker, including labels and active navigation.
 - [x] Verify keyboard skip links, long names, banner cards and consistent result errors.
-- [ ] Test invalid input, API failures and rejected business operations.
-- [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
-- [ ] Keep screenshots readable and free of cursor overlays.
-- [ ] Review every rubric item against working features and evidence.
+- [x] Verify account switching, deletion-cookie handling and replaced-cookie rejection locally and in Docker.
+- [x] Test invalid input, API failures and rejected business operations.
+- [x] Capture genuine MVC, Azure, Docker and CI screenshots.
+- [x] Keep screenshots readable and free of cursor overlays.
+- [x] Review every rubric item against working features and evidence.
 
 ## Video: 15 marks
 
@@ -171,4 +173,4 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 The Independent Institute of Education (2026) *PROG6212 Portfolio of Evidence*. Part 3 requirements and marking rubric. Assessment brief.
 
-Technical sources are recorded in the [README references](../README.md#references) and will be cited alongside the implementation.
+Technical sources are recorded in the [README references](../README.md#references) and cited alongside the implementation.

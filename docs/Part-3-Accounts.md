@@ -20,6 +20,8 @@ The API verifies the credentials. MVC stores the returned user ID, first name, r
 
 The MVC expiry follows the API's fixed 20-minute expiry. Another login rotates the MVC identifier and sends only that browser's previous API cookie to the login endpoint, allowing the API to end its old session. Unrelated visitors do not share it.
 
+On replacement login, the API can return an expired empty cookie followed by its new session cookie. MVC ignores only explicit deletion cookies, requires one live value and still rejects ambiguous duplicates. This corrects a 503 found when changing accounts while already signed in. Cookie lifetime handling follows `Expires` and `Max-Age`, with `Max-Age` taking precedence (Microsoft, 2026k).
+
 The cookie is HttpOnly and SameSite=Strict. It uses Secure on HTTPS and outside Development. Sessions are held in memory and are lost when MVC restarts. Multiple MVC instances would need a shared cache (Microsoft, 2026c; 2026d).
 
 Successful login opens the correct role's home page, or a validated local return address. External return addresses are ignored, including values changed in a submitted form (Microsoft, 2026j).
@@ -42,7 +44,7 @@ Registration and login also require antiforgery tokens. Passwords are sent only 
 
 ## 5. Checks and evidence
 
-On 19 November 2026, all 512 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
+On 19 November 2026, all 518 MVC checks passed locally. Account checks cover forms, protected URLs, role rejection, expiry, changed accounts, safe return addresses and outage recovery. Tests also verify default controller protection and antiforgery. Real HTTP tests verify that two browsers do not share an upstream login, private entries or profiles (Microsoft, 2026g). See the [event](Part-3-Events.md), [entry](Part-3-Entries.md) and [profile notes](Part-3-Profiles.md).
 
 A separate temporary database was used for browser checks against the real API. Both roles registered, signed in with the correct identity and signed out. Duplicate emails and wrong passwords showed useful errors. Passwords were cleared, and browser cookies contained no API session token. The temporary database was removed afterwards.
 
@@ -58,7 +60,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `80765dd` passed using temporary Windows runners. The newer interface changes are verified locally and are not yet included in that revision. See the [CI notes](Part-3-CI.md).
+The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `8316f29` passed using temporary Windows runners. The current interface changes are included in that revision. See the [CI notes](Part-3-CI.md).
 
 ## References
 
@@ -81,3 +83,5 @@ Microsoft (2026h) 'Overview of ASP.NET Core authentication', *Microsoft Learn*. 
 Microsoft (2026i) 'Role-based authorization in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0 (Accessed: 18 November 2026).
 
 Microsoft (2026j) 'Prevent open redirect attacks in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026k) 'SetCookieHeaderValue.MaxAge Property', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/dotnet/api/microsoft.net.http.headers.setcookieheadervalue.maxage?view=aspnetcore-10.0 (Accessed: 19 November 2026).

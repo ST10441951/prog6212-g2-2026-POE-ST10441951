@@ -150,6 +150,8 @@ internal static class Program
             "src/RaceDay.Web/Views/Images/Upload.cshtml", "src/RaceDay.Web/Views/Images/Remove.cshtml",
             "src/RaceDay.Web/Views/Images/Unavailable.cshtml", "tests/RaceDay.Web.Tests/ImageManagementTests.cs",
             "docs/Part-3-Docker.md", "docs/Part-3-UI.md", "src/RaceDay.Web/Dockerfile", ".dockerignore",
+            "docs/Part-3-Review.md", "docs/evidence/part3-review-checks.json",
+            "docs/evidence/part3-review-saved-entry.png", "docs/evidence/part3-review-personal-result.png",
             "src/RaceDay.Web/Services/DisplayFormats.cs", "tests/RaceDay.Web.Tests/FeeDisplayTests.cs",
             "tests/RaceDay.Web.Tests/EventThumbnailTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",

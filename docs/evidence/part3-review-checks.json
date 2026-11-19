@@ -1,0 +1,163 @@
+{
+  "date": "2026-11-19",
+  "baseRevision": "8316f29",
+  "workingTreeCorrection": "MVC replacement login cookies",
+  "browser": {
+    "date": "2026-11-19",
+    "storageProvider": "Azurite; separate Azure evidence retained",
+    "simulatedFinishedEvent": "Dates moved only in the disposable review database, then status set Completed through MVC",
+    "checks": [
+      "MVC registration Organiser",
+      "Sign-in final-owner-",
+      "Role landing Organiser",
+      "MVC registration Participant",
+      "Sign-in final-participant-",
+      "Role landing Participant",
+      "Both registrations saved with password hashes",
+      "Participant blocked from Organiser pages",
+      "Organiser blocked from Participant pages",
+      "Guest redirected from protected profile",
+      "Draft event created through MVC",
+      "Draft and banner saved",
+      "Age/distance category saved through MVC",
+      "Route saved through MVC",
+      "Ready event opened through MVC",
+      "Participant finds new event through API filters",
+      "Public details include category route",
+      "Uploaded banner displayed on public event",
+      "Immediate enrolment and selected category saved in SQL",
+      "Layout saved-entry 320",
+      "Layout saved-entry 390",
+      "Layout saved-entry 768",
+      "Layout saved-entry 1024",
+      "Layout saved-entry 1280",
+      "Duplicate entry rejected without crashing",
+      "Organiser sees saved Participant enrolment",
+      "Bib saved through MVC",
+      "Cancel GET is read-only",
+      "Cancellation preserves entry history",
+      "Reactivation preserves identity and bib",
+      "Permitted entry deletion saved",
+      "Profile update saved through API",
+      "Profile image uploaded and displayed through API",
+      "Profile image removal saved",
+      "Password change ends current session",
+      "Sign-in final-participant-",
+      "New credentials preserve saved entries",
+      "Sign-in ayesha.khan",
+      "Other Organiser cannot manage event",
+      "Sign-in sipho.dlamini",
+      "Other Participant cannot read entry",
+      "History-bearing category deletion rejected",
+      "Finished fixture marked Completed through MVC",
+      "Finish time and positions recorded through MVC",
+      "Participant personal race history updated",
+      "Finishing position and event-wide finisher total displayed",
+      "Layout personal-result 320",
+      "Layout personal-result 390",
+      "Layout personal-result 768",
+      "Layout personal-result 1024",
+      "Layout personal-result 1280",
+      "Result correction saved",
+      "Participant receives corrected finish time",
+      "Event deletion preserves saved history",
+      "Unused Draft deletion works through MVC",
+      "Unused category deletion works through MVC",
+      "Route removal preserves category and history",
+      "Official result preserved after route removal",
+      "Missing antiforgery token rejected",
+      "Organiser logout removes protected access",
+      "Organiser logout leaves independent Participant session active",
+      "Participant logout removes protected access",
+      "No browser JavaScript errors"
+    ],
+    "layouts": [
+      {
+        "page": "saved-entry",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "saved-entry",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "saved-entry",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "saved-entry",
+        "width": 1024,
+        "overflow": false
+      },
+      {
+        "page": "saved-entry",
+        "width": 1280,
+        "overflow": false
+      },
+      {
+        "page": "personal-result",
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "page": "personal-result",
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "page": "personal-result",
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "page": "personal-result",
+        "width": 1024,
+        "overflow": false
+      },
+      {
+        "page": "personal-result",
+        "width": 1280,
+        "overflow": false
+      }
+    ],
+    "javascriptErrors": []
+  },
+  "accountSwitching": [
+    {
+      "environment": "local",
+      "bothRoleSwitches": true,
+      "previousRoleBlocked": true,
+      "replacedCookieRejected": true,
+      "currentProfileCorrect": true
+    },
+    {
+      "environment": "docker",
+      "bothRoleSwitches": true,
+      "previousRoleBlocked": true,
+      "replacedCookieRejected": true,
+      "currentProfileCorrect": true
+    }
+  ],
+  "localMvcTests": {
+    "passed": 518,
+    "failed": 0,
+    "skipped": 0
+  },
+  "publishedCi": {
+    "revision": "8316f29",
+    "apiPassed": 810,
+    "mvcPassed": 512,
+    "buildRun": "44470243917",
+    "planningRun": "44470243933"
+  },
+  "docker": {
+    "imageId": "sha256:cb7af5702d14773a83bb9758c368de3587efba12cca88ac099b3357f5c0f2750",
+    "user": "1654",
+    "noSdk": true,
+    "noBackendCredentials": true
+  },
+  "temporaryResourcesRemoved": true
+}

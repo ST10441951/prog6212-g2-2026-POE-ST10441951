@@ -40,7 +40,7 @@ docker stop raceday-web
 
 ## 3. Checks and evidence
 
-All 512 MVC tests passed locally on 19 November 2026, with none failed or skipped. Six added checks verify fee display across cultures. Fees use one display format because Windows and Linux returned different separators for `en-ZA`; forms still send numeric values to the API (Microsoft, 2026c).
+All 518 MVC tests passed locally on 19 November 2026, with none failed or skipped. Six added checks verify fee display across cultures. Fees use one display format because Windows and Linux returned different separators for `en-ZA`; forms still send numeric values to the API (Microsoft, 2026c).
 
 The Linux amd64 image built successfully and ran as UID 1654. Runtime checks confirmed no SDK, API assembly, source files or secret settings in the final image. The host API was reachable through `host.docker.internal`.
 
