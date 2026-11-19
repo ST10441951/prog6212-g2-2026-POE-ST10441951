@@ -1,0 +1,464 @@
+{
+  "date": "2026-11-19",
+  "baseRevision": "80765dd",
+  "changes": "MVC interface updates",
+  "mvcTests": {
+    "passed": 512,
+    "failed": 0,
+    "skipped": 0
+  },
+  "widths": [
+    320,
+    390,
+    768,
+    1024,
+    1280
+  ],
+  "localPages": 61,
+  "dockerPages": 61,
+  "localLayouts": 305,
+  "dockerLayouts": 305,
+  "issues": 0,
+  "javascriptErrors": 0,
+  "keyboard": [
+    {
+      "role": "guest",
+      "skipLinkFirst": true,
+      "skipMovesToMain": true
+    },
+    {
+      "role": "participant",
+      "skipLinkFirst": true,
+      "skipMovesToMain": true
+    },
+    {
+      "role": "organiser",
+      "skipLinkFirst": true,
+      "skipMovesToMain": true
+    }
+  ],
+  "longText": [
+    {
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "width": 1280,
+      "overflow": false
+    }
+  ],
+  "resultValidation": {
+    "longTextLayouts": [
+      {
+        "width": 320,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "overflow": false
+      },
+      {
+        "width": 768,
+        "overflow": false
+      },
+      {
+        "width": 1024,
+        "overflow": false
+      },
+      {
+        "width": 1280,
+        "overflow": false
+      }
+    ],
+    "resultValidationSummary": true,
+    "resultInlineError": true,
+    "invalidResultRetainsSavedData": true
+  },
+  "pages": [
+    {
+      "role": "guest",
+      "route": "/",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/account/login",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/account/register",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/events/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/events/2",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/events/3",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/?province=Gauteng&eventType=Cycling",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/?page=invalid",
+      "status": 400,
+      "layoutIssues": 0
+    },
+    {
+      "role": "guest",
+      "route": "/missing-page",
+      "status": 404,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/participant",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries/1/cancel",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries/1/delete",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries/1/reactivate",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/events/2/enter",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/results",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/results/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/profile",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/profile/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/profile/password",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/profile/picture",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/profile/picture/remove",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries?status=Cancelled",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries?page=invalid",
+      "status": 400,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/organiser",
+      "status": 403,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/create",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/delete",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/create",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/1/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/1/delete",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/1/route",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/1/route/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/categories/1/route/delete",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/enrolments",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/enrolments/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/enrolments/1/bib",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/results",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/results/1",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/results/1/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/banner",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/1/banner/remove",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events?status=Draft",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/profile",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/profile/edit",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/profile/password",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/participant",
+      "status": 403,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/2",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/2/categories/3/route",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/2/categories/3/route/create",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/2/results",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/7",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/8",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/9",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "organiser",
+      "route": "/organiser/events/10",
+      "status": 200,
+      "layoutIssues": 0
+    },
+    {
+      "role": "participant",
+      "route": "/entries/5/reactivate",
+      "status": 200,
+      "layoutIssues": 0
+    }
+  ],
+  "dockerImageId": "sha256:125b5083c6001e94e1fe73eb4e75b598674dcd9f00b7439861da9093679e921f",
+  "temporaryResourcesRemoved": true,
+  "releaseBuild": {
+    "warnings": 0,
+    "errors": 0,
+    "planningChecks": "passed"
+  }
+}

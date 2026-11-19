@@ -11,18 +11,18 @@
     <div class="detail-panel profile-form">
         <p>Record results after the event has started. Only Confirmed entries in an event that is not Cancelled can receive results.</p>
         <form asp-action="@(edit ? "Edit" : "Capture")" asp-route-eventId="@Model.Entry.EventId" asp-route-enrolmentId="@Model.Entry.EnrolmentId" method="post">
-            <div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+            <div asp-validation-summary="All" class="form-errors" role="alert"></div>
             <div class="mb-3"><label class="form-label" asp-for="ResultStatus"></label><select class="form-select" asp-for="ResultStatus">
                 @foreach (string status in new[] { "Completed", "DidNotFinish", "DidNotStart", "Disqualified" }) { <option value="@status">@ResultDetails.Label(status)</option> }
-            </select><span class="field-validation-error" asp-validation-for="ResultStatus"></span></div>
+            </select><span class="field-error" asp-validation-for="ResultStatus"></span></div>
             <div class="mb-3"><label class="form-label" asp-for="FinishTime"></label><input class="form-control" asp-for="FinishTime" placeholder="01:02:30" aria-describedby="finish-help" />
-                <div class="form-text" id="finish-help">Elapsed time, not a time of day. Hours may exceed 24. Completed requires a positive time; leave time and positions blank for other outcomes.</div><span class="field-validation-error" asp-validation-for="FinishTime"></span></div>
+                <div class="form-text" id="finish-help">Elapsed time, not a time of day. Hours may exceed 24. Completed requires a positive time; leave time and positions blank for other outcomes.</div><span class="field-error" asp-validation-for="FinishTime"></span></div>
             <div class="row g-3 mb-3">
-                <div class="col-md-6"><label class="form-label" asp-for="OverallPosition"></label><input class="form-control" asp-for="OverallPosition" /><span class="field-validation-error" asp-validation-for="OverallPosition"></span></div>
-                <div class="col-md-6"><label class="form-label" asp-for="CategoryPosition"></label><input class="form-control" asp-for="CategoryPosition" /><span class="field-validation-error" asp-validation-for="CategoryPosition"></span></div>
+                <div class="col-md-6"><label class="form-label" asp-for="OverallPosition"></label><input class="form-control" asp-for="OverallPosition" /><span class="field-error" asp-validation-for="OverallPosition"></span></div>
+                <div class="col-md-6"><label class="form-label" asp-for="CategoryPosition"></label><input class="form-control" asp-for="CategoryPosition" /><span class="field-error" asp-validation-for="CategoryPosition"></span></div>
             </div>
             <p class="form-text">Positions are optional for Completed results. Enter positive whole numbers when known; tied positions are allowed.</p>
-            <div class="mb-4"><label class="form-label" asp-for="Notes"></label><textarea class="form-control" asp-for="Notes" rows="3" aria-describedby="notes-help"></textarea><div class="form-text" id="notes-help">Optional, up to 500 characters. Notes are visible to the Participant.</div><span class="field-validation-error" asp-validation-for="Notes"></span></div>
+            <div class="mb-4"><label class="form-label" asp-for="Notes"></label><textarea class="form-control" asp-for="Notes" rows="3" aria-describedby="notes-help"></textarea><div class="form-text" id="notes-help">Optional, up to 500 characters. Notes are visible to the Participant.</div><span class="field-error" asp-validation-for="Notes"></span></div>
             @if (edit) { <p>The correction keeps the original result and recording details. It appears in the Participant's race history.</p> }
             <div class="entry-actions"><button class="btn btn-race" type="submit">@(edit ? "Save correction" : "Save result")</button><a class="btn btn-outline-secondary" asp-controller="Enrolments" asp-action="Details" asp-route-eventId="@Model.Entry.EventId" asp-route-enrolmentId="@Model.Entry.EnrolmentId">Keep enrolment</a></div>
         </form>

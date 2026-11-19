@@ -4,8 +4,10 @@
    Filter choices follow the existing API contract: src/RaceDay.Api/Contracts/Events/EventBrowseRequest.cs.
    Date offsets: https://learn.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tooffset
    Pagination: https://getbootstrap.com/docs/5.3/components/pagination/
-   Accessed: 18 November 2026. *@
+   Image sizing and loading: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img
+   Accessed: 19 November 2026. *@
 @model HomeViewModel
+@using RaceDay.Web.Services
 @{
     ViewData["Title"] = "Find your next event";
 }
@@ -94,7 +96,12 @@
                 @foreach (var item in Model.Events)
                 {
                     var localDate = item.EventDateTime.ToOffset(TimeSpan.FromHours(2));
+                    string? thumbnail = WebLinks.HttpUrl(item.BannerImageUrl);
                     <article class="event-row" aria-labelledby="event-@item.EventId">
+                        @if (thumbnail is not null)
+                        {
+                            <img class="event-thumbnail" src="@thumbnail" alt="Banner for @item.EventName" width="112" height="84" loading="lazy" referrerpolicy="no-referrer" />
+                        }
                         <time class="event-date" datetime="@item.EventDateTime.ToString("O", CultureInfo.InvariantCulture)">
                             <span>@localDate.ToString("dd", CultureInfo.InvariantCulture)</span>
                             @localDate.ToString("MMM yyyy", CultureInfo.InvariantCulture)

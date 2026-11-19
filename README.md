@@ -23,7 +23,7 @@ The MVC website uses typed HTTP clients to call the API. Database access and bus
 
 The existing API has 40 business endpoints and seven SQL Server tables. See the [endpoint plan](docs/API-Endpoint-Plan.md) and [database notes](docs/Part-2-Database.md).
 
-The shared MVC layout uses the Event finder design: blue accents, a light background, compact navigation and white event cards. Bootstrap styles are served locally (Bootstrap, 2026).
+The shared MVC layout uses the Event finder design: blue accents, a light background, compact navigation and white event cards. Bootstrap styles are served locally. Uploaded banners appear on event cards; forms and status badges use consistent styles. See the [interface notes and checks](docs/Part-3-UI.md) (Bootstrap, 2026).
 
 | Area | Current status |
 |---|---|
@@ -44,6 +44,7 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Organiser result capture and corrections | Implemented; [result management](docs/Part-3-Result-Management.md) |
 | MVC profile pictures and event banners | Implemented; [image notes](docs/Part-3-Images.md) |
 | Docker | MVC image built and tested; [Docker notes](docs/Part-3-Docker.md) |
+| Interface and mobile layouts | Checked locally and in Docker; [interface notes](docs/Part-3-UI.md) |
 
 ## MVC screenshots
 
@@ -82,6 +83,8 @@ Official results: [event results](docs/evidence/part3-event-results.png), [captu
 Azure images: [saved profile picture](docs/evidence/part3-azure-profile-picture.png), [event banner](docs/evidence/part3-azure-event-banner.png), [public event](docs/evidence/part3-azure-public-event-banner.png) and [rejected file](docs/evidence/part3-azure-image-rejected.png). Screenshots use fictional accounts and test graphics.
 
 Docker: [home](docs/evidence/part3-docker-home.png), [saved event](docs/evidence/part3-docker-owned-event.png), [entry](docs/evidence/part3-docker-entry-saved.png) and [official result](docs/evidence/part3-docker-result-details.png).
+
+Current interface: [desktop event finder](docs/evidence/part3-ui-guest-home.png), [mobile event finder](docs/evidence/part3-ui-guest-home-mobile.png), [Organiser form](docs/evidence/part3-ui-organiser-organiser-events-create.png) and [result validation](docs/evidence/part3-ui-result-validation-mobile.png).
 
 ## Setup and run
 
@@ -181,19 +184,19 @@ This is the local HTTP demonstration on Docker Desktop. The container runs MVC a
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `b8c2ddb` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44462184360) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44462184514). The build ran 810 API tests and 496 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `80765dd` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44466458518) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44466458173). The build ran 810 API tests and 502 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The newer Docker changes have 502 passing MVC tests locally and are not yet included in the recorded GitHub revision.
+The newer interface changes have 512 passing MVC tests locally and are not yet included in the recorded GitHub revision.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 502 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 512 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 502 MVC checks passed locally on 19 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence), [Organiser](docs/Part-3-Organiser.md#3-checks-and-evidence), [enrolment](docs/Part-3-Enrolments.md#3-checks-and-evidence), [result-management](docs/Part-3-Result-Management.md#3-checks-and-evidence) and [image checks](docs/Part-3-Images.md#4-checks-and-evidence).
+All 512 MVC checks passed locally on 19 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence), [Organiser](docs/Part-3-Organiser.md#3-checks-and-evidence), [enrolment](docs/Part-3-Enrolments.md#3-checks-and-evidence), [result-management](docs/Part-3-Result-Management.md#3-checks-and-evidence) and [image checks](docs/Part-3-Images.md#4-checks-and-evidence).
 
 ## Project files
 
@@ -215,6 +218,7 @@ All 502 MVC checks passed locally on 19 November 2026, with none failed or skipp
 | [Result management](docs/Part-3-Result-Management.md) | Official event results, capture, corrections and checks |
 | [Image notes](docs/Part-3-Images.md) | Profile pictures, event banners, private storage and checks |
 | [Docker notes](docs/Part-3-Docker.md) | Image build, run command, API address and container checks |
+| [Interface notes](docs/Part-3-UI.md) | Shared styles, status colours, navigation and responsive checks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |

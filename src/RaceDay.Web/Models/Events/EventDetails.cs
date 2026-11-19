@@ -12,7 +12,6 @@ public sealed class EventDetails : EventSummary
     public required string AddressLine1 { get; init; }
     public decimal? Latitude { get; init; }
     public decimal? Longitude { get; init; }
-    public string? BannerImageUrl { get; init; }
     public required IReadOnlyList<EventCategory> Categories { get; init; }
 }
 

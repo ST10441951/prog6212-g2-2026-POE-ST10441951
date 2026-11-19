@@ -3,7 +3,9 @@
    Bootstrap (2026), https://getbootstrap.com/docs/5.3/forms/select/
    Bootstrap (2026), https://getbootstrap.com/docs/5.3/components/pagination/
    MDN (2026), https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
-   Accessed: 18 November 2026. */
+   MDN (2026), https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current
+   Bootstrap (2026), https://getbootstrap.com/docs/5.3/forms/overview/
+   Accessed: 19 November 2026. */
 :root {
     --race-ink: #182536;
     --race-blue: #1e65b8;
@@ -25,6 +27,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .brand > span { color: var(--race-blue); }
 .nav-link { color: var(--race-ink); font-size: .9rem; font-weight: 600; text-decoration: none; padding: .6rem 0; }
 .nav-link.active { color: var(--race-blue); }
+.header-nav [aria-current="page"] { text-decoration: underline; text-underline-offset: .35rem; }
 .header-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 1.4rem; }
 .header-nav form { margin: 0; }
 .nav-register { min-height: 38px; padding: .5rem .8rem; font-size: .82rem; }
@@ -33,11 +36,13 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .signed-in-user > span { font-weight: 400; color: var(--race-muted); }
 .events-section { padding: 2.75rem 0 4rem; }
 .page-intro { margin-bottom: 1.65rem; }
-.page-intro h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.045rem; line-height: 1.25; margin: 0 0 .7rem; }
+.page-intro h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.045rem; line-height: 1.25; margin: 0 0 .7rem; overflow-wrap: anywhere; }
 .page-intro p { color: var(--race-muted); font-size: .98rem; margin: 0; }
 .event-search { background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.35rem; margin-bottom: 1.8rem; }
 .form-label { font-size: .83rem; font-weight: 500; color: var(--race-muted); margin-bottom: .45rem; }
+.form-control { min-height: 44px; min-width: 0; font-size: .95rem; border-color: #cbd2db; border-radius: 6px; }
 .form-select { min-height: 44px; border-color: #cbd2db; border-radius: 6px; color: var(--race-ink); font-size: .9rem; }
+.btn-outline-secondary, .btn-outline-danger { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: .65rem 1rem; border-radius: 6px; font-size: .88rem; font-weight: 600; }
 .btn-race { border-radius: 6px; color: white; background: var(--race-blue); border: 1px solid var(--race-blue); font-weight: 600; font-size: .88rem; min-height: 44px; padding: .65rem 1rem; }
 .btn-race:hover, .btn-race:focus { color: white; background: #174f92; border-color: #174f92; }
 .search-button { width: 100%; white-space: nowrap; }
@@ -48,6 +53,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .event-row { display: flex; align-items: center; gap: 1.4rem; background: white; border: 1px solid var(--race-line); border-radius: 8px; padding: 1.45rem; box-shadow: 0 2px 3px #172c450a; }
 .event-date { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; min-width: 72px; min-height: 76px; padding: .65rem .4rem; border-radius: 6px; background: #f0f3f7; color: var(--race-muted); font-size: .67rem; text-transform: uppercase; }
 .event-date > span { color: var(--race-ink); font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+.event-thumbnail { width: 112px; height: 84px; flex-shrink: 0; object-fit: cover; border-radius: 6px; }
 .event-info { flex: 1; min-width: 0; }
 .event-type { color: var(--race-blue); font-size: .73rem; font-weight: 600; margin-bottom: .3rem; }
 .event-info h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: .4rem; overflow-wrap: anywhere; }
@@ -78,6 +84,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .route-summary > a { display: inline-block; margin-top: 1rem; font-size: .88rem; }
 .route-missing { color: var(--race-muted); font-size: .88rem; margin: 1rem 0 0; }
 .status-completed { color: #305988; background: #eaf0f8; }
+.status-draft { color: #505a65; background: #edf0f2; }
 .status-cancelled { color: #8b3131; background: #f9e9e9; }
 .entry-form-panel { max-width: 680px; }
 .entry-list { display: grid; gap: 1rem; }
@@ -88,7 +95,6 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .profile-photo, .profile-initial { width: 100px; height: 100px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
 .profile-initial { display: flex; align-items: center; justify-content: center; color: var(--race-blue); background: #eaf0f8; font-size: 2.2rem; font-weight: 700; }
 .profile-form-panel { max-width: 740px; }
-.profile-form-panel .form-control { min-height: 44px; font-size: .95rem; border-color: #cbd2db; border-radius: 6px; }
 .event-location { color: var(--race-muted); font-size: .86rem; margin: 0; }
 .event-meta { min-width: 90px; text-align: right; }
 .event-distance { display: block; font-size: 1.15rem; font-weight: 700; }
@@ -120,7 +126,6 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
 .account-intro { color: var(--race-muted); font-size: .92rem; line-height: 1.6; margin-bottom: 1.8rem; }
 .account-field { margin-bottom: 1.1rem; }
 .registration-card .account-field { margin-bottom: 0; }
-.account-card .form-control { min-height: 44px; font-size: .95rem; border-color: #cbd2db; border-radius: 6px; }
 .account-submit { width: 100%; margin-top: .6rem; }
 .registration-card .account-submit { margin-top: 1.6rem; }
 .account-switch { text-align: center; color: var(--race-muted); font-size: .85rem; margin: 1.5rem 0 0; }
@@ -136,6 +141,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--race-blue); out
     .event-search { padding: 1.1rem; }
     .event-row { gap: 1rem; flex-wrap: wrap; padding: 1.1rem; }
     .event-date { min-width: 62px; }
+    .event-thumbnail { width: 100%; height: 150px; order: -1; }
     .event-info { min-width: 155px; }
     .event-info h3 { font-size: 1rem; }
     .event-meta { display: flex; align-items: center; gap: 1rem; width: 100%; padding-left: 78px; text-align: left; }

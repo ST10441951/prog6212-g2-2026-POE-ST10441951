@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 496 MVC tests passed for `b8c2ddb`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 502 MVC tests passed for `80765dd`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -97,18 +97,18 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## UI design: 10 marks
 
-- [ ] Use a consistent sporting RaceDay theme, colours and typography.
+- [x] Use a consistent sporting RaceDay theme, colours and typography.
 - [x] Use Bootstrap or a similar framework for responsive layouts.
 - [x] Check the home page on desktop and mobile and save screenshots.
-- [ ] Make every page accessible through the correct role's navigation.
-- [ ] Use distinct status colours and text that match the API statuses.
-- [ ] Keep forms, buttons, tables, spacing and images consistent.
-- [ ] Handle invalid input, empty lists and unavailable services clearly.
-- [ ] Check desktop and mobile layouts.
+- [x] Make every page accessible through the correct role's navigation.
+- [x] Use distinct status colours and text that match the API statuses.
+- [x] Keep forms, buttons, tables, spacing and images consistent.
+- [x] Handle invalid input, empty lists and unavailable services clearly.
+- [x] Check desktop and mobile layouts.
 
 ## Testing and evidence
 
-- [x] Pass all 502 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 512 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -149,6 +149,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify Docker registration, both roles, saved API operations, images and independent sessions.
 - [x] Compare local/container pages, correct fee formatting and check restart/outage behaviour.
 - [x] Verify a non-root runtime image without the SDK, backend files or credentials.
+- [x] Check 61 pages at five widths locally and in Docker, including labels and active navigation.
+- [x] Verify keyboard skip links, long names, banner cards and consistent result errors.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

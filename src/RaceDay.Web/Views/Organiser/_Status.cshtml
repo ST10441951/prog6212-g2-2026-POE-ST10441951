@@ -3,6 +3,6 @@
    Accessed: 18 November 2026. *@
 @model string
 @{
-    string colour = Model switch { "Open" => "status-open", "Closed" => "status-closed", "Cancelled" => "status-cancelled", _ => "status-completed" };
+    string colour = Model switch { "Open" => "status-open", "Closed" => "status-closed", "Cancelled" => "status-cancelled", "Completed" => "status-completed", _ => "status-draft" };
 }
 <span class="event-status @colour">@Model</span>

@@ -2,11 +2,19 @@
    https://learn.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-10.0
    https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0
    https://getbootstrap.com/docs/5.3/layout/grid/
-   Accessed: 18 November 2026. *@
+   https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current
+   Accessed: 19 November 2026. *@
 @{
     bool signedIn = User.Identity?.IsAuthenticated is true;
     bool organiser = User.IsInRole("Organiser");
-    bool homePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase);
+    string? controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    string? action = ViewContext.RouteData.Values["action"]?.ToString();
+    bool homePage = string.Equals(controller, "Home", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(controller, "Events", StringComparison.OrdinalIgnoreCase);
+    bool loginPage = string.Equals(controller, "Account", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(action, "Login", StringComparison.OrdinalIgnoreCase);
+    bool registerPage = string.Equals(controller, "Account", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(action, "Register", StringComparison.OrdinalIgnoreCase);
     bool roleHome = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), organiser ? "Organiser" : "Participant", StringComparison.OrdinalIgnoreCase)
         && string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase);
     bool imagePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Images", StringComparison.OrdinalIgnoreCase);
@@ -38,8 +46,8 @@
                 <a class="nav-link @(homePage ? "active" : "")" asp-controller="Home" asp-action="Index" aria-current="@(homePage ? "page" : null)">Find events</a>
                 @if (!signedIn)
                 {
-                    <a class="nav-link" asp-controller="Account" asp-action="Login">Sign in</a>
-                    <a class="btn btn-race nav-register" asp-controller="Account" asp-action="Register">Create account</a>
+                    <a class="nav-link @(loginPage ? "active" : "")" asp-controller="Account" asp-action="Login" aria-current="@(loginPage ? "page" : null)">Sign in</a>
+                    <a class="btn btn-race nav-register" asp-controller="Account" asp-action="Register" aria-current="@(registerPage ? "page" : null)">Create account</a>
                 }
                 else
                 {

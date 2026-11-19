@@ -21,7 +21,7 @@ Create event and the private event links open the [event-management pages](Part-
 
 ## 3. Checks and evidence
 
-On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. New checks cover totals, dates, status filters, paging, empty lists, invalid responses, encoding, role restrictions and ended sessions. A real HTTP test confirms two Organisers do not share dashboard or event cookies (Microsoft, 2026c).
+On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. New checks cover totals, dates, status filters, paging, empty lists, invalid responses, encoding, role restrictions and ended sessions. A real HTTP test confirms two Organisers do not share dashboard or event cookies (Microsoft, 2026c).
 
 Browser checks used an isolated database with fictional event fixtures. Totals and counts per event matched the API and SQL. Both Organisers saw only their own records. Draft and historical events remained visible to their owner, filters and paging worked, and a new Organiser had an empty dashboard. Read-only requests left saved records unchanged. A real API cancellation refreshed the Confirmed/Cancelled totals.
 

@@ -37,7 +37,7 @@ Azurite remains available for local development and regression tests; see [Part 
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. Checks cover multipart fields, cookie isolation, roles, ownership, antiforgery, request/file limits, safe response URLs, replacement/removal requests and partial event/banner saves. A real HTTP test verifies separate browsers' upload cookies (Microsoft, 2026f).
+On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. Checks cover multipart fields, cookie isolation, roles, ownership, antiforgery, request/file limits, safe response URLs, replacement/removal requests and partial event/banner saves. A real HTTP test verifies separate browsers' upload cookies (Microsoft, 2026f).
 
 Browser checks against the real API, SQL and Azurite passed for uploads, JPEG/PNG replacement, old-blob deletion, private signed reads, invalid files, size limits, storage failures, banner creation/editing, public display and confirmed removal. Account fields and official results were preserved. Pages passed at 320, 390, 768 and 1280 pixels without horizontal overflow or JavaScript errors.
 

@@ -24,4 +24,5 @@ public class EventSummary
     public required string City { get; init; }
     public required string Province { get; init; }
     public required string Status { get; init; }
+    public string? BannerImageUrl { get; init; }
 }

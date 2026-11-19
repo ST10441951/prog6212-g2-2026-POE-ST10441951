@@ -28,19 +28,19 @@ The search form uses the API's province/type choices and optional inclusive UTC 
 
 ## 4. Layout
 
-Razor pages share a header, navigation and footer. Signed-in users see their verified name and their role's home link. Bootstrap 5.3.9 is served locally, with its MIT licence in `wwwroot/lib/bootstrap`. The selected Event finder design uses blue accents, a light background, compact navigation, a search panel and white event cards. Keyboard focus styles, a skip link and responsive layouts are included (Microsoft, 2026f; Bootstrap, 2026; MDN, 2026).
+Razor pages share a header, navigation and footer. Signed-in users see their verified name and their role's home link. Bootstrap 5.3.9 is served locally, with its MIT licence in `wwwroot/lib/bootstrap`. The selected Event finder design uses blue accents, a light background, compact navigation, a search panel and white event cards. Consistent form sizes, active navigation, banner thumbnails and long-name wrapping are covered in the [interface notes](Part-3-UI.md). Keyboard focus styles, a skip link and responsive layouts are included (Microsoft, 2026f; Bootstrap, 2026; MDN, 2026).
 
 Razor encodes event text. The shared error page handles missing pages and unexpected errors without exposing exception details (Microsoft, 2026e; 2026g).
 
 ## 5. Checks
 
-The 502 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 512 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, image uploads, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `b8c2ddb` using temporary Windows runners. That revision ran 810 API and 496 MVC tests. The newer Docker changes have 502 passing MVC tests locally and are not yet included in that revision. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `80765dd` using temporary Windows runners. That revision ran 810 API and 502 MVC tests. The newer interface changes have 512 passing MVC tests locally and are not yet included in that revision. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

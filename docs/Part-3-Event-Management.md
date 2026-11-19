@@ -31,7 +31,7 @@ Other Organisers and Participants cannot use these forms or writes. Missing upst
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 502 MVC checks passed locally, with none failed or skipped. Event checks cover roles, ownership, allowed fields, date offsets, validation, antiforgery, redirects, read-only confirmation, conflicts, invalid responses and uncertain writes (Microsoft, 2026e).
+On 19 November 2026, all 512 MVC checks passed locally, with none failed or skipped. Event checks cover roles, ownership, allowed fields, date offsets, validation, antiforgery, redirects, read-only confirmation, conflicts, invalid responses and uncertain writes (Microsoft, 2026e).
 
 Browser checks used a temporary database. A Draft was created and edited through MVC, with owner, status, fields and exact UTC times verified in SQL. Refresh did not duplicate it. Opening without a category failed; adding an available category through the API allowed opening. Saved entries prevented a distance change. Other accounts' edits were blocked, dependent deletion preserved history, cancellation kept the entry, and terminal reopening failed. A separate event without dependencies was deleted after confirmation and returned API 404.
 
