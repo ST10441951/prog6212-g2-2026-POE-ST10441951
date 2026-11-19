@@ -159,5 +159,14 @@
     "noSdk": true,
     "noBackendCredentials": true
   },
-  "temporaryResourcesRemoved": true
+  "temporaryResourcesRemoved": true,
+  "categoryConcurrencyCorrection": {
+    "categoryTestsPassed": 93,
+    "failed": 0,
+    "skipped": 0,
+    "duplicateRaces": 6,
+    "expectedCreatedPerRace": 1,
+    "expectedConflictPerRace": 1,
+    "eventWriteLock": true
+  }
 }

@@ -18,7 +18,7 @@ Checked on 19 November 2026 against the supplied Part 3 questions and rubric (Th
 
 ## 2. Final checks
 
-The published build passed 810 API tests and 518 MVC tests, with none failed or skipped, zero build warnings/errors and no missing migration. API source, database mappings and the Part 1/2 READMEs are unchanged.
+The recorded build passed 810 API tests and 518 MVC tests, with none failed or skipped, zero build warnings/errors and no missing migration. The final category-creation correction retains the existing database mappings and API contract. The Part 1/2 READMEs are unchanged.
 
 The final browser walkthrough passed 63 assertions across registration, event/category/route creation, banners, entry, bib assignment, cancellation/reactivation/deletion, profiles, password changes, images, completed-event results, corrections, private access and logout. Changes were checked against the real API and disposable SQL database. See the [recorded results](evidence/part3-review-checks.json), [saved entry](evidence/part3-review-saved-entry.png) and [personal result](evidence/part3-review-personal-result.png).
 
@@ -27,6 +27,7 @@ To test results without waiting for a future race, only the disposable fixture's
 ## 3. Corrections
 
 - Fixed a 503 when signing into another account while already signed in. MVC handles the API's expired-cookie header and new session value while rejecting multiple live values. Old MVC cookies cannot restore the replaced session or role.
+- Serialised concurrent category creation with the existing event write lock. Repeated duplicate requests must create one category and return one 409 conflict, rather than an intermittent 500.
 - Made the Part 3 setup self-contained, including database creation, emulator startup and sample accounts.
 - Refreshed CI screenshots and links, and updated verified checklist items.
 

@@ -72,7 +72,12 @@ public sealed class OrganiserCategoriesController(RaceDayDbContext database, Tim
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType, "application/problem+json")]
     public async Task<ActionResult<CategorySummaryResponse>> Create(int eventId, CategoryWriteRequest request, CancellationToken cancellationToken)
     {
-        var item = await database.Events.AsNoTracking().SingleOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
+        // Serialise category creation with other writes for this event before checking its names.
+        // https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table
+        // https://learn.microsoft.com/en-us/ef/core/saving/transactions
+        // Accessed: 19 November 2026.
+        await using var transaction = await database.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
+        var item = await EventWriteLock.Query(database, eventId).AsNoTracking().SingleOrDefaultAsync(cancellationToken);
         if (item is null) return Problem(statusCode: 404, title: "Event not found");
         if (item.OrganiserUserId != OwnerId()) return Problem(statusCode: 403, title: "You do not manage this event");
         if (await database.EventCategories.AnyAsync(x => x.EventId == eventId && x.CategoryName == request.CategoryName, cancellationToken))
@@ -92,6 +97,7 @@ public sealed class OrganiserCategoriesController(RaceDayDbContext database, Tim
         {
             return Problem(statusCode: 404, title: "Event not found");
         }
+        await transaction.CommitAsync(cancellationToken);
         return Created($"/api/events/{eventId}/categories/{category.EventCategoryId}", CategoryResponses.Details(category));
     }
 

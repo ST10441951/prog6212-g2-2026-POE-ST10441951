@@ -194,16 +194,22 @@ public sealed class CategoryTests(SqlServerFixture database) : IClassFixture<Sql
         await Login(first);
         await Login(second);
         var item = await AddEvent();
-        var responses = await Task.WhenAll(first.PostAsJsonAsync(Path(item.EventId), Details()),
-            second.PostAsJsonAsync(Path(item.EventId), Details()));
-        try
+        // Repeat independent races so each name must produce one saved row and one conflict.
+        for (int attempt = 0; attempt < 6; attempt++)
         {
-            Assert.Single(responses, x => x.StatusCode == HttpStatusCode.Created);
-            Assert.Single(responses, x => x.StatusCode == HttpStatusCode.Conflict);
-            await using var read = database.CreateContext();
-            Assert.Equal(1, await read.EventCategories.CountAsync());
+            var details = Details();
+            details["categoryName"] = $"Concurrent category {attempt}";
+            var responses = await Task.WhenAll(first.PostAsJsonAsync(Path(item.EventId), details),
+                second.PostAsJsonAsync(Path(item.EventId), details));
+            try
+            {
+                Assert.Single(responses, x => x.StatusCode == HttpStatusCode.Created);
+                Assert.Single(responses, x => x.StatusCode == HttpStatusCode.Conflict);
+                await using var read = database.CreateContext();
+                Assert.Equal(attempt + 1, await read.EventCategories.CountAsync());
+            }
+            finally { foreach (var response in responses) response.Dispose(); }
         }
-        finally { foreach (var response in responses) response.Dispose(); }
     }
 
     [Fact]

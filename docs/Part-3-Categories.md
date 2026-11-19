@@ -22,6 +22,8 @@ Add/edit sends only name, distance, minimum/maximum age, fee, capacity and avail
 
 Deletion opens a read-only confirmation. Keep category makes no change. The API blocks deletion when entries exist or Open-event readiness would be lost. An unused category is deleted with its optional route; the parent event remains.
 
+Category creation uses the API's existing transaction-held event write lock before checking names. Simultaneous duplicate requests are serialised: one saves and the other receives 409. The concurrency test repeats this check with six independent names (Microsoft, 2026f).
+
 ## 3. Routes
 
 Each category can have one route with name, start, finish, instructions, optional map URL and elevation. Add/edit sends only these six fields. Blank optional values clear them. The API accepts only absolute HTTP/HTTPS map links without credentials; MVC also checks saved URLs before rendering links.
@@ -58,3 +60,5 @@ Microsoft (2026c) 'Model validation in ASP.NET Core MVC and Razor Pages', *Micro
 Microsoft (2026d) 'Prevent Cross-Site Request Forgery (XSRF/CSRF) attacks in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0 (Accessed: 18 November 2026).
 
 Microsoft (2026e) 'Integration tests in ASP.NET Core', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-10.0 (Accessed: 18 November 2026).
+
+Microsoft (2026f) 'Using Transactions', *Microsoft Learn*. Available at: https://learn.microsoft.com/en-us/ef/core/saving/transactions (Accessed: 19 November 2026).

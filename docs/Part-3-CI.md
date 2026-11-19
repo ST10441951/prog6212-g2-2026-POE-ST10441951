@@ -29,6 +29,8 @@ An earlier build for 80765dd timed out while creating a temporary SQL test datab
 
 The account-cookie correction is included in these passing checks and is described in the [rubric review](Part-3-Review.md).
 
+A later run exposed an intermittent 500 in concurrent category creation. Creation now uses the existing event write lock, and all 93 category tests pass locally with six duplicate-creation races. Latest results are available in the [build workflow](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/workflows/part2-build.yml).
+
 ## References
 
 GitHub (2026a) 'Adding self-hosted runners', *GitHub Docs*. Available at: https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners (Accessed: 18 November 2026).

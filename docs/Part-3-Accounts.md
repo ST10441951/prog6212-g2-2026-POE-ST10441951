@@ -60,7 +60,7 @@ The home, account and role pages were checked at 320, 390, 768 and 1280 pixels w
 | Participant home | [Desktop](evidence/part3-participant-home.png) / [mobile](evidence/part3-participant-home-mobile.png) |
 | Wrong role | [Access denied](evidence/part3-access-denied.png) |
 
-The 810 API checks passed in GitHub on the same date; API source and database mappings are unchanged. Both checks for `81c3cf1` passed using temporary Windows runners. The current interface changes are included in that revision. See the [CI notes](Part-3-CI.md).
+The 810 API checks passed in GitHub on the same date; database mappings and the account API contract are unchanged. Both checks for `81c3cf1` passed using temporary Windows runners. The current interface changes are included in that revision. See the [CI notes](Part-3-CI.md).
 
 ## References
 
