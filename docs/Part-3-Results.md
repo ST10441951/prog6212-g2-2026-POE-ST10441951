@@ -21,11 +21,11 @@ Did not finish, Did not start and Disqualified have no official time or rank. A 
 
 Opening a result shows its category, distance, bib, overall/category positions, recorded date, correction date and Organiser notes. Links open the event and the Participant's entry. Only official saved results appear; an enrolment alone does not create one.
 
-Results are read-only here. Organiser capture and correction pages remain outstanding. Updated API results appear on the next request. Pages use no-store responses, encode Organiser text and reject inconsistent or other-user data. Missing results return 404, invalid filters return 400 and service problems show a friendly 503. An expired API session ends the local session (Microsoft, 2026a; 2026b).
+Results are read-only here. Organisers use separate [capture and correction pages](Part-3-Result-Management.md). Updated API results appear on the next request. Pages use no-store responses, encode Organiser text and reject inconsistent or other-user data. Missing results return 404, invalid filters return 400 and service problems show a friendly 503. An expired API session ends the local session (Microsoft, 2026a; 2026b).
 
 ## 4. Checks and evidence
 
-On 18 November 2026, all 427 MVC checks passed locally, with none failed or skipped. Result checks cover roles, privacy, paging, filters, times over 24 hours, non-finishing outcomes, missing positions, encoding, expired sessions and API failures. The real HTTP-handler test also confirms that two browsers read different private histories (Microsoft, 2026d).
+On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. Result checks cover roles, privacy, paging, filters, times over 24 hours, non-finishing outcomes, missing positions, encoding, expired sessions and API failures. The real HTTP-handler test also confirms that two browsers read different private histories (Microsoft, 2026d).
 
 Browser checks used an isolated database with fictional race fixtures. Displayed times and positions matched the API. Paging retained filters, other Participants and Organisers were blocked, missing results returned 404 and a newly registered account had no results. Read-only requests left SQL records unchanged. A real Organiser API correction refreshed the time, position, notes and event-wide finisher count in MVC.
 

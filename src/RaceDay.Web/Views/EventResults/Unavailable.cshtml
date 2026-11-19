@@ -1,0 +1,9 @@
+@* Friendly service failure without exception details: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 19 November 2026. *@
+@{ ViewData["Title"] = "Results unavailable"; bool unconfirmed = ViewData["UnconfirmedResult"] is true; }
+<section class="events-section"><div class="container"><div class="notice" role="alert">
+    <h1>@(unconfirmed ? "The result could not be confirmed" : "Results are unavailable")</h1>
+    <p>@(unconfirmed ? "Check the saved result in My events before submitting again. The API may have saved the change." : "The event service is unavailable. Please try again shortly.")</p>
+    <a class="btn btn-race" asp-controller="Organiser" asp-action="Events">My events</a>
+</div></div></section>

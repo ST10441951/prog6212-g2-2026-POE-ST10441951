@@ -2,9 +2,9 @@
 
 ## 1. Project
 
-`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Typed clients cover public events, accounts, entries, profiles, personal results and Organiser reads (Microsoft, 2026a; 2026b).
+`src/RaceDay.Web` is a .NET 10 MVC project in `RaceDay.sln`. It has no API project reference, EF Core package, SQL connection or Azure SDK. Typed clients cover public events, accounts, entries, profiles, personal results and Organiser operations (Microsoft, 2026a; 2026b).
 
-The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers manage owned events, categories, routes and enrolments. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md), [event-management](Part-3-Event-Management.md), [category](Part-3-Categories.md), [enrolment](Part-3-Enrolments.md) and [account notes](Part-3-Accounts.md). Result capture, MVC image uploads and Docker remain outstanding.
+The home page reads upcoming events from `GET /api/events` with three per page. Participants manage entries and read results. Both roles edit profiles and change passwords. Organisers manage owned events, categories, routes, enrolments and results. See the [event](Part-3-Events.md), [entry](Part-3-Entries.md), [profile](Part-3-Profiles.md), [result](Part-3-Results.md), [Organiser](Part-3-Organiser.md), [event-management](Part-3-Event-Management.md), [category](Part-3-Categories.md), [enrolment](Part-3-Enrolments.md), [result-management](Part-3-Result-Management.md) and [account notes](Part-3-Accounts.md). MVC image uploads and Docker remain outstanding.
 
 ## 2. Settings
 
@@ -34,13 +34,13 @@ Razor encodes event text. The shared error page handles missing pages and unexpe
 
 ## 5. Checks
 
-The 427 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
+The 468 MVC checks cover browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, result capture/corrections, accounts, role restrictions, redirects, errors, cookie isolation and expiry. HTTP-handler checks use a temporary local server. Other MVC checks replace the upstream API response and do not need SQL or Azure (Microsoft, 2026h).
 
-On 18 November 2026, all 427 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
+On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. The unchanged 810 API tests also passed in GitHub. The Release build had zero warnings/errors. Planning checks passed and the API model is unchanged.
 
 The home and detail pages passed browser checks at 320, 390, 768 and 1280 pixels without horizontal overflow. Combined filters, inclusive dates, paging and route details worked against an isolated real API/database. The [desktop](evidence/part3-event-finder-desktop.png) and [mobile](evidence/part3-event-finder-mobile.png) search screenshots use temporary paging fixtures and have no cursor overlay. Further details and screenshots are in the [event notes](Part-3-Events.md).
 
-Both GitHub workflows passed for `1ba054a` using temporary Windows runners. That revision ran 810 API and 397 MVC tests. The newer enrolment pages have 427 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
+Both GitHub workflows passed for `cd3da6a` using temporary Windows runners. That revision ran 810 API and 427 MVC tests. The newer result-management pages have 468 passing MVC tests locally and are not yet pushed. See the [CI notes](Part-3-CI.md) and [README](../README.md#cicd).
 
 Run instructions and current results are in the [README](../README.md#setup-and-run).
 

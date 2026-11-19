@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 397 MVC tests passed for `1ba054a`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 427 MVC tests passed for `cd3da6a`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -58,7 +58,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Display and manage the existing category route information.
 - [x] View event enrolments with Participants, selected categories and statuses.
 - [x] Connect the existing bib-number assignment functionality.
-- [ ] Capture finish times and positions after an event and correct saved results.
+- [x] Capture finish times and positions after an event and correct saved results.
 - [x] Show saved results in the Participant's personal history.
 
 ## Participant interface: 15 marks
@@ -108,7 +108,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 427 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 468 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -140,6 +140,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify roster counts, combined filters and retained pagination against the real API/database.
 - [x] Verify private roster access and bib saves, duplicates and protected fields through MVC.
 - [x] Check roster/bib pages on desktop/mobile and preserve Cancelled/history records and results.
+- [x] Verify result capture/corrections in SQL and refresh Participant history and finisher totals.
+- [x] Verify duplicate results, future events, Cancelled entries, private ownership and protected recording details.
+- [x] Check result-management forms and lists on desktop/mobile and capture evidence.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

@@ -34,6 +34,8 @@ public sealed class ResultPage
 public sealed class ResultDetails
 {
     public required int ResultId { get; init; }
+    public int RecordedByUserId { get; init; }
+    public string? ParticipantName { get; init; }
     public required int EnrolmentId { get; init; }
     public required int ParticipantUserId { get; init; }
     public required int EventId { get; init; }

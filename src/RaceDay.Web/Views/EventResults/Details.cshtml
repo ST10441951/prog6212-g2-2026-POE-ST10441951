@@ -1,0 +1,21 @@
+@* Encoded official results and correction links: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   Accessed: 19 November 2026. *@
+@model RaceDay.Web.Models.Results.ResultDetails
+@{ ViewData["Title"] = "Official result"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Index" asp-route-eventId="@Model.EventId">Back to event results</a>
+    @if (TempData["ResultSaved"] is true) { <div class="alert alert-success" role="status">The official result has been saved.</div> }
+    <div class="page-intro"><h1>@Model.ParticipantName</h1><p>@Model.EventName</p></div>
+    <div class="detail-panel"><div class="category-heading"><h2>@Model.CategoryName</h2><span class="event-status @(Model.ResultStatus == "Completed" ? "status-open" : Model.ResultStatus == "Disqualified" ? "status-cancelled" : "status-closed")">@Model.StatusLabel</span></div>
+        <dl class="event-facts">
+            <div><dt>Event date</dt><dd>@Model.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+            <div><dt>Bib number</dt><dd>@(Model.BibNumber ?? "Not assigned")</dd></div><div><dt>Finish time</dt><dd>@Model.FinishTime</dd></div>
+            <div><dt>Overall position</dt><dd>@Model.OverallPlace</dd></div><div><dt>Category position</dt><dd>@(Model.ResultStatus != "Completed" ? "Not ranked" : Model.CategoryPosition?.ToString(CultureInfo.InvariantCulture) ?? "Not assigned")</dd></div>
+            <div><dt>Event finishers</dt><dd>@Model.TotalFinishers</dd></div><div><dt>Recorded</dt><dd>@Model.RecordedAt.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+            @if (Model.UpdatedAt is { } updated) { <div><dt>Last corrected</dt><dd>@updated.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div> }
+        </dl>
+        @if (!string.IsNullOrWhiteSpace(Model.Notes)) { <h3 class="h5 mt-4">Organiser notes</h3><p class="event-description">@Model.Notes</p> }
+        <div class="entry-actions mt-4"><a class="btn btn-race" asp-action="Edit" asp-route-eventId="@Model.EventId" asp-route-enrolmentId="@Model.EnrolmentId">Correct result</a><a class="btn btn-outline-secondary" asp-controller="Enrolments" asp-action="Details" asp-route-eventId="@Model.EventId" asp-route-enrolmentId="@Model.EnrolmentId">View enrolment</a></div>
+    </div>
+</div></section>

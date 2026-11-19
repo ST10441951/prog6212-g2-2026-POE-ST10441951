@@ -16,16 +16,16 @@ The machine needs Git, Node/npm, PowerShell 7, the .NET 10 SDK and SQL Server Lo
 
 The build workflow restores packages, builds the API/MVC solution, runs all tests and checks for missing migrations. It reuses an existing Azurite instance or starts one, waits for it to be ready and stops only the process started by that job. The planning workflow runs the C# document/schema checks.
 
-Both checks passed on 18 November 2026 for `1ba054a`:
+Both checks passed on 19 November 2026 for `cd3da6a`:
 
 | Check | Result |
 |---|---|
-| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44382523205) | 810 API and 397 MVC tests passed; zero build warnings/errors; no missing migration |
-| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44382523257) | File, endpoint, schema and document checks passed |
+| [Build and test](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44454456739) | 810 API and 427 MVC tests passed; zero build warnings/errors; no missing migration |
+| [Planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44454456696) | File, endpoint, schema and document checks passed |
 
 Evidence: [build success](evidence/part3-ci-build-success.png) and [planning success](evidence/part3-ci-planning-success.png). These are genuine GitHub pages. The temporary runners removed themselves after completing their jobs. Future local runs need new runner registrations and the PC online; the account's hosted-runner billing lock has not been changed.
 
-The later enrolment pages have 427 passing MVC tests locally and have not yet been pushed or tested in GitHub.
+The later result-management pages have 468 passing MVC tests locally and have not yet been pushed or tested in GitHub.
 
 ## References
 

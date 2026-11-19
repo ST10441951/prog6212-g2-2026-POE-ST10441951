@@ -18,5 +18,6 @@
             @if (Model.UpdatedAt is { } updated) { <div><dt>Last updated</dt><dd>@updated.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div> }
         </dl>
         <a class="btn btn-race mt-4" asp-action="Bib" asp-route-eventId="@Model.EventId" asp-route-enrolmentId="@Model.EnrolmentId">Assign or edit bib</a>
+        <a class="btn btn-outline-secondary mt-4" asp-controller="EventResults" asp-action="@(Model.Result is null ? "Capture" : "Details")" asp-route-eventId="@Model.EventId" asp-route-enrolmentId="@Model.EnrolmentId">@(Model.Result is null ? "Record result" : "View official result")</a>
     </div>
 </div></section>

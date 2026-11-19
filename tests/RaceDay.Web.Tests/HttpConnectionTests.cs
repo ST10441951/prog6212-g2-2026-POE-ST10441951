@@ -129,13 +129,22 @@ public sealed class HttpConnectionTests
             entry["eventId"] = id; entry["participantName"] = $"Participant for Owner{owner}";
             return Results.Content($$"""{"page":1,"pageSize":10,"totalCount":1,"totalPages":1,"items":[{{entry.ToJsonString()}}]}""", "application/json");
         });
+        upstream.MapGet("/api/events/{id:int}/results", (int id, HttpContext context) =>
+        {
+            int owner = Owner(context);
+            if (owner == 0) return Results.Unauthorized();
+            var result = EventResultManagementTests.ResultData();
+            result["eventId"] = id; result["eventName"] = $"Private event for Owner{owner}";
+            result["participantName"] = $"Participant for Owner{owner}";
+            return Results.Content($$"""{"page":1,"pageSize":10,"totalCount":1,"totalPages":1,"items":[{{result.ToJsonString()}}]}""", "application/json");
+        });
         await upstream.StartAsync();
         using var factory = new WebApiFactory { Reply = null };
         factory.Settings["Api:BaseUrl"] = Address(upstream);
         using var first = factory.Client(); using var second = factory.Client();
         using var firstLogin = await AccountTests.PostForm(first, "/account/login", AccountTests.LoginFields());
         using var secondLogin = await AccountTests.PostForm(second, "/account/login", AccountTests.LoginFields());
-        foreach (string route in new[] { "/organiser", "/organiser/events", "/organiser/events/2/enrolments" })
+        foreach (string route in new[] { "/organiser", "/organiser/events", "/organiser/events/2/enrolments", "/organiser/events/2/results" })
         {
             string firstPage = await first.GetStringAsync(route), secondPage = await second.GetStringAsync(route);
             Assert.Contains("Private event for Owner1", firstPage); Assert.DoesNotContain("Private event for Owner2", firstPage);

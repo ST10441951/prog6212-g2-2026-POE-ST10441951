@@ -140,6 +140,11 @@ internal static class Program
             "src/RaceDay.Web/Views/Enrolments/Index.cshtml", "src/RaceDay.Web/Views/Enrolments/Details.cshtml",
             "src/RaceDay.Web/Views/Enrolments/Bib.cshtml", "src/RaceDay.Web/Views/Enrolments/Unavailable.cshtml",
             "tests/RaceDay.Web.Tests/RosterTests.cs",
+            "docs/Part-3-Result-Management.md", "src/RaceDay.Web/Models/Organiser/ResultForms.cs",
+            "src/RaceDay.Web/Controllers/EventResultsController.cs", "src/RaceDay.Web/Services/OrganiserResultRequests.cs",
+            "src/RaceDay.Web/Views/EventResults/Index.cshtml", "src/RaceDay.Web/Views/EventResults/Details.cshtml",
+            "src/RaceDay.Web/Views/EventResults/Form.cshtml", "src/RaceDay.Web/Views/EventResults/Unavailable.cshtml",
+            "tests/RaceDay.Web.Tests/EventResultManagementTests.cs",
             "src/RaceDay.Web/Views/Shared/_Layout.cshtml", "src/RaceDay.Web/wwwroot/css/site.css",
             "src/RaceDay.Web/wwwroot/lib/bootstrap/LICENSE",
             "tests/RaceDay.Web.Tests/RaceDay.Web.Tests.csproj"

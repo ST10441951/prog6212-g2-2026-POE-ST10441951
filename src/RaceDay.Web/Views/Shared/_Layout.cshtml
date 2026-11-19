@@ -9,7 +9,8 @@
     bool homePage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase);
     bool roleHome = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), organiser ? "Organiser" : "Participant", StringComparison.OrdinalIgnoreCase)
         && string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase);
-    bool ownedEventsPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Enrolments", StringComparison.OrdinalIgnoreCase) ||
+    bool ownedEventsPage = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "EventResults", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Enrolments", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Categories", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "OwnedEvents", StringComparison.OrdinalIgnoreCase) ||
         (string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Organiser", StringComparison.OrdinalIgnoreCase)
