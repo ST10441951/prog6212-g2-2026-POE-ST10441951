@@ -12,13 +12,13 @@ Event names link to `/events/{eventId}`. MVC reads `GET /api/events/{eventId}` w
 
 Details show the description, date, venue, address, distance, entry deadline, status and coordinates when supplied. Categories include distance, age limits, rand fees and maximum entries. Capacity is not presented as remaining places. Routes show their name, instructions, start, finish, elevation and map link. Missing categories or routes have clear empty states.
 
-Razor encodes event text. Banner and map URLs must be absolute HTTP/HTTPS addresses without credentials. Map links use `noopener noreferrer`. Existing API banner URLs can be displayed; MVC uploads and the Azure demonstration remain outstanding (Microsoft, 2026d).
+Razor encodes event text. Banner and map URLs must be absolute HTTP/HTTPS addresses without credentials. Map links use `noopener noreferrer`. Banners uploaded through [image management](Part-3-Images.md) display on public event details using the API's temporary URL (Microsoft, 2026d).
 
 Participants can now enter an event and read their private entry history. See the [entry notes](Part-3-Entries.md). Permitted entry changes are also connected through the API.
 
 ## 3. Checks and evidence
 
-On 19 November 2026, all 468 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
+On 19 November 2026, all 496 MVC tests passed, with none failed or skipped. The Release build had zero warnings/errors. Added checks cover paging, dates, retained filters, details, hidden/missing events, empty states, encoding and unsafe links (Microsoft, 2026e).
 
 Browser checks used a separate database with five extra cycling fixtures to exercise multiple pages. MVC names and page results matched the real API. Combined filters, inclusive dates, clear filters, invalid ranges, out-of-range pages, Completed events and Draft/Cancelled visibility all passed. The temporary database was removed afterwards; `RaceDayPart2` was not changed.
 

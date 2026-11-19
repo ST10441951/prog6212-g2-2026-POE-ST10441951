@@ -31,7 +31,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [ ] Make at least 20 meaningful Part 3 commits using my GitHub account.
 - [x] Build MVC and the API in GitHub Actions.
 - [x] Retain the API tests and repository-structure checks.
-- [x] Run the committed API and MVC tests in CI; 810 API and 427 MVC tests passed for `cd3da6a`.
+- [x] Run the committed API and MVC tests in CI; 810 API and 468 MVC tests passed for `87ed4da`.
 - [ ] Confirm a green build for the final submitted revision.
 - [x] Add current green CI screenshots and working build links to the README.
 
@@ -53,7 +53,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Create, edit and delete owned events through the API.
 - [x] Include name, description, date, location, distance and event type.
 - [x] Show API status and history restrictions when a change is rejected.
-- [ ] Upload and display event banners when creating or editing events.
+- [x] Upload and display event banners when creating or editing events.
 - [x] Add, edit and delete age or distance categories for owned events.
 - [x] Display and manage the existing category route information.
 - [x] View event enrolments with Participants, selected categories and statuses.
@@ -73,17 +73,17 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Show finishing position and total finishers, including non-finishing outcomes.
 - [x] View and update personal profile information.
 - [x] Connect password changes and the required sign-in afterwards.
-- [ ] Upload and display a Participant profile picture.
+- [x] Upload and display a Participant profile picture.
 
 ## Azure Blob Storage: 10 marks
 
-- [ ] Send picture and banner files from MVC to the API as multipart uploads.
-- [ ] Keep storage credentials and Azure access in the API.
-- [ ] Verify actual Azure Blob Storage uploads through the MVC pages.
-- [ ] Save image references through the API and display images in MVC.
-- [ ] Display event banners on event details and pictures on profiles.
-- [ ] Verify replacement, removal, invalid files and storage errors.
-- [ ] Keep real credentials out of Git and document the required settings.
+- [x] Send picture and banner files from MVC to the API as multipart uploads.
+- [x] Keep storage credentials and Azure access in the API.
+- [x] Verify actual Azure Blob Storage uploads through the MVC pages.
+- [x] Save image references through the API and display images in MVC.
+- [x] Display event banners on event details and pictures on profiles.
+- [x] Verify replacement, removal, invalid files and storage errors.
+- [x] Keep real credentials out of Git and document the required settings.
 
 ## Docker: 10 marks
 
@@ -108,7 +108,7 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Testing and evidence
 
-- [x] Pass all 468 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
+- [x] Pass all 496 MVC checks, including Organiser reads, results, profiles, accounts and protected pages.
 - [x] Register, sign in and sign out as both roles against an isolated real API/database.
 - [x] Capture login and registration screenshots without cursor overlays.
 - [x] Retain the passing Part 2 tests and add relevant MVC checks.
@@ -143,6 +143,9 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Verify result capture/corrections in SQL and refresh Participant history and finisher totals.
 - [x] Verify duplicate results, future events, Cancelled entries, private ownership and protected recording details.
 - [x] Check result-management forms and lists on desktop/mobile and capture evidence.
+- [x] Verify picture/banner uploads, replacements and removals against Azure and SQL.
+- [x] Verify private read-only image URLs, old-blob deletion and public event display.
+- [x] Check image pages on desktop/mobile, rejected files, storage failures and account isolation.
 - [ ] Test invalid input, API failures and rejected business operations.
 - [ ] Capture genuine MVC, Azure, Docker and CI screenshots.
 - [ ] Keep screenshots readable and free of cursor overlays.

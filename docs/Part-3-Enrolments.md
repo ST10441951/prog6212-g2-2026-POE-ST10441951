@@ -26,7 +26,7 @@ Expired sessions return to sign-in. Other users are blocked, and a record from a
 
 ## 3. Checks and evidence
 
-On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. Checks cover filters, paging, roles, ownership, allowed fields, antiforgery, encoded messages, ended sessions, invalid responses and uncertain saves. A real HTTP test checks that two Organisers receive separate private rosters (Microsoft, 2026d).
+On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. Checks cover filters, paging, roles, ownership, allowed fields, antiforgery, encoded messages, ended sessions, invalid responses and uncertain saves. A real HTTP test checks that two Organisers receive separate private rosters (Microsoft, 2026d).
 
 Browser checks used an isolated API/database with 15 entries. Roster counts matched SQL. Filters retained their values across pages. Duplicate bibs, including those on Cancelled entries, were rejected. Saved uppercase values appeared in the Participant's entry. Wrong roles and event links were blocked. SQL checks confirmed that bib corrections preserved entry history and official results.
 

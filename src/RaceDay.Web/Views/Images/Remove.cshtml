@@ -1,0 +1,16 @@
+@* Read-only confirmation with a protected POST: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+   Accessed: 19 November 2026. *@
+@model RaceDay.Web.Models.Images.ImagePage
+@{ ViewData["Title"] = Model.Picture ? "Remove profile picture" : "Remove event banner"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="@(Model.Picture ? "Picture" : "Banner")" asp-route-eventId="@Model.EventId">Back to image</a>
+    <div class="page-intro"><h1>@ViewData["Title"]</h1><p>@Model.Name</p></div>
+    <div class="detail-panel">
+        @if (Model.ImageUrl is not null) { <img class="@(Model.Picture ? "profile-photo mb-4" : "event-banner mb-4")" src="@Model.ImageUrl" alt="Image to remove" referrerpolicy="no-referrer" /> }
+        <p>Remove this image? The account or event details will stay saved. You can upload another image later.</p>
+        <form asp-action="@(Model.Picture ? "RemovePictureConfirmed" : "RemoveBannerConfirmed")" asp-route-eventId="@Model.EventId" method="post">
+            <div class="entry-actions"><button class="btn btn-outline-danger" type="submit">Remove image</button><a class="btn btn-race" asp-action="@(Model.Picture ? "Picture" : "Banner")" asp-route-eventId="@Model.EventId">Keep image</a></div>
+        </form>
+    </div>
+</div></section>

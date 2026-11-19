@@ -17,6 +17,7 @@
             <div class="alert alert-success" role="status">Your profile has been updated.</div>
         }
         <div class="detail-panel">
+            @if (TempData["ImageSaved"] is string imageNotice) { <div class="alert alert-success" role="status">@imageNotice</div> }
             <div class="profile-heading">
                 @if (picture is not null)
                 {
@@ -37,6 +38,7 @@
             <div class="entry-actions mt-4">
                 <a class="btn btn-race" asp-controller="Profile" asp-action="Edit">Edit profile</a>
                 <a class="btn btn-outline-secondary" asp-controller="Profile" asp-action="Password">Change password</a>
+                @if (User.IsInRole("Participant")) { <a class="btn btn-outline-secondary" asp-controller="Images" asp-action="Picture">Manage profile picture</a> }
             </div>
         </div>
     </div>

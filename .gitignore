@@ -17,3 +17,9 @@ TestResults/
 # Local Azure Storage emulator data
 .azurite/
 
+# Private local configuration
+.env
+.env.*
+!.env.example
+secrets.json
+

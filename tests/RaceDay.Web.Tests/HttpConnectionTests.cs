@@ -159,6 +159,7 @@ public sealed class HttpConnectionTests
     public async Task AccountClient_DoesNotShareAnUpstreamLoginBetweenBrowsers()
     {
         var cookies = new ConcurrentQueue<string>();
+        var imageOwners = new ConcurrentQueue<int>();
         int accountNumber = 0;
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
@@ -185,6 +186,16 @@ public sealed class HttpConnectionTests
                 userId = number, firstName = $"Visitor{number}", lastName = "Test", email = $"visitor{number}@example.com",
                 role = "Participant", isActive = true, createdAt = "2026-11-18T12:00:00Z"
             });
+        });
+        upstream.MapPut("/api/profile/picture", async (HttpContext context) =>
+        {
+            int number = context.Request.Cookies["RaceDay.Session"] switch { "upstream-token-1" => 1, "upstream-token-2" => 2, _ => 0 };
+            if (number == 0) return Results.Unauthorized();
+            var form = await context.Request.ReadFormAsync();
+            Assert.Empty(form); Assert.Equal("imageFile", Assert.Single(form.Files).Name);
+            imageOwners.Enqueue(number);
+            context.Response.Cookies.Append("RaceDay.Session", "unexpected-shared-image-cookie");
+            return Results.Json(new { profilePictureUrl = $"https://storage.example.test/user-{number}.png" });
         });
         upstream.MapGet("/api/enrolments/{id:int}", (int id, HttpContext context) =>
         {
@@ -243,5 +254,12 @@ public sealed class HttpConnectionTests
         Assert.Contains("Visitor2", await second.GetStringAsync("/entries/2"));
         using var unrelated = await first.GetAsync("/entries/2");
         Assert.Equal(HttpStatusCode.Forbidden, unrelated.StatusCode);
+        using var firstImage = await ImageManagementTests.Upload(first, "/profile/picture");
+        using var secondImage = await ImageManagementTests.Upload(second, "/profile/picture");
+        using var firstReplacement = await ImageManagementTests.Upload(first, "/profile/picture");
+        Assert.Equal(HttpStatusCode.Redirect, firstImage.StatusCode);
+        Assert.Equal(HttpStatusCode.Redirect, secondImage.StatusCode);
+        Assert.Equal(HttpStatusCode.Redirect, firstReplacement.StatusCode);
+        Assert.Equal(new[] { 1, 2, 1 }, imageOwners);
     }
 }

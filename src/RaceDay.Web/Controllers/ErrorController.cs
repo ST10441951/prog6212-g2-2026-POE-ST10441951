@@ -27,13 +27,14 @@ public sealed class ErrorController : Controller
             StatusCode = statusCode,
             Heading = statusCode switch
             {
-                403 => "Access denied", 404 => "Page not found",
+                403 => "Access denied", 404 => "Page not found", 413 => "Upload too large",
                 503 => "Service temporarily unavailable", _ => "Something went wrong"
             },
             Message = statusCode switch
             {
                 403 => "Your account does not have access to this page.",
                 404 => "This page may have moved or the address may be incorrect.",
+                413 => "Choose one JPEG or PNG image no larger than 5 MiB.",
                 503 => "We could not check your account. Please try again shortly.",
                 _ => "We could not complete that request. Please try again."
             },

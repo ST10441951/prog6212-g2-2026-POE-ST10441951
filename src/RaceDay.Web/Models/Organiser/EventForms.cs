@@ -10,6 +10,8 @@ namespace RaceDay.Web.Models.Organiser;
 // Accessed: 18 November 2026.
 public class CreateEventForm
 {
+    [Display(Name = "Event banner (optional)")]
+    public IFormFile? BannerImage { get; set; }
     [Required, StringLength(120), Display(Name = "Event name")]
     public string EventName { get; set; } = string.Empty;
     [Required, Display(Name = "Event type")]

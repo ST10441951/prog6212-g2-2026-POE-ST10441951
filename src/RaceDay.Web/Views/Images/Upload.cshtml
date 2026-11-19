@@ -1,0 +1,23 @@
+@* Multipart forms, encoded URLs and antiforgery: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/forms/form-control/#file-input
+   Accessed: 19 November 2026. *@
+@model RaceDay.Web.Models.Images.ImageUploadForm
+@{ var imageContext = Model.Page!; ViewData["Title"] = imageContext.Picture ? "Profile picture" : "Event banner"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="@(imageContext.Picture ? "Profile" : "OwnedEvents")" asp-action="@(imageContext.Picture ? "Index" : "Details")" asp-route-eventId="@imageContext.EventId">@(imageContext.Picture ? "Back to my profile" : "Back to event")</a>
+    <div class="page-intro"><h1>@ViewData["Title"]</h1><p>@imageContext.Name</p></div>
+    @if (TempData["BannerNotice"] is string notice) { <div class="alert alert-warning" role="alert">@notice</div> }
+    <div class="detail-panel">
+        @if (imageContext.ImageUrl is not null) { <img class="@(imageContext.Picture ? "profile-photo mb-4" : "event-banner mb-4")" src="@imageContext.ImageUrl" alt="Current @(imageContext.Picture ? "profile picture" : "event banner")" referrerpolicy="no-referrer" /> }
+        else { <p>No image has been uploaded.</p> }
+        <form asp-action="@(imageContext.Picture ? "Picture" : "Banner")" asp-route-eventId="@imageContext.EventId" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+            <div class="mb-4"><label class="form-label" asp-for="ImageFile"></label><input class="form-control" asp-for="ImageFile" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" aria-describedby="image-help" required />
+                <div class="form-text" id="image-help">Choose one still JPEG or PNG, up to 5 MiB and 4096 pixels per side. A new upload replaces the current image. After a rejected upload, select the file again.</div><span class="field-error" asp-validation-for="ImageFile"></span></div>
+            <div class="entry-actions"><button class="btn btn-race" type="submit">Save image</button>
+                @if (imageContext.ImageUrl is not null) { <a class="btn btn-outline-danger" asp-action="@(imageContext.Picture ? "RemovePicture" : "RemoveBanner")" asp-route-eventId="@imageContext.EventId">Remove image</a> }
+                <a class="btn btn-outline-secondary" asp-controller="@(imageContext.Picture ? "Profile" : "OwnedEvents")" asp-action="@(imageContext.Picture ? "Index" : "Details")" asp-route-eventId="@imageContext.EventId">Cancel</a></div>
+        </form>
+    </div>
+</div></section>

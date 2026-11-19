@@ -8,6 +8,7 @@
 <section class="events-section"><div class="container">
     <a class="back-link" asp-controller="Organiser" asp-action="Events">Back to my events</a>
     @if (TempData["EventSaved"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+    @if (TempData["ImageSaved"] is string imageNotice) { <div class="alert alert-success" role="status">@imageNotice</div> }
     <div class="page-intro"><h1>@Model.EventName</h1>@await Html.PartialAsync("~/Views/Organiser/_Status.cshtml", Model.Status)</div>
     @if (banner is not null) { <img class="event-banner mb-4" src="@banner" alt="Banner for @Model.EventName" referrerpolicy="no-referrer" /> }
     <div class="detail-panel">
@@ -26,6 +27,7 @@
         <a class="btn btn-outline-secondary" asp-controller="Enrolments" asp-action="Index" asp-route-eventId="@Model.EventId">View enrolments</a>
         <a class="btn btn-outline-secondary" asp-controller="EventResults" asp-action="Index" asp-route-eventId="@Model.EventId">View results</a>
             <a class="btn btn-race" asp-controller="OwnedEvents" asp-action="Edit" asp-route-eventId="@Model.EventId">Edit event</a>
+            <a class="btn btn-outline-secondary" asp-controller="Images" asp-action="Banner" asp-route-eventId="@Model.EventId">Manage banner</a>
             <a class="btn btn-outline-danger" asp-controller="OwnedEvents" asp-action="Delete" asp-route-eventId="@Model.EventId">Delete event</a>
         </div>
     </div>

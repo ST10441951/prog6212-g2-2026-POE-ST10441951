@@ -16,7 +16,7 @@ The profile shows name, email, phone number, birth date, role and joined date. E
 
 Private pages use no-store responses. A profile must match the signed-in user's ID and role before display. Inactive, removed or changed accounts end the local session. Unavailable responses show a friendly 503; an uncertain save advises checking the profile before retrying.
 
-Existing safe API picture URLs can be displayed, with an initial shown when none is available. MVC picture uploads and the Azure demonstration remain outstanding.
+Safe API picture URLs display on the profile, with an initial shown when none is available. Participants can upload, replace or remove their picture using [image management](Part-3-Images.md). Organisers do not receive Participant picture controls.
 
 ## 3. Password changes
 
@@ -26,7 +26,7 @@ Success ends the current API and MVC session and redirects to sign-in. The old p
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. Profile checks cover both roles, allowed fields, validation, antiforgery, private responses, rejected credentials, uncertain writes and ended sessions. A real HTTP test checks that separate browsers receive only their own profiles (Microsoft, 2026e).
+On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. Profile checks cover both roles, allowed fields, validation, antiforgery, private responses, rejected credentials, uncertain writes and ended sessions. A real HTTP test checks that separate browsers receive only their own profiles (Microsoft, 2026e).
 
 Browser checks against a temporary database verified saved names, phone numbers and birth dates in SQL. Blank optional fields cleared correctly. Future birth dates and attempted identity changes were rejected or ignored as appropriate. Wrong passwords, weak passwords and mismatched confirmation left empty password inputs. Both roles changed passwords and signed in again. The hash changed, the old password failed and the previous MVC cookie could not restore access. Another existing browser and an unrelated account retained access as specified by the API.
 

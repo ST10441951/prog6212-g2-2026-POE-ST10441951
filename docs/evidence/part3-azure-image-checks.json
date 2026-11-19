@@ -1,0 +1,305 @@
+{
+  "storage": "azure",
+  "blobHost": "racedayst10441951.blob.core.windows.net",
+  "mvcApiStorageFlow": true,
+  "privateSignedReads": true,
+  "readOnlySas": true,
+  "pictureUpload": true,
+  "pictureReplacement": true,
+  "oldBlobsDeleted": true,
+  "sqlGeneratedNames": true,
+  "invalidFileRejected": true,
+  "oversize413": true,
+  "storageFailure503": true,
+  "csrfRequired": true,
+  "rolesAndOwnership": true,
+  "bannerDuringCreation": true,
+  "bannerDuringEdit": true,
+  "publicBannerDisplay": true,
+  "removalConfirmation": true,
+  "repeatedRemovalSafe": true,
+  "accountAndResultsPreserved": true,
+  "layouts": [
+    {
+      "page": "picture-form",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "picture-form",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "picture-form",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "picture-form",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "profile-picture",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "profile-picture",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "profile-picture",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "profile-picture",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "picture-replaced",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "picture-replaced",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "picture-replaced",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "picture-replaced",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "image-rejected",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "image-rejected",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "image-rejected",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "image-rejected",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "image-size-rejected",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "image-size-rejected",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "image-size-rejected",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "image-size-rejected",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "storage-unavailable",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "storage-unavailable",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "storage-unavailable",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "storage-unavailable",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "create-event-banner",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "create-event-banner",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "create-event-banner",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "create-event-banner",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "event-banner",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "event-banner",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "event-banner",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "event-banner",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "banner-replaced",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "banner-replaced",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "banner-replaced",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "banner-replaced",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "public-event-banner",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "public-event-banner",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "public-event-banner",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "public-event-banner",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "banner-remove-confirmation",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "banner-remove-confirmation",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "banner-remove-confirmation",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "banner-remove-confirmation",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "banner-removed",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "banner-removed",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "banner-removed",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "banner-removed",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "picture-remove-confirmation",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "picture-remove-confirmation",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "picture-remove-confirmation",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "picture-remove-confirmation",
+      "width": 1280,
+      "overflow": false
+    },
+    {
+      "page": "picture-removed",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "picture-removed",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "picture-removed",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "picture-removed",
+      "width": 1280,
+      "overflow": false
+    }
+  ],
+  "javascriptErrors": []
+}

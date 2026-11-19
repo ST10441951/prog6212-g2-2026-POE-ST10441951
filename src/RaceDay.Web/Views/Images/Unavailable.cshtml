@@ -1,0 +1,10 @@
+@* Friendly upload failure without credentials or exception details: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 19 November 2026. *@
+@{ ViewData["Title"] = "Images unavailable"; bool unconfirmed = ViewData["UnconfirmedImage"] is true; }
+<section class="events-section"><div class="container"><div class="notice" role="alert">
+    <h1>@(unconfirmed ? "The image change could not be confirmed" : "Images are unavailable")</h1>
+    <p>@(unconfirmed ? "Check the current image from My profile or My events before submitting again. The API may have saved the change." : "The image service is unavailable. Please try again shortly.")</p>
+    <a class="btn btn-race" asp-controller="Profile" asp-action="Index">My profile</a>
+    @if (User.IsInRole("Organiser")) { <a class="btn btn-outline-secondary" asp-controller="Organiser" asp-action="Events">My events</a> }
+</div></div></section>

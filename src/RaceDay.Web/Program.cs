@@ -115,6 +115,16 @@ builder.Services.AddHttpClient<OrganiserApiClient>((services, client) =>
     AllowAutoRedirect = false
 });
 
+// Multipart image requests keep the same cookie/redirect isolation as the other clients.
+// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-10.0
+builder.Services.AddHttpClient<ImageApiClient>((services, client) =>
+{
+    var settings = services.GetRequiredService<IOptions<ApiOptions>>().Value;
+    client.BaseAddress = new Uri(settings.BaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(settings.TimeoutSeconds);
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false, AllowAutoRedirect = false });
+
 var app = builder.Build();
 
 app.UseExceptionHandler("/error");

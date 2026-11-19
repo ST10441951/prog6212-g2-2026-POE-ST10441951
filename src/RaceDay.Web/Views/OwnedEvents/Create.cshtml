@@ -6,7 +6,7 @@
 <section class="events-section"><div class="container">
     <a class="back-link" asp-controller="Organiser" asp-action="Events">Back to my events</a>
     <div class="page-intro"><h1>Create event</h1><p>New events start as Draft. Add categories before opening entries.</p></div>
-    <div class="detail-panel"><form asp-controller="OwnedEvents" asp-action="Create" method="post">
+    <div class="detail-panel"><form asp-controller="OwnedEvents" asp-action="Create" method="post" enctype="multipart/form-data">
         <partial name="_Fields" model="Model" />
         <div class="entry-actions mt-4"><button class="btn btn-race" type="submit">Create Draft</button><a class="btn btn-outline-secondary" asp-controller="Organiser" asp-action="Events">Cancel</a></div>
     </form></div>

@@ -19,17 +19,19 @@ Creation sends only the twelve editable fields. The API assigns the ID, owner, D
 
 The API validates future creation dates, deadlines, decimal precision, paired coordinates and status readiness. Opening requires an available category and future start/deadline. Saved entries and terminal status restrict schedule, type and distance changes. Events with results cannot be cancelled. Rejected edits retain the input and show the API's field errors or conflict reason. These rules stay in the API.
 
+Both forms accept an optional banner file. Event fields are saved as JSON first, then the banner is sent as a separate multipart API upload. A failed banner opens the saved event's image page with a warning, so retrying does not duplicate the event. A blank file keeps the current banner. See [image management](Part-3-Images.md).
+
 ## 3. Delete and history
 
 Delete event opens a read-only confirmation. Keep event returns without changing data; Delete permanently submits the protected form. The API refuses deletion when a banner, categories or entries exist. Editing the status to Cancelled keeps related history when cancellation is allowed.
 
 Other Organisers and Participants cannot use these forms or writes. Missing upstream records return 404; ownership rejection returns 403. Service problems return a friendly 503. If a write cannot be confirmed, the page advises checking My events before retrying. No automatic retry can create a duplicate event.
 
-[Category and route management](Part-3-Categories.md), [enrolments and bib numbers](Part-3-Enrolments.md), and [official results](Part-3-Result-Management.md) are available from private event details. Banner controls remain outstanding.
+[Category and route management](Part-3-Categories.md), [enrolments and bib numbers](Part-3-Enrolments.md), [official results](Part-3-Result-Management.md) and [banner controls](Part-3-Images.md) are available from private event details.
 
 ## 4. Checks and evidence
 
-On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. Event checks cover roles, ownership, allowed fields, date offsets, validation, antiforgery, redirects, read-only confirmation, conflicts, invalid responses and uncertain writes (Microsoft, 2026e).
+On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. Event checks cover roles, ownership, allowed fields, date offsets, validation, antiforgery, redirects, read-only confirmation, conflicts, invalid responses and uncertain writes (Microsoft, 2026e).
 
 Browser checks used a temporary database. A Draft was created and edited through MVC, with owner, status, fields and exact UTC times verified in SQL. Refresh did not duplicate it. Opening without a category failed; adding an available category through the API allowed opening. Saved entries prevented a distance change. Other accounts' edits were blocked, dependent deletion preserved history, cancellation kept the entry, and terminal reopening failed. A separate event without dependencies was deleted after confirmation and returned API 404.
 

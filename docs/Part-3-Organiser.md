@@ -17,11 +17,11 @@ My events includes Draft, Open, Closed, Cancelled and Completed records. The API
 
 Pages use no-store responses and encode event names. Invalid filters return 400, unavailable or inconsistent responses show a friendly 503, and rejected API sessions clear local access. An unavailable service is not presented as zero events (Microsoft, 2026a; 2026b).
 
-Create event and the private event links open the [event-management pages](Part-3-Event-Management.md). Each owned event also opens [category and route management](Part-3-Categories.md), [enrolments and bib forms](Part-3-Enrolments.md), and [result capture/corrections](Part-3-Result-Management.md). Image uploads remain outstanding.
+Create event and the private event links open the [event-management pages](Part-3-Event-Management.md). Each owned event also opens [category and route management](Part-3-Categories.md), [enrolments and bib forms](Part-3-Enrolments.md), and [result capture/corrections](Part-3-Result-Management.md). Image controls are described in the [image notes](Part-3-Images.md).
 
 ## 3. Checks and evidence
 
-On 19 November 2026, all 468 MVC checks passed locally, with none failed or skipped. New checks cover totals, dates, status filters, paging, empty lists, invalid responses, encoding, role restrictions and ended sessions. A real HTTP test confirms two Organisers do not share dashboard or event cookies (Microsoft, 2026c).
+On 19 November 2026, all 496 MVC checks passed locally, with none failed or skipped. New checks cover totals, dates, status filters, paging, empty lists, invalid responses, encoding, role restrictions and ended sessions. A real HTTP test confirms two Organisers do not share dashboard or event cookies (Microsoft, 2026c).
 
 Browser checks used an isolated database with fictional event fixtures. Totals and counts per event matched the API and SQL. Both Organisers saw only their own records. Draft and historical events remained visible to their owner, filters and paging worked, and a new Organiser had an empty dashboard. Read-only requests left saved records unchanged. A real API cancellation refreshed the Confirmed/Cancelled totals.
 

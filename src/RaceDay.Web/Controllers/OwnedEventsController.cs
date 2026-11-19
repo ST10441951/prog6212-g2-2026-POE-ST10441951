@@ -13,23 +13,26 @@ namespace RaceDay.Web.Controllers;
 [Authorize(Roles = "Organiser")]
 [Route("organiser/events")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-public sealed class OwnedEventsController(OrganiserApiClient api, WebSessionStore sessions, ILogger<OwnedEventsController> logger) : Controller
+public sealed class OwnedEventsController(OrganiserApiClient api, ImageApiClient images, WebSessionStore sessions, ILogger<OwnedEventsController> logger) : Controller
 {
-    private const string Editable = "EventName,EventType,Description,DistanceKm,EventDateTime,EntryClosingDateTime,VenueName,AddressLine1,City,Province,Latitude,Longitude";
+    private const string Editable = "EventName,EventType,Description,DistanceKm,EventDateTime,EntryClosingDateTime,VenueName,AddressLine1,City,Province,Latitude,Longitude,BannerImage";
 
     [HttpGet("create")]
     public IActionResult Create() => View(new CreateEventForm());
 
     [HttpPost("create")]
+    [RequestSizeLimit(ImageApiClient.FormLimit), RequestFormLimits(MultipartBodyLengthLimit = ImageApiClient.FormLimit)]
     public async Task<IActionResult> Create([Bind(Editable)] CreateEventForm model, CancellationToken cancellationToken)
     {
+        CheckBanner(model.BannerImage);
         if (ModelState.IsValid)
         {
             try
             {
-                var saved = await api.CreateEvent(model, await Login(), cancellationToken);
+                var login = await Login();
+                var saved = await api.CreateEvent(model, login, cancellationToken);
                 TempData["EventSaved"] = "Your Draft event has been created.";
-                return RedirectToAction(nameof(Details), new { eventId = saved.EventId });
+                return await BannerAfterSave(saved.EventId, model.BannerImage, login, cancellationToken);
             }
             catch (EventWriteException error) when (error.StatusCode == 400) { AddErrors(error); }
             catch (Exception error) when (error is ApiSessionEndedException or EventWriteException or ApiUnavailableException)
@@ -56,6 +59,7 @@ public sealed class OwnedEventsController(OrganiserApiClient api, WebSessionStor
     }
 
     [HttpPost("{eventId:int:min(1)}/edit")]
+    [RequestSizeLimit(ImageApiClient.FormLimit), RequestFormLimits(MultipartBodyLengthLimit = ImageApiClient.FormLimit)]
     public async Task<IActionResult> Edit([FromRoute] int eventId, [Bind(Editable + ",Status")] EditEventForm model, CancellationToken cancellationToken)
     {
         bool submitted = false;
@@ -63,12 +67,13 @@ public sealed class OwnedEventsController(OrganiserApiClient api, WebSessionStor
         {
             var login = await Login();
             await api.OwnedEvent(eventId, login, cancellationToken);
+            CheckBanner(model.BannerImage);
             if (ModelState.IsValid)
             {
                 submitted = true;
                 await api.UpdateEvent(eventId, model, login, cancellationToken);
                 TempData["EventSaved"] = "Your event has been updated.";
-                return RedirectToAction(nameof(Details), new { eventId });
+                return await BannerAfterSave(eventId, model.BannerImage, login, cancellationToken);
             }
         }
         catch (EventWriteException error) when (error.StatusCode is 400 or 409) { AddErrors(error); }
@@ -106,6 +111,38 @@ public sealed class OwnedEventsController(OrganiserApiClient api, WebSessionStor
     }
 
     private async Task<WebLogin> Login() => await sessions.ReadAsync(HttpContext) ?? throw new ApiSessionEndedException();
+    // A separate image write must never make the user repeat a successfully saved event.
+    // Multipart requests: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0
+    // Accessed: 19 November 2026.
+    private async Task<IActionResult> BannerAfterSave(int eventId, IFormFile? file, WebLogin login, CancellationToken cancellationToken)
+    {
+        if (file is null) return RedirectToAction(nameof(Details), new { eventId });
+        try
+        {
+            await images.Upload(eventId, file, login, cancellationToken);
+            TempData["ImageSaved"] = "The event banner has been saved.";
+            return RedirectToAction(nameof(Details), new { eventId });
+        }
+        catch (ImageRequestException error) when (error.StatusCode is 400 or 413 or 415)
+        { TempData["BannerNotice"] = "The event was saved, but its banner was rejected: " + error.Message; }
+        catch (ApiUnavailableException)
+        { TempData["BannerNotice"] = "The event was saved. The banner change could not be confirmed; check the current image before uploading again."; }
+        catch (ApiSessionEndedException)
+        {
+            await sessions.RemoveAsync(HttpContext);
+            return RedirectToAction("Login", "Account", new { returnUrl = $"/organiser/events/{eventId}/banner" });
+        }
+        catch (ImageRequestException error) when (error.StatusCode == 403) { return Forbid(); }
+        catch (ImageRequestException error) when (error.StatusCode == 404) { return NotFound(); }
+        return RedirectToAction("Banner", "Images", new { eventId });
+    }
+
+    private void CheckBanner(IFormFile? file)
+    {
+        if (file is null) return;
+        try { ImageApiClient.CheckLength(file); }
+        catch (ImageRequestException error) { ModelState.AddModelError("BannerImage", error.Message); Response.StatusCode = error.StatusCode; }
+    }
     private async Task<IActionResult> Failure(Exception error, bool write = false)
     {
         if (error is ApiSessionEndedException)
