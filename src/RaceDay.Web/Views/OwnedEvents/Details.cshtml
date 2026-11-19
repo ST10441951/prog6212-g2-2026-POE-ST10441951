@@ -23,6 +23,7 @@
             { <div><dt>Coordinates</dt><dd>@latitude.ToString(CultureInfo.InvariantCulture), @longitude.ToString(CultureInfo.InvariantCulture)</dd></div> }
         </dl>
         <div class="entry-actions mt-4">
+            <a class="btn btn-outline-secondary" asp-controller="Enrolments" asp-action="Index" asp-route-eventId="@Model.EventId">View enrolments</a>
             <a class="btn btn-race" asp-controller="OwnedEvents" asp-action="Edit" asp-route-eventId="@Model.EventId">Edit event</a>
             <a class="btn btn-outline-danger" asp-controller="OwnedEvents" asp-action="Delete" asp-route-eventId="@Model.EventId">Delete event</a>
         </div>

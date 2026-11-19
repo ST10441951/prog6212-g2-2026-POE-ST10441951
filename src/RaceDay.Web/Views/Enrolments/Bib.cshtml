@@ -1,0 +1,17 @@
+@* Explicit form fields, validation and antiforgery: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.BibNumberForm
+@{ ViewData["Title"] = "Assign bib number"; var entry = Model.Entry!; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Details" asp-route-eventId="@entry.EventId" asp-route-enrolmentId="@entry.EnrolmentId">Back to enrolment</a>
+    <div class="page-intro"><h1>Assign bib number</h1><p>@entry.ParticipantName · @entry.EventName · @entry.CategoryName</p></div>
+    <div class="detail-panel profile-form-panel"><form asp-action="Bib" asp-route-eventId="@entry.EventId" asp-route-enrolmentId="@entry.EnrolmentId" method="post">
+        <div asp-validation-summary="ModelOnly" class="form-errors" role="alert"></div>
+        <label asp-for="BibNumber" class="form-label"></label><input asp-for="BibNumber" class="form-control" maxlength="20" required aria-describedby="bib-help bib-error" />
+        <span asp-validation-for="BibNumber" class="field-error" id="bib-error"></span>
+        <p class="field-help mt-2" id="bib-help">Use 1–20 letters, digits or hyphens, starting with a letter or digit. Bibs are saved in uppercase and must be unique within this event, including Cancelled entries.</p>
+        <div class="entry-actions mt-4"><button class="btn btn-race" type="submit">Save bib number</button><a class="btn btn-outline-secondary" asp-action="Details" asp-route-eventId="@entry.EventId" asp-route-enrolmentId="@entry.EnrolmentId">Cancel</a></div>
+    </form></div>
+</div></section>

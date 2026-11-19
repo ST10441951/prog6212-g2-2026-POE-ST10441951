@@ -1,0 +1,53 @@
+@* Private filters, encoded names and paging: Microsoft (2026); Bootstrap (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+   https://getbootstrap.com/docs/5.3/components/pagination/
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Organiser.RosterListPage
+@{
+    ViewData["Title"] = "Event enrolments";
+}
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-controller="OwnedEvents" asp-action="Details" asp-route-eventId="@Model.Event.EventId">Back to event</a>
+    <div class="page-intro"><h1>Event enrolments</h1><p>@Model.Event.EventName</p></div>
+    <form class="event-search" asp-action="Index" asp-route-eventId="@Model.Event.EventId" method="get">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4"><label class="form-label" for="roster-status">Entry status</label><select class="form-select" id="roster-status" name="status">
+                <option value="">All entries</option>@foreach (string status in new[] { "Confirmed", "Cancelled" }) { <option value="@status" selected="@(string.Equals(Model.Search.Status, status, StringComparison.OrdinalIgnoreCase))">@status</option> }
+            </select></div>
+            <div class="col-md-4"><label class="form-label" for="roster-category">Category</label><select class="form-select" id="roster-category" name="eventCategoryId">
+                <option value="">All categories</option>@foreach (var category in Model.Event.Categories) { <option value="@category.EventCategoryId" selected="@(Model.Search.EventCategoryId == category.EventCategoryId)">@category.CategoryName@(category.IsAvailable ? "" : " (Unavailable)")</option> }
+            </select></div>
+            <div class="col-md-4"><button class="btn btn-race" type="submit">Filter enrolments</button><a class="d-inline-block ms-3" asp-action="Index" asp-route-eventId="@Model.Event.EventId">Clear filters</a></div>
+        </div>
+    </form>
+    @if (Model.Error is not null) { <div class="notice" role="alert"><h2>Check the filters</h2><p>@Model.Error</p></div> }
+    else if (Model.Entries is { } page)
+    {
+        @if (page.Items.Count == 0)
+        {
+            <div class="notice"><h2>@(page.Page > 1 ? "No enrolments on this page" : Model.Search.Status is not null || Model.Search.EventCategoryId is not null ? "No enrolments match these filters" : "No enrolments yet")</h2>
+                @if (page.Page > 1) { <a asp-action="Index" asp-route-eventId="@Model.Event.EventId" asp-route-page="1" asp-route-status="@Model.Search.Status" asp-route-eventCategoryId="@Model.Search.EventCategoryId">First page</a> }
+                else { <p>Saved Participant entries will appear here.</p> }
+            </div>
+        }
+        else
+        {
+            <div class="entry-list">@foreach (var entry in page.Items)
+            {
+                <article class="detail-panel">
+                    <div class="category-heading"><h2><a asp-action="Details" asp-route-eventId="@Model.Event.EventId" asp-route-enrolmentId="@entry.EnrolmentId">@entry.ParticipantName</a></h2><span class="event-status @(entry.Status == "Confirmed" ? "status-open" : "status-cancelled")">@entry.Status</span></div>
+                    <p>@entry.CategoryName · @entry.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</p>
+                    <dl class="event-facts mb-0"><div><dt>Bib number</dt><dd>@(entry.BibNumber ?? "Not assigned")</dd></div><div><dt>Entry saved</dt><dd>@entry.EnrolmentDate.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div></dl>
+                </article>
+            }</div>
+        }
+        @if (page.TotalPages > 1)
+        {
+            <nav class="event-pagination" aria-label="Event enrolment pages"><ul class="pagination flex-wrap mb-0">
+                @if (page.Page > 1) { <li class="page-item"><a class="page-link" asp-action="Index" asp-route-eventId="@Model.Event.EventId" asp-route-page="@Math.Min(page.Page - 1, page.TotalPages)" asp-route-status="@Model.Search.Status" asp-route-eventCategoryId="@Model.Search.EventCategoryId">Previous</a></li> }
+                @if (page.Page < page.TotalPages) { <li class="page-item"><a class="page-link" asp-action="Index" asp-route-eventId="@Model.Event.EventId" asp-route-page="@(page.Page + 1)" asp-route-status="@Model.Search.Status" asp-route-eventCategoryId="@Model.Search.EventCategoryId">Next</a></li> }
+            </ul></nav>
+        }
+        <p class="mt-3">@(page.TotalCount) matching entries · Page @(page.Page)@(page.TotalPages > 0 ? " of " + page.TotalPages.ToString(CultureInfo.InvariantCulture) : "")</p>
+    }
+</div></section>

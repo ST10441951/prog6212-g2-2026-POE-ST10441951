@@ -1,0 +1,22 @@
+@* Encoded enrolment details and shared styling: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@model RaceDay.Web.Models.Entries.EntryDetails
+@using RaceDay.Web.Models.Results
+@{ ViewData["Title"] = "Enrolment details"; }
+<section class="events-section"><div class="container">
+    <a class="back-link" asp-action="Index" asp-route-eventId="@Model.EventId">Back to enrolments</a>
+    @if (TempData["BibSaved"] is true) { <div class="alert alert-success" role="status">The bib number has been saved.</div> }
+    <div class="page-intro"><h1>@Model.ParticipantName</h1><p>@Model.EventName</p></div>
+    <div class="detail-panel"><div class="category-heading"><h2>Enrolment details</h2><span class="event-status @(Model.Status == "Confirmed" ? "status-open" : "status-cancelled")">@Model.Status</span></div>
+        <dl class="event-facts">
+            <div><dt>Category</dt><dd>@Model.CategoryName</dd></div><div><dt>Distance</dt><dd>@Model.CategoryDistanceKm.ToString("0.##", CultureInfo.InvariantCulture) km</dd></div>
+            <div><dt>Bib number</dt><dd>@(Model.BibNumber ?? "Not assigned")</dd></div>
+            <div><dt>Event date</dt><dd>@Model.EventDateTime.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+            <div><dt>Entry saved</dt><dd>@Model.EnrolmentDate.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div>
+            <div><dt>Official result</dt><dd>@(Model.Result is { } result ? ResultDetails.Label(result.ResultStatus) : "Not recorded")</dd></div>
+            @if (Model.UpdatedAt is { } updated) { <div><dt>Last updated</dt><dd>@updated.ToOffset(TimeSpan.FromHours(2)).ToString("dd MMMM yyyy, HH:mm", CultureInfo.InvariantCulture) SAST</dd></div> }
+        </dl>
+        <a class="btn btn-race mt-4" asp-action="Bib" asp-route-eventId="@Model.EventId" asp-route-enrolmentId="@Model.EnrolmentId">Assign or edit bib</a>
+    </div>
+</div></section>

@@ -1,0 +1,9 @@
+@* Friendly read errors and uncertain writes: Microsoft (2026).
+   https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0
+   Accessed: 18 November 2026. *@
+@{ ViewData["Title"] = "Enrolments unavailable"; var eventId = ViewContext.RouteData.Values["eventId"]; }
+<section class="events-section"><div class="container"><div class="notice" role="alert"><h1>Enrolments are temporarily unavailable</h1>
+    @if (ViewData["UnconfirmedBib"] is true) { <p>The bib change could not be confirmed. Check the saved enrolment before trying again.</p> }
+    else { <p>We could not load this event's enrolments. Please try again shortly.</p> }
+    <a asp-action="Index" asp-route-eventId="@eventId">Check event enrolments</a>
+</div></div></section>

@@ -4,7 +4,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC accounts, event pages, Participant entries/results, profiles and Organiser event/category tools work through the API. Enrolment management, result capture, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC accounts, event pages, Participant entries/results, profiles and Organiser event/category/enrolment tools work through the API. Result capture, image uploads and Docker remain to be added. Progress is recorded in the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -40,7 +40,8 @@ The shared MVC layout uses the Event finder design: blue accents, a light backgr
 | Organiser dashboard and owned-event list | Implemented; [Organiser notes](docs/Part-3-Organiser.md) |
 | Organiser event creation, editing and deletion | Implemented; [event management](docs/Part-3-Event-Management.md) |
 | Organiser categories and routes | Implemented; [category notes](docs/Part-3-Categories.md) |
-| Enrolment management, result capture and MVC image uploads | Pending |
+| Organiser event enrolments and bib assignment | Implemented; [enrolment notes](docs/Part-3-Enrolments.md) |
+| Result capture and MVC image uploads | Pending |
 | Docker | Not started |
 
 ## MVC screenshots
@@ -72,6 +73,8 @@ Organisers: [dashboard](docs/evidence/part3-organiser-home.png), [owned events](
 Event management: [create form](docs/evidence/part3-event-create.png), [saved Draft](docs/evidence/part3-event-created.png), [edit form](docs/evidence/part3-event-edit.png) and [delete confirmation](docs/evidence/part3-event-delete-confirmation.png). The screenshots use fictional review events.
 
 Categories and routes: [category list](docs/evidence/part3-categories.png), [category form](docs/evidence/part3-category-create.png) and [saved route](docs/evidence/part3-route-details.png).
+
+Event enrolments: [roster](docs/evidence/part3-event-enrolments.png), [entry details](docs/evidence/part3-roster-entry-details.png), [saved bib](docs/evidence/part3-bib-saved.png) and [duplicate rejection](docs/evidence/part3-bib-duplicate.png). These screenshots use fictional review entries.
 
 ## Setup and run
 
@@ -129,6 +132,8 @@ Use Create event to save a Draft. Event names open private details with Edit eve
 
 Open Manage categories and routes on an owned event to add distance or age categories, fees, capacity and availability. Each category has route details with add/edit/remove controls. Age limits, capacity, map URL and elevation are optional. Category and route removal require confirmation. See the [category notes](docs/Part-3-Categories.md).
 
+Use View enrolments on an owned event to filter entries by status and category. Open a Participant's entry to assign or correct its bib number. The API requires bibs to be unique within that event, including Cancelled entries. See the [enrolment notes](docs/Part-3-Enrolments.md).
+
 A stopped API produces a friendly message instead of an empty list or raw error. See [MVC settings](docs/Part-3-MVC.md#2-settings).
 
 7. Run tests with the API test database server and Azurite available. The MVC tests do not need the API running (Microsoft, 2026f).
@@ -151,19 +156,19 @@ The MVC Dockerfile, container checks and tested build/run commands are still to 
 
 The [build workflow](.github/workflows/part2-build.yml) now builds the API, MVC and both test projects. The [planning workflow](.github/workflows/part1-validation.yml) checks the planning files and required Part 3 files (GitHub, 2026).
 
-Both workflows passed for `348fd77` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44378777310) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44378777186). The build ran 810 API tests and 355 MVC tests, with none failed or skipped. The migration check also passed.
+Both workflows passed for `1ba054a` using temporary Windows runners on my PC: [build and tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44382523205) and [planning validation](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44382523257). The build ran 810 API tests and 397 MVC tests, with none failed or skipped. The migration check also passed.
 
 ![Passing GitHub build and tests](docs/evidence/part3-ci-build-success.png)
 
 The [planning screenshot](docs/evidence/part3-ci-planning-success.png) records the second green check. Earlier hosted jobs were blocked by an account billing issue. `RACEDAY_USE_LOCAL_RUNNER` selects the temporary local runner; each job needs a new registration and the PC online. No tests were skipped to obtain these results. See the [CI notes](docs/Part-3-CI.md).
 
-The newer category and route pages have 397 passing MVC tests locally and are not yet included in the recorded GitHub revision.
+The newer enrolment pages have 427 passing MVC tests locally and are not yet included in the recorded GitHub revision.
 
 ## Unit tests
 
-Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 397 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
+Part 2 includes 810 tests recorded in the [Part 2 README](README-Part2.md#unit-tests). MVC now has 427 checks covering browsing, entries, results, profiles, Organiser events, categories/routes, rosters/bibs, accounts, validation, cookies, role restrictions and redirects (Microsoft, 2026f).
 
-All 397 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence) and [Organiser checks](docs/Part-3-Organiser.md#3-checks-and-evidence).
+All 427 MVC checks passed locally on 18 November 2026, with none failed or skipped. The unchanged 810 API tests also passed in GitHub on that date. The Release build has zero warnings or errors, and planning checks pass. Browser checks verified both roles, saved changes and private records against isolated databases. See the [account](docs/Part-3-Accounts.md#5-checks-and-evidence), [event](docs/Part-3-Events.md#3-checks-and-evidence), [entry](docs/Part-3-Entries.md#4-checks-and-evidence), [profile](docs/Part-3-Profiles.md#4-checks-and-evidence), [result](docs/Part-3-Results.md#4-checks-and-evidence), [Organiser](docs/Part-3-Organiser.md#3-checks-and-evidence) and [enrolment checks](docs/Part-3-Enrolments.md#3-checks-and-evidence).
 
 ## Project files
 
@@ -181,6 +186,7 @@ All 397 MVC checks passed locally on 18 November 2026, with none failed or skipp
 | [Organiser notes](docs/Part-3-Organiser.md) | Dashboard totals, owned events, filters and checks |
 | [Event management](docs/Part-3-Event-Management.md) | Draft creation, editing, status changes, deletion and checks |
 | [Category notes](docs/Part-3-Categories.md) | Age/distance categories, route management and checks |
+| [Enrolment notes](docs/Part-3-Enrolments.md) | Event rosters, filters, bib numbers and checks |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |

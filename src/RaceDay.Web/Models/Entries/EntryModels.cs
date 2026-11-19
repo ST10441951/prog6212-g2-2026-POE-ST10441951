@@ -55,6 +55,19 @@ public sealed class EntryDetails
     public required DateTimeOffset EnrolmentDate { get; init; }
     public required string Status { get; init; }
     public string? BibNumber { get; init; }
+    public DateTimeOffset? UpdatedAt { get; init; }
+    public EntryResultSummary? Result { get; init; }
+}
+
+// Optional official-result fields already returned by the enrolment API.
+// Contract: src/RaceDay.Api/Contracts/Enrolments/EnrolmentResponse.cs.
+public sealed class EntryResultSummary
+{
+    public required int ResultId { get; init; }
+    public required string ResultStatus { get; init; }
+    public int? FinishTimeSeconds { get; init; }
+    public int? OverallPosition { get; init; }
+    public int? CategoryPosition { get; init; }
 }
 
 public sealed class EntryConfirmation
