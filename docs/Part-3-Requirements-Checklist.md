@@ -2,6 +2,8 @@
 
 Based on the Part 3 requirements and marking rubric (The Independent Institute of Education, 2026). Tick only completed and verified work.
 
+Completed on 20 November 2026. The [Part 3 video](https://youtu.be/dGE-umpjM40) and ARC submission were confirmed on that date.
+
 ## Correct submission: 5 marks
 
 - [x] Preserve the original Part 1 README.
@@ -11,8 +13,8 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 - [x] Keep MVC, API, tests, documents and evidence clearly organised.
 - [x] Add complete local setup steps, settings and application URLs.
 - [x] Include a tested Docker run command and green CI screenshot.
-- [ ] Add the Part 3 unlisted video link.
-- [ ] Submit the correct GitHub repository link on ARC.
+- [x] Add the Part 3 video link.
+- [x] Submit the correct GitHub repository link on ARC.
 
 ## MVC application
 
@@ -160,14 +162,14 @@ Based on the Part 3 requirements and marking rubric (The Independent Institute o
 
 ## Video: 15 marks
 
-- [ ] Demonstrate the running MVC application and both roles.
-- [ ] Cover all required Organiser and Participant pages.
-- [ ] Explain API communication, sessions and role-based access.
-- [ ] Show uploads reaching Azure through the API and images displayed in MVC.
-- [ ] Show the Docker setup, run command and working container.
-- [ ] Explain the main code and design decisions in my own voice.
-- [ ] Show the green GitHub build and supporting evidence.
-- [ ] Upload as an unlisted YouTube video and verify the link in the README.
+- [x] Demonstrate the running MVC application and both roles.
+- [x] Cover all required Organiser and Participant pages.
+- [x] Explain API communication, sessions and role-based access.
+- [x] Show uploads reaching Azure through the API and images displayed in MVC.
+- [x] Show the Docker setup, run command and working container.
+- [x] Explain the main code and design decisions in my own voice.
+- [x] Show the green GitHub build and supporting evidence.
+- [x] Upload the video to YouTube and add its link to the README.
 
 ## References
 

@@ -1,12 +1,12 @@
 # RaceDay Part 3 - Rubric review
 
-Checked on 19 November 2026 against the supplied Part 3 questions and rubric (The Independent Institute of Education, 2026). Implementation, tests and documentation are complete. Video and ARC submission remain open.
+Checked on 19 November 2026 against the supplied Part 3 questions and rubric (The Independent Institute of Education, 2026). Implementation, tests and documentation are complete. The video and ARC submission were confirmed complete on 20 November 2026.
 
 ## 1. Rubric
 
 | Criterion | Marks | Result and evidence |
 |---|---:|---|
-| Correct submission | 5 | Separate API/MVC projects and preserved Part 1/2 READMEs. Setup, settings, Docker command and screenshots are documented. The Part 3 video link is still missing. |
+| Correct submission | 5 | Separate API/MVC projects and preserved Part 1/2 READMEs. Setup, settings, Docker command, screenshots and the Part 3 video link are documented. ARC submission was confirmed on 20 November 2026. |
 | GitHub and CI/CD | 10 | The minimum of 20 meaningful Part 3 commits is met. [Build/tests](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288535) and [planning](https://github.com/ST10441951/prog6212-g2-2026-POE-ST10441951/actions/runs/44499288543) passed for `81c3cf1`, including the account-cookie correction. |
 | Authentication and navigation | 10 | Both roles register, sign in, retain server-side identity and sign out. Guests, wrong roles and other users' records are blocked. The account-switching correction passed locally and in Docker. See [accounts](Part-3-Accounts.md). |
 | Organiser interface | 15 | Dashboard totals, owned events, banners, categories/routes, enrolments, bibs and result capture/corrections work through the API. Saved changes were checked in SQL. |
@@ -14,7 +14,7 @@ Checked on 19 November 2026 against the supplied Part 3 questions and rubric (Th
 | Azure Blob Storage | 10 | [Azure evidence](evidence/part3-azure-image-checks.json) verifies MVC → API → private Azure storage, signed display URLs, replacement and removal. MVC contains no Azure credentials or storage SDK. |
 | Docker | 10 | The multi-stage image builds and runs as a non-root user. The [README command](../README.md#docker) starts MVC with a reachable host API. Local/container comparisons and corrected login passed. |
 | UI design | 10 | The Event finder design is consistent, responsive and role-aware. Status text accompanies colours. The [interface review](Part-3-UI.md) covers 61 pages at five widths locally and in Docker. |
-| Video presentation | 15 | Not recorded. It must demonstrate both roles, required pages, API communication, sessions, actual Azure uploads, Docker, CI and the main code in the student's own voice. |
+| Video presentation | 15 | [Part 3 walkthrough](https://youtu.be/dGE-umpjM40) uploaded. Recording and submission were confirmed complete on 20 November 2026. |
 
 ## 2. Final checks
 
@@ -31,10 +31,10 @@ To test results without waiting for a future race, only the disposable fixture's
 - Made the Part 3 setup self-contained, including database creation, emulator startup and sample accounts.
 - Refreshed CI screenshots and links, and updated verified checklist items.
 
-## 4. Still required
+## 4. Submission
 
-- Record the Part 3 walkthrough, upload it as unlisted and add its working YouTube link to the README.
-- Submit the repository link on ARC and confirm submission.
+- [Part 3 video](https://youtu.be/dGE-umpjM40) added to the README.
+- Repository submitted on ARC; completion confirmed on 20 November 2026.
 
 ## References
 

@@ -7,7 +7,7 @@
 
 RaceDay manages South African running, walking and cycling events. Part 3 adds an ASP.NET Core MVC website to the Part 2 API, with separate pages for Organisers and Participants, Azure image uploads and Docker (The Independent Institute of Education, 2026; Microsoft, 2026a).
 
-The MVC accounts, event pages, Participant entries/results, profiles, image uploads and Organiser management pages work through the API. The website also runs in Docker. Implementation and checks are complete; the video and ARC submission remain. See the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
+The MVC accounts, event pages, Participant entries/results, profiles, image uploads and Organiser management pages work through the API. The website also runs in Docker. Part 3 is complete, including the video and ARC submission on 20 November 2026. See the [Part 3 checklist](docs/Part-3-Requirements-Checklist.md).
 
 Previous work: [Part 1 README](README-Part1.md) and [Part 2 README](README-Part2.md).
 
@@ -232,7 +232,7 @@ All 518 MVC checks passed locally on 19 November 2026, with none failed or skipp
 |---|---|
 | [Part 1 README](README-Part1.md) | Original planning and database submission |
 | [Part 2 README](README-Part2.md) | API setup, features, tests and evidence |
-| [Part 3 checklist](docs/Part-3-Requirements-Checklist.md) | Requirements and outstanding work |
+| [Part 3 checklist](docs/Part-3-Requirements-Checklist.md) | Completed requirements and submission checks |
 | [MVC notes](docs/Part-3-MVC.md) | API connection, settings, layout and checks |
 | [Account notes](docs/Part-3-Accounts.md) | Registration, login, protected pages, sessions and sign-out |
 | [Event notes](docs/Part-3-Events.md) | Search, paging, public details, categories, routes and checks |
@@ -247,7 +247,7 @@ All 518 MVC checks passed locally on 19 November 2026, with none failed or skipp
 | [Image notes](docs/Part-3-Images.md) | Profile pictures, event banners, private storage and checks |
 | [Docker notes](docs/Part-3-Docker.md) | Image build, run command, API address and container checks |
 | [Interface notes](docs/Part-3-UI.md) | Shared styles, status colours, navigation and responsive checks |
-| [Rubric review](docs/Part-3-Review.md) | Requirement mapping, final checks, corrections and outstanding submission tasks |
+| [Rubric review](docs/Part-3-Review.md) | Requirement mapping, final checks, corrections and submission record |
 | [CI notes](docs/Part-3-CI.md) | Hosted billing failure, local runner and workflow checks |
 | `src/RaceDay.Web/` | MVC controllers, views, API client and local Bootstrap styles |
 | `src/RaceDay.Api/` | Existing API, database mappings, sessions and storage |
@@ -259,7 +259,9 @@ All 518 MVC checks passed locally on 19 November 2026, with none failed or skipp
 
 ## Video
 
-The Part 3 walkthrough has not been recorded. Its unlisted YouTube link will be added here after recording.
+[Watch the Part 3 walkthrough](https://youtu.be/dGE-umpjM40).
+
+Recorded and submitted on ARC on 20 November 2026.
 
 ## References
 
